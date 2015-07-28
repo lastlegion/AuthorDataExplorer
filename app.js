@@ -4,9 +4,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var busboy = require('connect-busboy'),
+    multer = require('multer');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+
+var routes = require('./routes/index'),
+    users = require('./routes/users'),
+    upload = require('./routes/upload'),
+    loadData = require('./routes/loadData');
 
 var app = express();
 
@@ -21,9 +26,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// default options, no immediate parsing
+app.use(busboy());
+
+
 
 app.use('/', routes);
+
+
+app.use('/upload', upload )
+app.use('/loadData', loadData)
 app.use('/users', users);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
