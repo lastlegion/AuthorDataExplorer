@@ -2,6 +2,8 @@ var jQuery = require('jquery');
 var React = require('react');
 var request = require('superagent');
 
+var dc = require('dc');
+
 /*Bootstrap stuff*/
 var bootstrap = require('bootstrap');
 var Button = require('react-bootstrap').Button,
@@ -9,11 +11,194 @@ var Button = require('react-bootstrap').Button,
     Modal = require('react-bootstrap').Modal,
     Input = require('react-bootstrap').Input,
     Well = require('react-bootstrap').Well,
+    Collapse = require('react-bootstrap').Collapse,
     Glyphicon = require('react-bootstrap').Glyphicon;
 
 /*Other external components*/
 var Dropzone = require('react-dropzone'),   //Drag-drop files
     Highlight = require('react-highlight'); //Syntax highlighting
+
+
+var Chart = React.createClass({
+
+    componentDidMount: function(){
+
+
+
+        var self = this;
+        var attributeName = self.props.name;
+        console.log(self.props.data);
+        console.log(attributeName);
+        console.log(self.props.attributeName)
+        var chartData = self.props.data[attributeName];
+        console.log(chartData)
+
+
+        var dim = {
+            filter: function(f) {
+
+            },
+            filterAll: function() {
+            },
+            name: function(){
+                    return attributeName;
+            }
+       
+        };
+        var group = {
+                all: function() {
+                    console.log(chartData.values)
+                    return chartData.values;
+                },
+                order: function() {
+                    return chartData;
+                    //return groups[attributeName];
+                },
+                top: function() {
+                    return chartData.values;
+                    //return self.props.currData[attributeName].values;
+                }
+ 
+        };
+
+        var self = this;
+        var visType = "barChart";
+        var divId = "#chart"
+        var domain = [0,100]
+        //var domain = this.props.config.domain || [0,100];
+        var c = {};
+        //Render according to chart-type
+        switch(visType){
+            case "pieChart":
+                c   = dc.pieChart(divId);
+                c.width(250)
+                .height(190).dimension(dim)
+                .group(group)
+                .radius(90)
+                .renderLabel(true);
+                c.filterHandler(function(dimension, filters){
+                  if(filters)
+                    dimension.filter(filters);
+                  else
+                    dimension.filter(null);
+                  return filters;
+                });
+                break;
+            case "barChart":
+                c = dc.barChart(divId);
+                c.width(220)
+                    .height(190).dimension(dim)
+                    .group(group)
+                    .x(d3.scale.linear().domain(domain))
+                    .elasticY(true)
+                    .elasticX(true)        
+                    .renderLabel(true)
+                    .margins({left: 35, top: 10, bottom: 20, right: 10})
+                    c.filterHandler(function(dimension, filter){
+
+                        var begin = $("#filterBeg"+dimension.name());
+                        var end = $("#filterEnd"+dimension.name());
+                        if(filter.length > 0 && filter.length!=2){
+                           filter = filter[0]
+                        }
+                        begin.val(filter[0]);
+                        end.val(filter[1]);
+                        dimension.filter(filter);
+                        return filter;
+                    });
+
+                break;
+            case "rowChart":
+                c = dc.rowChart(divId);
+                c.width(250)
+                .height(190)
+                .dimension(dim)
+                .group(group)
+                .renderLabel(true)
+                .elasticX(true)
+                .margins({top: 10, right: 20, bottom: 20, left: 20});
+                c.filterHandler(function(dimension, filters){
+                    if(filters)
+                        dimension.filter(filters);
+                    else
+                        dimension.filter(null);
+                    return filters;
+                })     
+        }
+        dc.renderAll();
+        this.setState({chart: c});
+    },    
+
+    componentWillMount: function(){
+
+    },
+    render: function(){
+        var self = this;
+        console.log(self)
+        if(self.props.chartVisible){
+            return(
+                <div style={{height: 240,  clear: "both"}} id="chart" />
+            );
+        } else {
+            return(
+                <div></div>
+            );
+        }
+    }
+})
+
+var AttributeBox = React.createClass({
+    getInitialState: function(){
+        return({isFilteringAttribute: false, isVisualAttribute: false, chartData: {}, attributeOptions: false});
+    },
+    handleFilteringAttribute: function(){
+        
+        var self = this;
+        var isFilteringAttribute = self.isFilteringAttribute;
+
+        if(isFilteringAttribute){
+            self.setState({isFilteringAttribute: false});
+        } else {
+
+            $.get("/addFilteringAttribute?attribute="+encodeURIComponent(self.props.name), function(data){
+                //we should get information required for rendering charts here.
+                console.log(data);
+                self.setState({isFilteringAttribute: true, chartData: data});
+
+            })
+            //console.log("well add it to the dimensions list")
+        }
+        
+    },
+    handleAttributeOptions: function(){
+        this.setState({attributeOptions: true})
+    },
+    render: function(){
+        var self = this;
+        var attribute = this.props.name;
+        return (
+            <Well bsSize='small' className="attribute">
+                <h4>{attribute}</h4> <Button onClick={this.handleAttributeOptions}>V</Button>
+                <Collapse in={this.state.attributeOptions}>
+                    <div class="attributeProperties">
+                        <Input type='checkbox' label='FilteringAttribute' value = {self.state.isFilteringAttribute} onChange={this.handleFilteringAttribute}/>
+                        
+                        {self.state.isFilteringAttribute ?
+                            <Chart chartVisible={this.state.isFilteringAttribute} data={this.state.chartData} name={attribute} />
+                        :
+                            <div />
+                        }
+                        <Input type='checkbox' label='VisualAttribute' />
+
+                        Summary Statistics <br />
+                    </div>
+                </Collapse>
+
+            </Well>
+        );      
+    }
+
+})
 
 var Attributes = React.createClass({
 
@@ -22,22 +207,11 @@ var Attributes = React.createClass({
         var Attribute = <div />
         if(self.props.attributes ){
 
-            console.log(self.props.attributes)
-            console.log("........")
             Attribute = self.props.attributes.map(function(attribute){
                 console.log(attribute)
                 return (
-                    <Well bsSize='small' className="attribute"> <h4>{attribute}</h4>
 
-                        <div class="attributeProperties">
-                            <Input type='checkbox' label='FilteringAttribute' />
-
-                            <Input type='checkbox' label='VisualAttribute' />
-
-                            Summary Statistics <br />
-                        </div>
-                    </Well>
-
+                    <AttributeBox name={attribute} />
                 );      
             });
 
@@ -127,7 +301,6 @@ var Attributes = React.createClass({
         },
         selectType: function(event){
 
-            console.log("setting file")
             this.setState({sourceType: event.target.value});
 
         	//this.setState({sourceType: "file"});
@@ -146,7 +319,6 @@ var Attributes = React.createClass({
             var dataSourceConfig = this.state.dataSourceConfig;
             var req = request.post('/upload');
 
-            console.log(files);
             var file = files[0];
             console.log(file)
             req.attach(file.name, file)
