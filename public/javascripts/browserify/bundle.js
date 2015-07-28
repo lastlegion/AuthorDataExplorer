@@ -54588,14 +54588,49 @@ var bootstrap = require('bootstrap');
 var Button = require('react-bootstrap').Button,
     Panel = require('react-bootstrap').Alert,
     Modal = require('react-bootstrap').Modal,
-    Input = require('react-bootstrap').Input;
+    Input = require('react-bootstrap').Input,
+    Well = require('react-bootstrap').Well,
     Glyphicon = require('react-bootstrap').Glyphicon;
 
 /*Other external components*/
 var Dropzone = require('react-dropzone'),   //Drag-drop files
     Highlight = require('react-highlight'); //Syntax highlighting
 
+var Attributes = React.createClass({displayName: "Attributes",
 
+    render: function(){
+        var self = this;
+        var Attribute = React.createElement("div", null)
+        if(self.props.attributes ){
+
+            console.log(self.props.attributes)
+            console.log("........")
+            Attribute = self.props.attributes.map(function(attribute){
+                console.log(attribute)
+                return (
+                    React.createElement(Well, {bsSize: "small", className: "attribute"}, " ", React.createElement("h4", null, attribute), 
+
+                        React.createElement("div", {class: "attributeProperties"}, 
+                            React.createElement(Input, {type: "checkbox", label: "FilteringAttribute"}), 
+
+                            React.createElement(Input, {type: "checkbox", label: "VisualAttribute"}), 
+
+                            "Summary Statistics ", React.createElement("br", null)
+                        )
+                    )
+
+                );      
+            });
+
+        }
+        
+        return(
+            React.createElement("div", null, 
+            Attribute
+            )
+        )
+    }
+});
 
     var DataSources = React.createClass({displayName: "DataSources",
 
@@ -54630,7 +54665,8 @@ var Dropzone = require('react-dropzone'),   //Drag-drop files
                 dataSourceConfig: {
                     "dataSourceAlias": "",
                     "dataSources": []
-                }
+                },
+                attributes: []
             };
     	},
 
@@ -54710,10 +54746,11 @@ var Dropzone = require('react-dropzone'),   //Drag-drop files
 
         },
         loadData: function(){
-            console.log("load dataS")
+            console.log("load dataS");
+            var self = this;
             var dataSourceConfig = this.state.dataSourceConfig;
             $.get("/loadData?dataSourceConfig="+encodeURIComponent(JSON.stringify(dataSourceConfig)), function(data){
-                console.log(data);
+                self.setState({attributes: data["attributes"]})
             })
         },
         showDataSourceConfig: function(){
@@ -54738,57 +54775,84 @@ var Dropzone = require('react-dropzone'),   //Drag-drop files
             }
 
             return(
-                React.createElement("div", {className: "col-md-6"}, 
-                    React.createElement(Panel, {id: "dataSourcesPanel"}, 
-                        React.createElement("h3", null, "Data sources"), 
-                        React.createElement(Input, {type: "text", onChange: this.handledataSourceAlias, label: "Data Source Alias", labelClassName: "col-xs-3", wrapperClassName: "col-xs-6"}), 
-                        React.createElement("br", null), React.createElement("br", null), 
+                React.createElement("div", {className: "row"}, 
+                    React.createElement("div", {className: "col-md-12"}, 
+                        React.createElement(Panel, {id: "dataSourcesPanel"}, 
+                            React.createElement("h3", null, "Data sources"), 
+                            React.createElement(Input, {type: "text", onChange: this.handledataSourceAlias, label: "Data Source Alias", labelClassName: "col-xs-3", wrapperClassName: "col-xs-6"}), 
+                            React.createElement("br", null), React.createElement("br", null), 
 
-                        React.createElement(Button, {bsStyle: "success", onClick: this.open}, React.createElement(Glyphicon, {glyph: "glyphicon plus"}), " Add"), 
-                        React.createElement(DataSources, {dataSources: self.state.dataSources}), 
-                        React.createElement("br", null), 
-                        this.state.dataSources.length ? React.createElement("div", null, 
-                        React.createElement(Button, {bsStyle: "primary", onClick: this.loadData}, "Load Data"), 
-                        React.createElement(Button, {bsStyle: "default", onClick: this.showDataSourceConfig}, "dataSource.json")) : React.createElement("div", null)
-                    ), 
+                            React.createElement(Button, {bsStyle: "success", onClick: this.open}, React.createElement(Glyphicon, {glyph: "glyphicon plus"}), " Add"), 
+                            React.createElement(DataSources, {dataSources: self.state.dataSources}), 
+                            React.createElement("br", null), 
+                            
+                            this.state.dataSources.length ? 
+                                React.createElement("div", null, 
+                                React.createElement(Button, {bsStyle: "primary", onClick: this.loadData}, "Load Data"), 
+                                React.createElement(Button, {bsStyle: "default", onClick: this.showDataSourceConfig}, "dataSource.json")
+                                ) 
+                                :
+                                React.createElement("div", null)
+                            
+                        ), 
 
-    			        React.createElement(Modal, {show: self.state.showModal, onHide: this.close}, 
-    			          React.createElement(Modal.Header, {closeButton: true}, 
-    			            React.createElement(Modal.Title, null, "Add Data Source")
-    			          ), 
-    			          React.createElement(Modal.Body, null, 
-    			            React.createElement("form", {className: "form-horizontal", encType: "multipart/form-data"}, 
-    					    	React.createElement(Input, {type: "text", onChange: this.handleSourceName, label: "sourceName", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10"}), 
-    						    React.createElement(Input, {type: "select", onChange: this.selectType, value: this.sourceType, label: "sourceType", placeholder: "select", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10"}, 
-    						      React.createElement("option", {value: "csvFile"}, "CSV File"), 
-    						      React.createElement("option", {value: "jsonFile"}, "JSON File"), 
-                                  React.createElement("option", {value: "csvREST"}, "CSV REST"), 
-                                  React.createElement("option", {value: "jsonREST"}, "JSON REST"), 
-                                  React.createElement("option", {value: "odbc"}, "ODBC")
-                                  
-    						    ), 
-    						   	React.createElement(Dropzone, {ref: "dropzone", onDrop: self.onDrop, size: 150, style: {margin: 10, border:1, borderColor: "grey", borderStyle: "dashed", width:500}}, 
-                  					React.createElement("div", {style: {padding: "10"}}, "Drop file here")
-                				), 
+        			        React.createElement(Modal, {show: self.state.showModal, onHide: this.close}, 
+        			          React.createElement(Modal.Header, {closeButton: true}, 
+        			            React.createElement(Modal.Title, null, "Add Data Source")
+        			          ), 
+        			          React.createElement(Modal.Body, null, 
+        			            React.createElement("form", {className: "form-horizontal", encType: "multipart/form-data"}, 
+        					    	React.createElement(Input, {type: "text", onChange: this.handleSourceName, label: "sourceName", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10"}), 
+        						    React.createElement(Input, {type: "select", onChange: this.selectType, value: this.sourceType, label: "sourceType", placeholder: "select", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10"}, 
+        						      React.createElement("option", {value: "csvFile"}, "CSV File"), 
+        						      React.createElement("option", {value: "jsonFile"}, "JSON File"), 
+                                      React.createElement("option", {value: "csvREST"}, "CSV REST"), 
+                                      React.createElement("option", {value: "jsonREST"}, "JSON REST"), 
+                                      React.createElement("option", {value: "odbc"}, "ODBC")
+                                      
+        						    ), 
+        						   	React.createElement(Dropzone, {ref: "dropzone", onDrop: self.onDrop, size: 150, style: {margin: 10, border:1, borderColor: "grey", borderStyle: "dashed", width:500}}, 
+                      					React.createElement("div", {style: {padding: "10"}}, "Drop file here")
+                    				), 
 
-                                filesComponent, 
-                                React.createElement(Input, {type: "text", label: "path", labelClassName: "col-xs-2", value: fileName, wrapperClassName: "col-xs-10", disabled: true}), 
+                                    filesComponent, 
+                                    React.createElement(Input, {type: "text", label: "path", labelClassName: "col-xs-2", value: fileName, wrapperClassName: "col-xs-10", disabled: true}), 
 
-                                React.createElement(Button, {bsStyle: "success", onClick: this.add}, "Add")
-    					  	)
-    			          )
-    			        ), 
-                        React.createElement(Modal, {show: self.state.showDataSourceConfig, onHide: this.dontShowDataSourceConfig}, 
-                          React.createElement(Modal.Header, {closeButton: true}, 
-                            React.createElement(Modal.Title, null, "dataSourceConfig.json")
-                          ), 
-                          React.createElement(Modal.Body, null, 
-                            React.createElement(Highlight, {className: "javascript"}, 
-                                JSON.stringify(this.state.dataSourceConfig, null, 2)
+                                    React.createElement(Button, {bsStyle: "success", onClick: this.add}, "Add")
+        					  	)
+        			          )
+        			        ), 
+                            React.createElement(Modal, {show: self.state.showDataSourceConfig, onHide: this.dontShowDataSourceConfig}, 
+                              React.createElement(Modal.Header, {closeButton: true}, 
+                                React.createElement(Modal.Title, null, "dataSourceConfig.json")
+                              ), 
+                              React.createElement(Modal.Body, null, 
+                                React.createElement(Highlight, {className: "javascript"}, 
+                                    JSON.stringify(this.state.dataSourceConfig, null, 2)
+                                )
+
+                              )
                             )
+                    ), 
+                    
 
-                          )
+                        this.state.attributes.length > 0 ?
+                        React.createElement("div", null, 
+                            React.createElement("div", {className: "col-xs-4", id: "attributesPanel"}, 
+                              React.createElement("div", null, 
+
+
+                                React.createElement(Attributes, {attributes: this.state.attributes})
+                              )
+                            ), 
+                            React.createElement("div", {className: "col-xs-8", id: "visualizationPanel"}, 
+                                React.createElement("h4", null, "Visualizations")
+                            )
                         )
+                        : 
+                        React.createElement("div", null)
+                    
+  
                 )
             );
         }

@@ -7,14 +7,49 @@ var bootstrap = require('bootstrap');
 var Button = require('react-bootstrap').Button,
     Panel = require('react-bootstrap').Alert,
     Modal = require('react-bootstrap').Modal,
-    Input = require('react-bootstrap').Input;
+    Input = require('react-bootstrap').Input,
+    Well = require('react-bootstrap').Well,
     Glyphicon = require('react-bootstrap').Glyphicon;
 
 /*Other external components*/
 var Dropzone = require('react-dropzone'),   //Drag-drop files
     Highlight = require('react-highlight'); //Syntax highlighting
 
+var Attributes = React.createClass({
 
+    render: function(){
+        var self = this;
+        var Attribute = <div />
+        if(self.props.attributes ){
+
+            console.log(self.props.attributes)
+            console.log("........")
+            Attribute = self.props.attributes.map(function(attribute){
+                console.log(attribute)
+                return (
+                    <Well bsSize='small' className="attribute"> <h4>{attribute}</h4>
+
+                        <div class="attributeProperties">
+                            <Input type='checkbox' label='FilteringAttribute' />
+
+                            <Input type='checkbox' label='VisualAttribute' />
+
+                            Summary Statistics <br />
+                        </div>
+                    </Well>
+
+                );      
+            });
+
+        }
+        
+        return(
+            <div>
+            {Attribute}
+            </div>
+        )
+    }
+});
 
     var DataSources = React.createClass({
 
@@ -49,7 +84,8 @@ var Dropzone = require('react-dropzone'),   //Drag-drop files
                 dataSourceConfig: {
                     "dataSourceAlias": "",
                     "dataSources": []
-                }
+                },
+                attributes: []
             };
     	},
 
@@ -129,10 +165,11 @@ var Dropzone = require('react-dropzone'),   //Drag-drop files
 
         },
         loadData: function(){
-            console.log("load dataS")
+            console.log("load dataS");
+            var self = this;
             var dataSourceConfig = this.state.dataSourceConfig;
             $.get("/loadData?dataSourceConfig="+encodeURIComponent(JSON.stringify(dataSourceConfig)), function(data){
-                console.log(data);
+                self.setState({attributes: data["attributes"]})
             })
         },
         showDataSourceConfig: function(){
@@ -157,57 +194,84 @@ var Dropzone = require('react-dropzone'),   //Drag-drop files
             }
 
             return(
-                <div className="col-md-6">
-                    <Panel id="dataSourcesPanel">
-                        <h3>Data sources</h3>
-                        <Input type='text' onChange={this.handledataSourceAlias} label='Data Source Alias' labelClassName='col-xs-3' wrapperClassName='col-xs-6' />
-                        <br /><br />
+                <div className="row">
+                    <div className="col-md-12">
+                        <Panel id="dataSourcesPanel">
+                            <h3>Data sources</h3>
+                            <Input type='text' onChange={this.handledataSourceAlias} label='Data Source Alias' labelClassName='col-xs-3' wrapperClassName='col-xs-6' />
+                            <br /><br />
 
-                        <Button bsStyle='success' onClick={this.open}><Glyphicon glyph='glyphicon plus' /> Add</Button>
-                        <DataSources dataSources={self.state.dataSources}/>
-                        <br />
-                        {this.state.dataSources.length ? <div>
-                        <Button bsStyle='primary' onClick={this.loadData}>Load Data</Button>
-                        <Button bsStyle='default' onClick={this.showDataSourceConfig}>dataSource.json</Button></div> : <div></div> }
-                    </Panel>
+                            <Button bsStyle='success' onClick={this.open}><Glyphicon glyph='glyphicon plus' /> Add</Button>
+                            <DataSources dataSources={self.state.dataSources}/>
+                            <br />
+                            {
+                            this.state.dataSources.length ? 
+                                <div>
+                                <Button bsStyle='primary' onClick={this.loadData}>Load Data</Button>
+                                <Button bsStyle='default' onClick={this.showDataSourceConfig}>dataSource.json</Button>
+                                </div> 
+                                :
+                                <div></div> 
+                            }
+                        </Panel>
 
-    			        <Modal show={self.state.showModal} onHide={this.close}>
-    			          <Modal.Header closeButton>
-    			            <Modal.Title>Add Data Source</Modal.Title>
-    			          </Modal.Header>
-    			          <Modal.Body>
-    			            <form className='form-horizontal' encType="multipart/form-data" >
-    					    	<Input type='text' onChange={this.handleSourceName} label='sourceName' labelClassName='col-xs-2' wrapperClassName='col-xs-10' />
-    						    <Input type='select' onChange={this.selectType} value={this.sourceType} label='sourceType' placeholder='select'  labelClassName='col-xs-2' wrapperClassName='col-xs-10' >
-    						      <option value='csvFile'>CSV File</option>
-    						      <option value='jsonFile'>JSON File</option>
-                                  <option value='csvREST'>CSV REST</option>
-                                  <option value='jsonREST'>JSON REST</option>
-                                  <option value='odbc'>ODBC</option>
-                                  
-    						    </Input>
-    						   	<Dropzone ref="dropzone" onDrop={self.onDrop} size={150} style={{margin: 10, border:1, borderColor: "grey", borderStyle: "dashed", width:500}} >
-                  					<div style={{padding: "10"}}>Drop file here</div>
-                				</Dropzone>
+        			        <Modal show={self.state.showModal} onHide={this.close}>
+        			          <Modal.Header closeButton>
+        			            <Modal.Title>Add Data Source</Modal.Title>
+        			          </Modal.Header>
+        			          <Modal.Body>
+        			            <form className='form-horizontal' encType="multipart/form-data" >
+        					    	<Input type='text' onChange={this.handleSourceName} label='sourceName' labelClassName='col-xs-2' wrapperClassName='col-xs-10' />
+        						    <Input type='select' onChange={this.selectType} value={this.sourceType} label='sourceType' placeholder='select'  labelClassName='col-xs-2' wrapperClassName='col-xs-10' >
+        						      <option value='csvFile'>CSV File</option>
+        						      <option value='jsonFile'>JSON File</option>
+                                      <option value='csvREST'>CSV REST</option>
+                                      <option value='jsonREST'>JSON REST</option>
+                                      <option value='odbc'>ODBC</option>
+                                      
+        						    </Input>
+        						   	<Dropzone ref="dropzone" onDrop={self.onDrop} size={150} style={{margin: 10, border:1, borderColor: "grey", borderStyle: "dashed", width:500}} >
+                      					<div style={{padding: "10"}}>Drop file here</div>
+                    				</Dropzone>
 
-                                {filesComponent}
-                                <Input type='text' label='path' labelClassName='col-xs-2' value={fileName} wrapperClassName='col-xs-10' disabled/>
+                                    {filesComponent}
+                                    <Input type='text' label='path' labelClassName='col-xs-2' value={fileName} wrapperClassName='col-xs-10' disabled/>
 
-                                <Button bsStyle='success' onClick={this.add}>Add</Button>
-    					  	</form>
-    			          </Modal.Body>
-    			        </Modal>
-                        <Modal show={self.state.showDataSourceConfig} onHide={this.dontShowDataSourceConfig}>
-                          <Modal.Header closeButton>
-                            <Modal.Title>dataSourceConfig.json</Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body>
-                            <Highlight className='javascript'>
-                                {JSON.stringify(this.state.dataSourceConfig, null, 2)}
-                            </Highlight>
+                                    <Button bsStyle='success' onClick={this.add}>Add</Button>
+        					  	</form>
+        			          </Modal.Body>
+        			        </Modal>
+                            <Modal show={self.state.showDataSourceConfig} onHide={this.dontShowDataSourceConfig}>
+                              <Modal.Header closeButton>
+                                <Modal.Title>dataSourceConfig.json</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                <Highlight className='javascript'>
+                                    {JSON.stringify(this.state.dataSourceConfig, null, 2)}
+                                </Highlight>
 
-                          </Modal.Body>
-                        </Modal>
+                              </Modal.Body>
+                            </Modal>
+                    </div>
+                    {
+
+                        this.state.attributes.length > 0 ?
+                        <div>
+                            <div className="col-xs-4" id="attributesPanel">
+                              <div> 
+
+
+                                <Attributes attributes={this.state.attributes} />
+                              </div>
+                            </div>
+                            <div className="col-xs-8" id="visualizationPanel">
+                                <h4>Visualizations</h4>
+                            </div>
+                        </div>
+                        : 
+                        <div />
+                    }
+  
                 </div>
             );
         }

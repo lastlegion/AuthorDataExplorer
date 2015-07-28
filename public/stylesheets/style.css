@@ -19,3 +19,16 @@ a {
 .btn{
 	margin: 2px
 }
+
+#attributesPanel{
+	padding: 10px;
+	background: #ddd;
+	border: 1px solid #aaa;
+}
+
+.attribute{
+	min-width: 30px;
+	//height: 80px;
+	background: #ddd;
+	margin: 4px;
+}
