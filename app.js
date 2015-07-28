@@ -11,6 +11,7 @@ var busboy = require('connect-busboy'),
 var routes = require('./routes/index'),
     users = require('./routes/users'),
     upload = require('./routes/upload'),
+    addFilteringAttribute = require('./routes/addFilteringAttribute')
     loadData = require('./routes/loadData');
 
 var app = express();
@@ -37,6 +38,7 @@ app.use('/', routes);
 app.use('/upload', upload )
 app.use('/loadData', loadData)
 app.use('/users', users);
+app.use('/addFilteringAttribute', addFilteringAttribute)
 
 
 // catch 404 and forward to error handler
