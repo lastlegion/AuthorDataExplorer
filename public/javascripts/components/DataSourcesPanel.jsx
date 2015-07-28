@@ -63,7 +63,7 @@ var Chart = React.createClass({
 
         var self = this;
         var visType = "barChart";
-        var divId = "#chart"
+        var divId = "#"+self.props.name;
         var domain = [0,100]
         //var domain = this.props.config.domain || [0,100];
         var c = {};
@@ -137,7 +137,7 @@ var Chart = React.createClass({
         console.log(self)
         if(self.props.chartVisible){
             return(
-                <div style={{height: 270,  clear: "both", display: "block"}} id="chart" className="col-xs-12" />
+                <div style={{height: 270,  clear: "both", display: "block"}} id={self.props.name} className="col-xs-12" />
             );
         } else {
             return(
@@ -392,7 +392,7 @@ var Attributes = React.createClass({
                             <Input type='text' onChange={this.handledataSourceAlias} label='Data Source Alias' labelClassName='col-xs-3' wrapperClassName='col-xs-6' />
                             <br /><br />
 
-                            <Button bsStyle='success' onClick={this.open}><Glyphicon glyph='glyphicon plus' /> Add</Button>
+                            <Button bsStyle='success' onClick={this.open}><Glyphicon glyph='glyphicon glyphicon-plus' /> Add</Button>
                             <DataSources dataSources={self.state.dataSources}/>
                             <br />
                             {

@@ -74343,7 +74343,7 @@ var Chart = React.createClass({displayName: "Chart",
 
         var self = this;
         var visType = "barChart";
-        var divId = "#chart"
+        var divId = "#"+self.props.name;
         var domain = [0,100]
         //var domain = this.props.config.domain || [0,100];
         var c = {};
@@ -74417,7 +74417,7 @@ var Chart = React.createClass({displayName: "Chart",
         console.log(self)
         if(self.props.chartVisible){
             return(
-                React.createElement("div", {style: {height: 270,  clear: "both", display: "block"}, id: "chart", className: "col-xs-12"})
+                React.createElement("div", {style: {height: 270,  clear: "both", display: "block"}, id: self.props.name, className: "col-xs-12"})
             );
         } else {
             return(
@@ -74672,7 +74672,7 @@ var Attributes = React.createClass({displayName: "Attributes",
                             React.createElement(Input, {type: "text", onChange: this.handledataSourceAlias, label: "Data Source Alias", labelClassName: "col-xs-3", wrapperClassName: "col-xs-6"}), 
                             React.createElement("br", null), React.createElement("br", null), 
 
-                            React.createElement(Button, {bsStyle: "success", onClick: this.open}, React.createElement(Glyphicon, {glyph: "glyphicon plus"}), " Add"), 
+                            React.createElement(Button, {bsStyle: "success", onClick: this.open}, React.createElement(Glyphicon, {glyph: "glyphicon glyphicon-plus"}), " Add"), 
                             React.createElement(DataSources, {dataSources: self.state.dataSources}), 
                             React.createElement("br", null), 
                             
