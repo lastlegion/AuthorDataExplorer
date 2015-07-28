@@ -74417,7 +74417,7 @@ var Chart = React.createClass({displayName: "Chart",
         console.log(self)
         if(self.props.chartVisible){
             return(
-                React.createElement("div", {style: {height: 240,  clear: "both"}, id: "chart"})
+                React.createElement("div", {style: {height: 270,  clear: "both", display: "block"}, id: "chart", className: "col-xs-12"})
             );
         } else {
             return(
@@ -74451,16 +74451,29 @@ var AttributeBox = React.createClass({displayName: "AttributeBox",
         
     },
     handleAttributeOptions: function(){
-        this.setState({attributeOptions: true})
+        var attributeOptions = this.state.attributeOptions;
+
+        this.setState({attributeOptions: !attributeOptions})
     },
     render: function(){
         var self = this;
         var attribute = this.props.name;
         return (
-            React.createElement(Well, {bsSize: "small", className: "attribute"}, 
-                React.createElement("h4", null, attribute), " ", React.createElement(Button, {onClick: this.handleAttributeOptions}, "V"), 
+            React.createElement("div", {bsSize: "small", className: "attribute"}, 
+                React.createElement("div", {className: "attributeHeader"}, 
+                    
+                    React.createElement("div", {className: "attributeName"}, attribute), 
+                    React.createElement("div", {className: "attributeCollapse", onClick: this.handleAttributeOptions}, 
+
+                    self.state.attributeOptions ?
+                        React.createElement(Glyphicon, {glyph: "glyphicon glyphicon-menu-up"})
+                    :
+                        React.createElement(Glyphicon, {glyph: "glyphicon glyphicon-menu-down"})
+                    
+                    )
+                ), 
                 React.createElement(Collapse, {in: this.state.attributeOptions}, 
-                    React.createElement("div", {class: "attributeProperties"}, 
+                    React.createElement("div", {class: "attributeProperties", style: {clear: "both"}}, 
                         React.createElement(Input, {type: "checkbox", label: "FilteringAttribute", value: self.state.isFilteringAttribute, onChange: this.handleFilteringAttribute}), 
                         
                         self.state.isFilteringAttribute ?
@@ -74468,9 +74481,15 @@ var AttributeBox = React.createClass({displayName: "AttributeBox",
                         :
                             React.createElement("div", null), 
                         
+                        React.createElement("div", {style: {display: "block"}}, 
                         React.createElement(Input, {type: "checkbox", label: "VisualAttribute"}), 
-
-                        "Summary Statistics ", React.createElement("br", null)
+                       
+                        "Summary Statistics ", React.createElement("br", null), 
+                            React.createElement("ul", null, 
+                                React.createElement("li", null, "Mean: "), 
+                                React.createElement("li", null, "Type: ")
+                            )
+                        )
                     )
                 )
 

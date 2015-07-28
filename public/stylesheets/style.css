@@ -22,13 +22,22 @@ a {
 
 #attributesPanel{
 	padding: 10px;
-	background: #ddd;
-	border: 1px solid #aaa;
+	background: #fff;
+	border: 1px solid #eee;
 }
 
 .attribute{
 	min-width: 30px;
 	//height: 80px;
-	background: #ddd;
+	min-height: 30px;
+	background: #eee;
+	padding: 4px;
 	margin: 4px;
+	border: 1px solid #ddd;
+}
+
+.attributeCollapse{
+	position: relative;
+	top: -18px;
+	float: right;
 }

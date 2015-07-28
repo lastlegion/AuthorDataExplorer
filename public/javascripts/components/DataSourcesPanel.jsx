@@ -137,7 +137,7 @@ var Chart = React.createClass({
         console.log(self)
         if(self.props.chartVisible){
             return(
-                <div style={{height: 240,  clear: "both"}} id="chart" />
+                <div style={{height: 270,  clear: "both", display: "block"}} id="chart" className="col-xs-12" />
             );
         } else {
             return(
@@ -171,16 +171,29 @@ var AttributeBox = React.createClass({
         
     },
     handleAttributeOptions: function(){
-        this.setState({attributeOptions: true})
+        var attributeOptions = this.state.attributeOptions;
+
+        this.setState({attributeOptions: !attributeOptions})
     },
     render: function(){
         var self = this;
         var attribute = this.props.name;
         return (
-            <Well bsSize='small' className="attribute">
-                <h4>{attribute}</h4> <Button onClick={this.handleAttributeOptions}>V</Button>
+            <div bsSize='small' className="attribute">
+                <div className="attributeHeader">
+                    
+                    <div className="attributeName">{attribute}</div> 
+                    <div className="attributeCollapse" onClick={this.handleAttributeOptions}>
+
+                    {self.state.attributeOptions ?
+                        <Glyphicon glyph="glyphicon glyphicon-menu-up" />
+                    :
+                        <Glyphicon glyph="glyphicon glyphicon-menu-down" />
+                    }
+                    </div>
+                </div>
                 <Collapse in={this.state.attributeOptions}>
-                    <div class="attributeProperties">
+                    <div class="attributeProperties" style={{clear: "both"}}>
                         <Input type='checkbox' label='FilteringAttribute' value = {self.state.isFilteringAttribute} onChange={this.handleFilteringAttribute}/>
                         
                         {self.state.isFilteringAttribute ?
@@ -188,13 +201,19 @@ var AttributeBox = React.createClass({
                         :
                             <div />
                         }
+                        <div style={{display: "block"}}>
                         <Input type='checkbox' label='VisualAttribute' />
-
+                       
                         Summary Statistics <br />
+                            <ul>
+                                <li>Mean: </li>
+                                <li>Type: </li>
+                            </ul>
+                        </div>
                     </div>
                 </Collapse>
 
-            </Well>
+            </div>
         );      
     }
 
