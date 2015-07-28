@@ -6,3 +6,16 @@ body {
 a {
   color: #00B7FF;
 }
+
+#dataSourcePanel button{
+
+	margin: 4px;
+}
+
+.dataSourceSnap{
+
+}
+
+.btn{
+	margin: 2px
+}
