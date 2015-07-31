@@ -41,3 +41,14 @@ a {
 	top: -18px;
 	float: right;
 }
+
+
+#header{
+  background: #556270;
+}
+#header a{
+  color: #ffeeef;
+}
+#header a:hover{
+  color: #ffffff;z
+}
