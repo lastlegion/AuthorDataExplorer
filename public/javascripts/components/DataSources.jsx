@@ -7,7 +7,7 @@ var DataSources = React.createClass({
         var Sources = self.props.dataSources.map(function(dataSource){
             return(
 
-                <div style={{border: 1, borderStyle: "dashed", padding: 10, margin: 10}} className="col-md-3 dataSourceSnap"> 
+                <div  className="col-md-3 dataSourceSnap"> 
                     sourceName: {dataSource.name}
 
                 </div>

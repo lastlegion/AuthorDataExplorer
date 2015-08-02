@@ -1,29 +1,45 @@
-var jQuery = require('jquery');
+
 var React = require('react');
-var request = require('superagent');
-var bootstrap = require('bootstrap');
-var Button = require('react-bootstrap').Button,
-	Panel = require('react-bootstrap').Alert,
-	Modal = require('react-bootstrap').Modal,
-	Input = require('react-bootstrap').Input;
-    Glyphicon = require('react-bootstrap').Glyphicon;
-var Dropzone = require('react-dropzone');
-
-var DataSourcesPanel = require('./components/DataSourcesPanel.jsx')
 
 
 
-    var App = React.createClass({
-        render: function(){
-            return(
-                <div className="row">
-                    <DataSourcesPanel />
-                </div>
-            );
-        }
-    }); 
+var router = require('react-router');
 
-    React.render(
-            <App />,
-            document.getElementById("app")
-    );
+
+var Router = router;
+var DefaultRoute = router.DefaultRoute;
+var Link = router.Link;
+var Route = router.Route;
+var RouteHandler = router.RouteHandler; 
+
+
+var DataSources = require('./DataSources.jsx')
+var App = require('./Main.jsx');
+
+var InteractiveFilters = require('./InteractiveFilters.jsx');
+var Visualizations = require('./Visualizations.jsx');
+
+var routes = (
+  <Route handler={App} path="/">    
+    <Route name = "dataSources" handler={DataSources} path="/dataSources"/>
+    <Route name = "interactiveFilters" handler={InteractiveFilters} path="/interactiveFilters"/>
+    <Route name = "visualizations" handler={Visualizations} />
+    <DefaultRoute handler={DataSources} />
+  </Route>
+);
+
+
+
+Router.run(routes, function (Handler) {
+  React.render(<Handler/>, document.getElementById('app'));
+});
+
+
+// Or, if you'd like to use the HTML5 history API for cleaner URLs:
+
+/*
+React.render(
+        <App />,
+        document.getElementById("app")
+);
+*/

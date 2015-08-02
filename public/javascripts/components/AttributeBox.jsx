@@ -6,7 +6,8 @@ var request = require('superagent');
 var bootstrap = require('bootstrap');
 var Button = require('react-bootstrap').Buttone,
     Collapse = require('react-bootstrap').Collapse,
-    Input = require('react-bootstrap').Input;
+    Input = require('react-bootstrap').Input,
+    Glyphicon = require('react-bootstrap').Glyphicon;
 
 
 var Chart = require('./Chart.jsx');

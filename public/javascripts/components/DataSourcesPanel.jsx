@@ -2,6 +2,7 @@ var jQuery = require('jquery');
 var React = require('react');
 var request = require('superagent');
 
+var AppActions = require('../actions/AppActions.jsx')
 
 var mui = require('material-ui');
 
@@ -27,25 +28,6 @@ var Attributes = require('./Attributes.jsx'),
 
 
 
-var Nav = React.createClass({
-
-    render: function(){
-        return(
-
-            <div className='navbar navbar-inverse navbar-fixed-top' id='header' role='navigation'>
-                <div className = 'container-fluid'>
-                    <div className='navbar-header'>
-                        <a className='navbar-brand' href='#'> Demo </a>
-                    </div>
-                </div>
-            </div>
-
-
-        );
-
-
-    }
-});
 
 
 var DataSourcesPanel = React.createClass({
@@ -145,7 +127,9 @@ var DataSourcesPanel = React.createClass({
         var self = this;
         var dataSourceConfig = this.state.dataSourceConfig;
         $.get("/loadData?dataSourceConfig="+encodeURIComponent(JSON.stringify(dataSourceConfig)), function(data){
-            self.setState({attributes: data["attributes"]})
+            AppActions.dataSourceConfig(data);
+            self.setState({attributes: data["attributes"]});
+
         })
     },
     showDataSourceConfig: function(){
@@ -172,16 +156,14 @@ var DataSourcesPanel = React.createClass({
         return(
 
             <div>
-                <Nav />
-
                 <div className="col-md-12" style={{marginTop: "50"}}>
                     <Panel id="dataSourcesPanel">
                         <h3>Data sources</h3>
-                        <Input type='text' onChange={this.handledataSourceAlias} label='Data Source Alias' labelClassName='col-xs-3' wrapperClassName='col-xs-6' />
-                        <br /><br />
+                        <DataSources dataSources={self.state.dataSources}/>
 
                         <Button bsStyle='success' onClick={this.open}><Glyphicon glyph='glyphicon glyphicon-plus' /> Add</Button>
-                        <DataSources dataSources={self.state.dataSources}/>
+                            <br />
+
                         <br />
                         {
                         this.state.dataSources.length ? 
