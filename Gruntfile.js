@@ -11,7 +11,9 @@ module.exports = function(grunt) {
 
         browserify: {
             options: {
-                transform: [ require('grunt-react').browserify ]
+                transform: [ require('grunt-react').browserify ],
+                watch: true,
+                keepAlive: true
             },
             client: {
                 src: ['public/javascripts/*.jsx', 'public/javascripts/**/*.jsx'],
@@ -33,8 +35,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-nodemon');
 
     grunt.registerTask('default', [
-        'watch',
-        'browserify', 
-        'nodemon'
+
+        'browserify'
     ]);
 };
