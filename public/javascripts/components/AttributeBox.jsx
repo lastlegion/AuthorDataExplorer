@@ -47,7 +47,7 @@ var AttributeBox = React.createClass({
             <div bsSize='small' className="attribute">
                 <div className="attributeHeader">
                     
-                    <div className="attributeName">{attribute}</div> 
+                    <div className="attributeName">{attribute.name}</div> 
                     <div className="attributeCollapse" onClick={this.handleAttributeOptions}>
 
                     {self.state.attributeOptions ?

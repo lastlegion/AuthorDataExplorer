@@ -54,19 +54,40 @@ var DataSourcesPanel = React.createClass({
     },
 	add(){
 		this.setState({ showModal: false });
-        var sourceName = this.state.sourceName;
         var sourceType = this.state.sourceType;
-        var options = this.state.files[0].name;
+        var sourceName = this.state.sourceName;
         var dataSources = this.state.dataSources,
-            dataSourceConfig = this.state.dataSourceConfig;
+                    dataSourceConfig = this.state.dataSourceConfig;
+        var options = {};
 
-        var path = "data/"+options;
+        switch(sourceType){
+
+            case "csvFile":
+            case "jsonFile":
+                options = this.state.files[0].name;
+                
+                options = {
+                    "path": "data/"+options
+                };
+
+            case "csvREST":
+            case "jsonREST":
+                var hostName = this.state.hostName;
+                var port = this.state.port *1;
+                var path = this.state.path;
+                var headers = this.state.headers;
+                options = {
+                    hostName : hostName,
+                    port: port,
+                    path :path,
+                    headers: headers
+                }
+
+        }
         dataSourceConfig["dataSources"].push({
             "sourceName": this.state.sourceName,
             "sourceType": this.state.sourceType,
-            "options":{
-                "path": path
-            }
+            "options": options
         });
         dataSources.push({"name": sourceName, sourceType: sourceType, "options": options })
         console.log(dataSources)
@@ -86,7 +107,7 @@ var DataSourcesPanel = React.createClass({
 
     },
     selectType: function(event){
-
+        console.log(sourceType)
         this.setState({sourceType: event.target.value});
 
     	//this.setState({sourceType: "file"});
@@ -104,8 +125,11 @@ var DataSourcesPanel = React.createClass({
     onDrop: function(files){
         var dataSourceConfig = this.state.dataSourceConfig;
         var req = request.post('/upload');
+        console.log(files)
+        var file = {};
+        if(files.length > 0)
+            file = files[0];
 
-        var file = files[0];
         console.log(file)
         req.attach(file.name, file)
         req.end(function(){
@@ -128,7 +152,8 @@ var DataSourcesPanel = React.createClass({
         var dataSourceConfig = this.state.dataSourceConfig;
         $.get("/loadData?dataSourceConfig="+encodeURIComponent(JSON.stringify(dataSourceConfig)), function(data){
             AppActions.dataSourceConfig(data);
-            self.setState({attributes: data["attributes"]});
+            console.log(data);
+            self.setState({attributes: data});
 
         })
     },
@@ -138,6 +163,15 @@ var DataSourcesPanel = React.createClass({
     dontShowDataSourceConfig: function(){
 
         this.setState({showDataSourceConfig: false});
+    },
+    handleHostName: function(event){
+        this.setState({hostName: event.target.value});
+    },
+    handlePath: function(event){
+        this.setState({path: event.target.value});
+    },
+    handlePort: function(event){
+        this.setState({port: event.target.value});
     },
     render: function(){
         var self = this;
@@ -152,7 +186,7 @@ var DataSourcesPanel = React.createClass({
                 );
             })  
         }
-
+        console.log(this.state.sourceType)
         return(
 
             <div>
@@ -161,14 +195,14 @@ var DataSourcesPanel = React.createClass({
                         <h3>Data sources</h3>
                         <DataSources dataSources={self.state.dataSources}/>
 
-                        <Button bsStyle='success' onClick={this.open}><Glyphicon glyph='glyphicon glyphicon-plus' /> Add</Button>
+                        <Button bsStyle='success' onClick={this.open} id="addDataSource"> <Glyphicon glyph='glyphicon glyphicon-plus' /> Add</Button>
                             <br />
 
                         <br />
                         {
                         this.state.dataSources.length ? 
                             <div>
-                            <Button bsStyle='primary' onClick={this.loadData}>Load Data</Button>
+                            <Button bsStyle='primary' onClick={this.loadData} id="btnLoadData">Load Data</Button>
                             <Button bsStyle='default' onClick={this.showDataSourceConfig}>dataSource.json</Button>
                             </div> 
                             :
@@ -176,14 +210,14 @@ var DataSourcesPanel = React.createClass({
                         }
                     </Panel>
 
-    			        <Modal show={self.state.showModal} onHide={this.close}>
+    			        <Modal show={self.state.showModal} onHide={this.close} >
     			          <Modal.Header closeButton>
     			            <Modal.Title>Add Data Source</Modal.Title>
     			          </Modal.Header>
     			          <Modal.Body>
-    			            <form className='form-horizontal' encType="multipart/form-data" >
-    					    	<Input type='text' onChange={this.handleSourceName} label='sourceName' labelClassName='col-xs-2' wrapperClassName='col-xs-10' />
-    						    <Input type='select' onChange={this.selectType} value={this.sourceType} label='sourceType' placeholder='select'  labelClassName='col-xs-2' wrapperClassName='col-xs-10' >
+    			            <form className='form-horizontal' encType="multipart/form-data" id="addDataSourceForm">
+    					    	<Input type='text' onChange={this.handleSourceName} id='sourceName' label='sourceName' labelClassName='col-xs-2' wrapperClassName='col-xs-10' />
+    						    <Input type='select' onChange={this.selectType} id='sourceType' value={this.sourceType} label='sourceType' placeholder='select'  labelClassName='col-xs-2' wrapperClassName='col-xs-10' >
     						      <option value='csvFile'>CSV File</option>
     						      <option value='jsonFile'>JSON File</option>
                                   <option value='csvREST'>CSV REST</option>
@@ -191,14 +225,34 @@ var DataSourcesPanel = React.createClass({
                                   <option value='odbc'>ODBC</option>
                                   
     						    </Input>
-    						   	<Dropzone ref="dropzone" onDrop={self.onDrop} size={150} style={{margin: 10, border:1, borderColor: "grey", borderStyle: "dashed", width:500}} >
-                  					<div style={{padding: "10"}}>Drop file here</div>
-                				</Dropzone>
 
-                                {filesComponent}
-                                <Input type='text' label='path' labelClassName='col-xs-2' value={fileName} wrapperClassName='col-xs-10' disabled/>
+                                {
 
-                                <Button bsStyle='success' onClick={this.add}>Add</Button>
+                                    this.state.sourceType == "csvFile" || this.state.sourceType =="jsonFile" ?
+                                        <div id="fileStuff">
+                                            <div id="sourceFile" >
+                                            <Dropzone ref="dropzone" onDrop={self.onDrop} size={150} style={{margin: 10, border:1, borderColor: "grey", borderStyle: "dashed", width:500}} >
+                                                <div style={{padding: "10"}}>Drop file here</div>
+                                            </Dropzone>
+                                            </div>
+
+                                            {filesComponent}
+                                            <Input type='text' label='path' labelClassName='col-xs-2' value={fileName} wrapperClassName='col-xs-10' disabled/>
+                                        </div>
+                                    :
+                                        <div id="restStuff">
+                                            <Input type='text' onChange={this.handleHostName} id='hostName' label='hostName' labelClassName='col-xs-2' wrapperClassName='col-xs-6' />
+                                            <Input type='text' onChange={this.handlePort} id='port' label='Port' labelClassName='col-xs-2' wrapperClassName='col-xs-6' />
+                                            <Input type='text' onChange={this.handlePath} id='port' label='Path' labelClassName='col-xs-2' wrapperClassName='col-xs-6' />
+                                            <Input type='textarea' label='Headers' placeholder='' labelClassName='col-xs-2' wrapperClassName='col-xs-6' />
+
+                                        </div>
+                                }
+
+                                <Button bsStyle='success' onClick={this.add} id="addSingleSourceButton">Add</Button>
+                                
+
+
     					  	</form>
     			          </Modal.Body>
     			        </Modal>
