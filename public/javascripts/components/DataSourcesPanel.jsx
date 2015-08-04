@@ -38,7 +38,7 @@ var DataSourcesPanel = React.createClass({
             files:[], 
             dataSources: [], 
             sourceName: "", 
-            sourceType: "csvFile", 
+            sourceType: "csvREST", 
             options: {}, 
             showDataSourceConfig:false,
             dataSourceConfig: {
@@ -69,7 +69,7 @@ var DataSourcesPanel = React.createClass({
                 options = {
                     "path": "data/"+options
                 };
-
+                break;
             case "csvREST":
             case "jsonREST":
                 var hostName = this.state.hostName;
@@ -82,6 +82,7 @@ var DataSourcesPanel = React.createClass({
                     path :path,
                     headers: headers
                 }
+                break;
 
         }
         dataSourceConfig["dataSources"].push({
@@ -210,7 +211,7 @@ var DataSourcesPanel = React.createClass({
                         }
                     </Panel>
 
-    			        <Modal show={self.state.showModal} onHide={this.close} >
+    			        <Modal show={self.state.showModal} onHide={this.close} id="modAddDataSource" >
     			          <Modal.Header closeButton>
     			            <Modal.Title>Add Data Source</Modal.Title>
     			          </Modal.Header>
@@ -243,7 +244,7 @@ var DataSourcesPanel = React.createClass({
                                         <div id="restStuff">
                                             <Input type='text' onChange={this.handleHostName} id='hostName' label='hostName' labelClassName='col-xs-2' wrapperClassName='col-xs-6' />
                                             <Input type='text' onChange={this.handlePort} id='port' label='Port' labelClassName='col-xs-2' wrapperClassName='col-xs-6' />
-                                            <Input type='text' onChange={this.handlePath} id='port' label='Path' labelClassName='col-xs-2' wrapperClassName='col-xs-6' />
+                                            <Input type='text' onChange={this.handlePath} id='path' label='Path' labelClassName='col-xs-2' wrapperClassName='col-xs-6' />
                                             <Input type='textarea' label='Headers' placeholder='' labelClassName='col-xs-2' wrapperClassName='col-xs-6' />
 
                                         </div>
@@ -272,16 +273,7 @@ var DataSourcesPanel = React.createClass({
 
                     this.state.attributes.length > 0 ?
                     <div>
-                        <div className="col-xs-4" id="attributesPanel">
-                          <div> 
-
-
-                            <Attributes attributes={this.state.attributes} />
-                          </div>
-                        </div>
-                        <div className="col-xs-8" id="visualizationPanel">
-                            <h4>Visualizations</h4>
-                        </div>
+                        Data table
                     </div>
                     : 
                     <div />
