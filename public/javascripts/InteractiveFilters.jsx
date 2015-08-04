@@ -9,7 +9,7 @@ var PropTypes = React.PropTypes;
 var Panel = require('react-bootstrap').Panel;
 var PanelGroup = require('react-bootstrap').PanelGroup;
 var Button = require('react-bootstrap').Button;
-
+var Table = require('react-bootstrap').Table;
 var Attribute = React.createClass({
 	getInitialState: function(){
 		return {open: true}
@@ -23,17 +23,41 @@ var Attribute = React.createClass({
 		console.log(self.props.data);
 		return (
 			<div className="col-md-12">
-			<PanelGroup>
 			<Panel collapsible defaultExpanded  header={self.props.data.name} style={{margin: 2}}>
+				<Table condensed bordered>
+				    <tbody>
+				      <tr>
+				        <td>Type</td>
+				        <td><div className="attributeProperyVal"> {self.props.data.type}</div></td>
+				      </tr>
+				      <tr>
+				        <td>Unique</td>
+				        <td><div className="attributeProperyVal" >{self.props.data.distinct}</div></td>
+				      </tr>
+					{
 
-				<div className='attributeType' style={{display: "block", height: 30	}}>
-					{self.props.data.type}
-				</div>
-				<div className='attributeMean' style={{display: "block"}}>
-					{Math.round(self.props.data.mean*10)/10}
-				</div>
+						self.props.data.type == "number" || self.props.data.type =="integer"
+						?
+						<div>
+				      <tr>
+				        <td>Mean</td>
+				        <td>{Math.round(self.props.data.mean*10)/10}</td>
+				      </tr>
+				      <tr>
+				        <td>Max</td>
+				        <td><div className="attributeProperyVal">{Math.round(self.props.data.max*10)/10}</div></td>
+				      </tr>
+				      	</div>
+				      	:
+
+						<div />
+					}
+
+				    </tbody>
+				  </Table>
+
+
 			</Panel>
-			</PanelGroup>
 			</div>
 		);
 	}
@@ -58,7 +82,10 @@ var InteractiveFilters = React.createClass({
     		Attributes = this.state.attributes.map(function(attribute){
     		console.log(attribute)
     		return(
+    		<PanelGroup>
     			<Attribute data={attribute}> </Attribute>
+			</PanelGroup>
+
     		);
     	})
 
@@ -67,11 +94,11 @@ var InteractiveFilters = React.createClass({
     	}
         return(
             <div>
-                <div id="interactiveFiltersAttributes" className="col-md-4">
+                <div id="interactiveFiltersAttributes" className="col-md-5">
                 {Attributes}
                 </div>
 
-                <div className ="col-md-8">
+                <div className ="col-md-7">
                 	Filters
                 </div>
 
