@@ -14,20 +14,19 @@ router.get('/', function (req, res, next) {
     console.log(dataSource.init(dataSourceConfig));
 
     dataSource.loadData(function(data){
-        console.log("....")
-        console.log(data);
-
+        console.log(data)
+        
 
         var attributes = [];
-
-        var types = dl.type.inferAll(data);
-
+        var dldata = dl.read(data, {type: 'json', parse: 'auto'})
+        var types = dl.type.inferAll(dldata);
+        //var maxs = dl.max
         var summary  = dl.summary(data);
         var x = summary.map(function(attribute){
 
             var stats = {
                 name: attribute.field,
-                type: attribute.type,
+                type: types[attribute.field],
                 max: attribute.max,
                 min: attribute.min,
                 mean: attribute.mean,
