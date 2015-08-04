@@ -70111,6 +70111,4850 @@ function identity(value) {
 
 module.exports = identity;
 
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/DragDropContext.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _slice = Array.prototype.slice;
+exports['default'] = DragDropContext;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _dndCore = require('dnd-core');
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _utilsCheckDecoratorArguments = require('./utils/checkDecoratorArguments');
+
+var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
+
+function DragDropContext(backend) {
+  _utilsCheckDecoratorArguments2['default'].apply(undefined, ['DragDropContext', 'backend'].concat(_slice.call(arguments)));
+
+  // Auto-detect ES6 default export for people still using ES5
+  if (typeof backend === 'object' && typeof backend['default'] === 'function') {
+    backend = backend['default'];
+  }
+  (0, _invariant2['default'])(typeof backend === 'function', 'Expected the backend to be a function or an ES6 module exporting a default function. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-drop-context.html');
+
+  var childContext = {
+    dragDropManager: new _dndCore.DragDropManager(backend)
+  };
+
+  return function decorateContext(DecoratedComponent) {
+    var displayName = DecoratedComponent.displayName || DecoratedComponent.name || 'Component';
+
+    return (function (_Component) {
+      function DragDropContextContainer() {
+        _classCallCheck(this, DragDropContextContainer);
+
+        if (_Component != null) {
+          _Component.apply(this, arguments);
+        }
+      }
+
+      _inherits(DragDropContextContainer, _Component);
+
+      DragDropContextContainer.prototype.getDecoratedComponentInstance = function getDecoratedComponentInstance() {
+        return this.refs.child;
+      };
+
+      DragDropContextContainer.prototype.getManager = function getManager() {
+        return childContext.dragDropManager;
+      };
+
+      DragDropContextContainer.prototype.getChildContext = function getChildContext() {
+        return childContext;
+      };
+
+      DragDropContextContainer.prototype.render = function render() {
+        return _react2['default'].createElement(DecoratedComponent, _extends({}, this.props, {
+          ref: 'child' }));
+      };
+
+      _createClass(DragDropContextContainer, null, [{
+        key: 'DecoratedComponent',
+        value: DecoratedComponent,
+        enumerable: true
+      }, {
+        key: 'displayName',
+        value: 'DragDropContext(' + displayName + ')',
+        enumerable: true
+      }, {
+        key: 'childContextTypes',
+        value: {
+          dragDropManager: _react.PropTypes.object.isRequired
+        },
+        enumerable: true
+      }]);
+
+      return DragDropContextContainer;
+    })(_react.Component);
+  };
+}
+
+module.exports = exports['default'];
+},{"./utils/checkDecoratorArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/checkDecoratorArguments.js","dnd-core":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/index.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/DragLayer.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _slice = Array.prototype.slice;
+exports['default'] = DragLayer;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _dndCore = require('dnd-core');
+
+var _utilsShallowEqual = require('./utils/shallowEqual');
+
+var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
+
+var _utilsShallowEqualScalar = require('./utils/shallowEqualScalar');
+
+var _utilsShallowEqualScalar2 = _interopRequireDefault(_utilsShallowEqualScalar);
+
+var _lodashLangIsPlainObject = require('lodash/lang/isPlainObject');
+
+var _lodashLangIsPlainObject2 = _interopRequireDefault(_lodashLangIsPlainObject);
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _utilsCheckDecoratorArguments = require('./utils/checkDecoratorArguments');
+
+var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
+
+function DragLayer(collect) {
+  var options = arguments[1] === undefined ? {} : arguments[1];
+
+  _utilsCheckDecoratorArguments2['default'].apply(undefined, ['DragLayer', 'collect[, options]'].concat(_slice.call(arguments)));
+  (0, _invariant2['default'])(typeof collect === 'function', 'Expected "collect" provided as the first argument to DragLayer ' + 'to be a function that collects props to inject into the component. ', 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-layer.html', collect);
+  (0, _invariant2['default'])((0, _lodashLangIsPlainObject2['default'])(options), 'Expected "options" provided as the second argument to DragLayer to be ' + 'a plain object when specified. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-layer.html', options);
+
+  return function decorateLayer(DecoratedComponent) {
+    var _options$arePropsEqual = options.arePropsEqual;
+    var arePropsEqual = _options$arePropsEqual === undefined ? _utilsShallowEqualScalar2['default'] : _options$arePropsEqual;
+
+    var displayName = DecoratedComponent.displayName || DecoratedComponent.name || 'Component';
+
+    return (function (_Component) {
+      function DragLayerContainer(props, context) {
+        _classCallCheck(this, DragLayerContainer);
+
+        _Component.call(this, props);
+        this.handleChange = this.handleChange.bind(this);
+
+        this.manager = context.dragDropManager;
+        (0, _invariant2['default'])(typeof this.manager === 'object', 'Could not find the drag and drop manager in the context of %s. ' + 'Make sure to wrap the top-level component of your app with DragDropContext. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-troubleshooting.html#could-not-find-the-drag-and-drop-manager-in-the-context', displayName, displayName);
+
+        this.state = this.getCurrentState();
+      }
+
+      _inherits(DragLayerContainer, _Component);
+
+      DragLayerContainer.prototype.getDecoratedComponentInstance = function getDecoratedComponentInstance() {
+        return this.refs.child;
+      };
+
+      DragLayerContainer.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps, nextState) {
+        return !arePropsEqual(nextProps, this.props) || !(0, _utilsShallowEqual2['default'])(nextState, this.state);
+      };
+
+      DragLayerContainer.prototype.componentDidMount = function componentDidMount() {
+        var monitor = this.manager.getMonitor();
+        this.unsubscribe = monitor.subscribeToOffsetChange(this.handleChange);
+      };
+
+      DragLayerContainer.prototype.componentWillUnmount = function componentWillUnmount() {
+        this.unsubscribe();
+      };
+
+      DragLayerContainer.prototype.handleChange = function handleChange() {
+        var nextState = this.getCurrentState();
+        if (!(0, _utilsShallowEqual2['default'])(nextState, this.state)) {
+          this.setState(nextState);
+        }
+      };
+
+      DragLayerContainer.prototype.getCurrentState = function getCurrentState() {
+        var monitor = this.manager.getMonitor();
+        return collect(monitor);
+      };
+
+      DragLayerContainer.prototype.render = function render() {
+        return _react2['default'].createElement(DecoratedComponent, _extends({}, this.props, this.state, {
+          ref: 'child' }));
+      };
+
+      _createClass(DragLayerContainer, null, [{
+        key: 'DecoratedComponent',
+        value: DecoratedComponent,
+        enumerable: true
+      }, {
+        key: 'displayName',
+        value: 'DragLayer(' + displayName + ')',
+        enumerable: true
+      }, {
+        key: 'contextTypes',
+        value: {
+          dragDropManager: _react.PropTypes.object.isRequired
+        },
+        enumerable: true
+      }]);
+
+      return DragLayerContainer;
+    })(_react.Component);
+  };
+}
+
+module.exports = exports['default'];
+},{"./utils/checkDecoratorArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/checkDecoratorArguments.js","./utils/shallowEqual":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqual.js","./utils/shallowEqualScalar":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqualScalar.js","dnd-core":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/index.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","lodash/lang/isPlainObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isPlainObject.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/DragSource.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+var _slice = Array.prototype.slice;
+exports['default'] = DragSource;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _utilsShallowEqual = require('./utils/shallowEqual');
+
+var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
+
+var _utilsShallowEqualScalar = require('./utils/shallowEqualScalar');
+
+var _utilsShallowEqualScalar2 = _interopRequireDefault(_utilsShallowEqualScalar);
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _lodashLangIsPlainObject = require('lodash/lang/isPlainObject');
+
+var _lodashLangIsPlainObject2 = _interopRequireDefault(_lodashLangIsPlainObject);
+
+var _utilsCheckDecoratorArguments = require('./utils/checkDecoratorArguments');
+
+var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
+
+var _decorateHandler = require('./decorateHandler');
+
+var _decorateHandler2 = _interopRequireDefault(_decorateHandler);
+
+var _registerSource = require('./registerSource');
+
+var _registerSource2 = _interopRequireDefault(_registerSource);
+
+var _createSourceFactory = require('./createSourceFactory');
+
+var _createSourceFactory2 = _interopRequireDefault(_createSourceFactory);
+
+var _createSourceMonitor = require('./createSourceMonitor');
+
+var _createSourceMonitor2 = _interopRequireDefault(_createSourceMonitor);
+
+var _createSourceConnector = require('./createSourceConnector');
+
+var _createSourceConnector2 = _interopRequireDefault(_createSourceConnector);
+
+var _utilsIsValidType = require('./utils/isValidType');
+
+var _utilsIsValidType2 = _interopRequireDefault(_utilsIsValidType);
+
+function DragSource(type, spec, collect) {
+  var options = arguments[3] === undefined ? {} : arguments[3];
+
+  _utilsCheckDecoratorArguments2['default'].apply(undefined, ['DragSource', 'type, spec, collect[, options]'].concat(_slice.call(arguments)));
+  var getType = type;
+  if (typeof type !== 'function') {
+    (0, _invariant2['default'])((0, _utilsIsValidType2['default'])(type), 'Expected "type" provided as the first argument to DragSource to be ' + 'a string, or a function that returns a string given the current props. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', type);
+    getType = function () {
+      return type;
+    };
+  }
+  (0, _invariant2['default'])((0, _lodashLangIsPlainObject2['default'])(spec), 'Expected "spec" provided as the second argument to DragSource to be ' + 'a plain object. Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', spec);
+  var createSource = (0, _createSourceFactory2['default'])(spec);
+  (0, _invariant2['default'])(typeof collect === 'function', 'Expected "collect" provided as the third argument to DragSource to be ' + 'a function that returns a plain object of props to inject. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', collect);
+  (0, _invariant2['default'])((0, _lodashLangIsPlainObject2['default'])(options), 'Expected "options" provided as the fourth argument to DragSource to be ' + 'a plain object when specified. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', collect);
+
+  return function decorateSource(DecoratedComponent) {
+    return (0, _decorateHandler2['default'])({
+      connectBackend: function connectBackend(backend, sourceId) {
+        return backend.connectDragSource(sourceId);
+      },
+      containerDisplayName: 'DragSource',
+      createHandler: createSource,
+      registerHandler: _registerSource2['default'],
+      createMonitor: _createSourceMonitor2['default'],
+      createConnector: _createSourceConnector2['default'],
+      DecoratedComponent: DecoratedComponent,
+      getType: getType,
+      collect: collect,
+      options: options
+    });
+  };
+}
+
+module.exports = exports['default'];
+},{"./createSourceConnector":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createSourceConnector.js","./createSourceFactory":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createSourceFactory.js","./createSourceMonitor":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createSourceMonitor.js","./decorateHandler":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/decorateHandler.js","./registerSource":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/registerSource.js","./utils/checkDecoratorArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/checkDecoratorArguments.js","./utils/isValidType":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/isValidType.js","./utils/shallowEqual":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqual.js","./utils/shallowEqualScalar":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqualScalar.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","lodash/lang/isPlainObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isPlainObject.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/DropTarget.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+var _slice = Array.prototype.slice;
+exports['default'] = DropTarget;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _utilsShallowEqual = require('./utils/shallowEqual');
+
+var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
+
+var _utilsShallowEqualScalar = require('./utils/shallowEqualScalar');
+
+var _utilsShallowEqualScalar2 = _interopRequireDefault(_utilsShallowEqualScalar);
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _lodashLangIsPlainObject = require('lodash/lang/isPlainObject');
+
+var _lodashLangIsPlainObject2 = _interopRequireDefault(_lodashLangIsPlainObject);
+
+var _utilsCheckDecoratorArguments = require('./utils/checkDecoratorArguments');
+
+var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
+
+var _decorateHandler = require('./decorateHandler');
+
+var _decorateHandler2 = _interopRequireDefault(_decorateHandler);
+
+var _registerTarget = require('./registerTarget');
+
+var _registerTarget2 = _interopRequireDefault(_registerTarget);
+
+var _createTargetFactory = require('./createTargetFactory');
+
+var _createTargetFactory2 = _interopRequireDefault(_createTargetFactory);
+
+var _createTargetMonitor = require('./createTargetMonitor');
+
+var _createTargetMonitor2 = _interopRequireDefault(_createTargetMonitor);
+
+var _createTargetConnector = require('./createTargetConnector');
+
+var _createTargetConnector2 = _interopRequireDefault(_createTargetConnector);
+
+var _utilsIsValidType = require('./utils/isValidType');
+
+var _utilsIsValidType2 = _interopRequireDefault(_utilsIsValidType);
+
+function DropTarget(type, spec, collect) {
+  var options = arguments[3] === undefined ? {} : arguments[3];
+
+  _utilsCheckDecoratorArguments2['default'].apply(undefined, ['DropTarget', 'type, spec, collect[, options]'].concat(_slice.call(arguments)));
+  var getType = type;
+  if (typeof type !== 'function') {
+    (0, _invariant2['default'])((0, _utilsIsValidType2['default'])(type, true), 'Expected "type" provided as the first argument to DropTarget to be ' + 'a string, an array of strings, or a function that returns either given ' + 'the current props. Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', type);
+    getType = function () {
+      return type;
+    };
+  }
+  (0, _invariant2['default'])((0, _lodashLangIsPlainObject2['default'])(spec), 'Expected "spec" provided as the second argument to DropTarget to be ' + 'a plain object. Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', spec);
+  var createTarget = (0, _createTargetFactory2['default'])(spec);
+  (0, _invariant2['default'])(typeof collect === 'function', 'Expected "collect" provided as the third argument to DropTarget to be ' + 'a function that returns a plain object of props to inject. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', collect);
+  (0, _invariant2['default'])((0, _lodashLangIsPlainObject2['default'])(options), 'Expected "options" provided as the fourth argument to DropTarget to be ' + 'a plain object when specified. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', collect);
+
+  return function decorateTarget(DecoratedComponent) {
+    return (0, _decorateHandler2['default'])({
+      connectBackend: function connectBackend(backend, targetId) {
+        return backend.connectDropTarget(targetId);
+      },
+      containerDisplayName: 'DropTarget',
+      createHandler: createTarget,
+      registerHandler: _registerTarget2['default'],
+      createMonitor: _createTargetMonitor2['default'],
+      createConnector: _createTargetConnector2['default'],
+      DecoratedComponent: DecoratedComponent,
+      getType: getType,
+      collect: collect,
+      options: options
+    });
+  };
+}
+
+module.exports = exports['default'];
+},{"./createTargetConnector":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetConnector.js","./createTargetFactory":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetFactory.js","./createTargetMonitor":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetMonitor.js","./decorateHandler":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/decorateHandler.js","./registerTarget":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/registerTarget.js","./utils/checkDecoratorArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/checkDecoratorArguments.js","./utils/isValidType":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/isValidType.js","./utils/shallowEqual":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqual.js","./utils/shallowEqualScalar":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqualScalar.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","lodash/lang/isPlainObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isPlainObject.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/bindConnector.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = bindConnector;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _bindConnectorMethod2 = require('./bindConnectorMethod');
+
+var _bindConnectorMethod3 = _interopRequireDefault(_bindConnectorMethod2);
+
+var _disposables = require('disposables');
+
+function bindConnector(connector, handlerId) {
+  var compositeDisposable = new _disposables.CompositeDisposable();
+  var handlerConnector = {};
+
+  Object.keys(connector).forEach(function (key) {
+    var _bindConnectorMethod = (0, _bindConnectorMethod3['default'])(handlerId, connector[key]);
+
+    var disposable = _bindConnectorMethod.disposable;
+    var ref = _bindConnectorMethod.ref;
+
+    compositeDisposable.add(disposable);
+    handlerConnector[key] = function () {
+      return ref;
+    };
+  });
+
+  return {
+    disposable: compositeDisposable,
+    handlerConnector: handlerConnector
+  };
+}
+
+module.exports = exports['default'];
+},{"./bindConnectorMethod":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/bindConnectorMethod.js","disposables":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/index.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/bindConnectorMethod.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = bindConnectorMethod;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _utilsShallowEqual = require('./utils/shallowEqual');
+
+var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
+
+var _utilsCloneWithRef = require('./utils/cloneWithRef');
+
+var _utilsCloneWithRef2 = _interopRequireDefault(_utilsCloneWithRef);
+
+var _disposables = require('disposables');
+
+var _react = require('react');
+
+function bindConnectorMethod(handlerId, connect) {
+  var disposable = new _disposables.SerialDisposable();
+
+  var currentNode = null;
+  var currentOptions = null;
+
+  function ref(nextWhatever, nextOptions) {
+    // If passed a ReactElement, clone it and attach this function as a ref.
+    // This helps us achieve a neat API where user doesn't even know that refs
+    // are being used under the hood.
+    if ((0, _react.isValidElement)(nextWhatever)) {
+      var nextElement = nextWhatever;
+      return (0, _utilsCloneWithRef2['default'])(nextElement, function (inst) {
+        return ref(inst, nextOptions);
+      });
+    }
+
+    // At this point we can only receive components or DOM nodes.
+    var nextNode = (0, _react.findDOMNode)(nextWhatever);
+
+    // If nothing changed, bail out of re-connecting the node to the backend.
+    if (nextNode === currentNode && (0, _utilsShallowEqual2['default'])(currentOptions, nextOptions)) {
+      return;
+    }
+
+    currentNode = nextNode;
+    currentOptions = nextOptions;
+
+    if (!nextNode) {
+      disposable.setDisposable(null);
+      return;
+    }
+
+    // Re-connect the node to the backend.
+    var currentDispose = connect(handlerId, nextNode, nextOptions);
+    disposable.setDisposable(new _disposables.Disposable(currentDispose));
+  }
+
+  return {
+    ref: ref,
+    disposable: disposable
+  };
+}
+
+module.exports = exports['default'];
+},{"./utils/cloneWithRef":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/cloneWithRef.js","./utils/shallowEqual":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqual.js","disposables":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/index.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createSourceConnector.js":[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+exports["default"] = createSourceConnector;
+
+function createSourceConnector(backend) {
+  return {
+    dragSource: backend.connectDragSource.bind(backend),
+    dragPreview: backend.connectDragPreview.bind(backend)
+  };
+}
+
+module.exports = exports["default"];
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createSourceFactory.js":[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = createSourceFactory;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _lodashLangIsPlainObject = require('lodash/lang/isPlainObject');
+
+var _lodashLangIsPlainObject2 = _interopRequireDefault(_lodashLangIsPlainObject);
+
+var ALLOWED_SPEC_METHODS = ['canDrag', 'beginDrag', 'canDrag', 'isDragging', 'endDrag'];
+var REQUIRED_SPEC_METHODS = ['beginDrag'];
+
+function createSourceFactory(spec) {
+  Object.keys(spec).forEach(function (key) {
+    (0, _invariant2['default'])(ALLOWED_SPEC_METHODS.indexOf(key) > -1, 'Expected the drag source specification to only have ' + 'some of the following keys: %s. ' + 'Instead received a specification with an unexpected "%s" key. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', ALLOWED_SPEC_METHODS.join(', '), key);
+    (0, _invariant2['default'])(typeof spec[key] === 'function', 'Expected %s in the drag source specification to be a function. ' + 'Instead received a specification with %s: %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', key, key, spec[key]);
+  });
+  REQUIRED_SPEC_METHODS.forEach(function (key) {
+    (0, _invariant2['default'])(typeof spec[key] === 'function', 'Expected %s in the drag source specification to be a function. ' + 'Instead received a specification with %s: %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', key, key, spec[key]);
+  });
+
+  var Source = (function () {
+    function Source(monitor) {
+      _classCallCheck(this, Source);
+
+      this.monitor = monitor;
+      this.props = null;
+      this.component = null;
+    }
+
+    Source.prototype.receiveProps = function receiveProps(props) {
+      this.props = props;
+    };
+
+    Source.prototype.receiveComponent = function receiveComponent(component) {
+      this.component = component;
+    };
+
+    Source.prototype.canDrag = function canDrag() {
+      if (!spec.canDrag) {
+        return true;
+      }
+
+      return spec.canDrag(this.props, this.monitor);
+    };
+
+    Source.prototype.isDragging = function isDragging(globalMonitor, sourceId) {
+      if (!spec.isDragging) {
+        return sourceId === globalMonitor.getSourceId();
+      }
+
+      return spec.isDragging(this.props, this.monitor);
+    };
+
+    Source.prototype.beginDrag = function beginDrag() {
+      var item = spec.beginDrag(this.props, this.monitor, this.component);
+      if (process.env.NODE_ENV !== 'production') {
+        (0, _invariant2['default'])((0, _lodashLangIsPlainObject2['default'])(item), 'beginDrag() must return a plain object that represents the dragged item. ' + 'Instead received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', item);
+      }
+      return item;
+    };
+
+    Source.prototype.endDrag = function endDrag() {
+      if (!spec.endDrag) {
+        return;
+      }
+
+      spec.endDrag(this.props, this.monitor, this.component);
+    };
+
+    return Source;
+  })();
+
+  return function createSource(monitor) {
+    return new Source(monitor);
+  };
+}
+
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"_process":"/home/ganesh/dev/Generator/node_modules/grunt-browserify/node_modules/browserify/node_modules/process/browser.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","lodash/lang/isPlainObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isPlainObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createSourceMonitor.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = createSourceMonitor;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var isCallingCanDrag = false;
+var isCallingIsDragging = false;
+
+var SourceMonitor = (function () {
+  function SourceMonitor(manager) {
+    _classCallCheck(this, SourceMonitor);
+
+    this.internalMonitor = manager.getMonitor();
+  }
+
+  SourceMonitor.prototype.receiveHandlerId = function receiveHandlerId(sourceId) {
+    this.sourceId = sourceId;
+  };
+
+  SourceMonitor.prototype.canDrag = function canDrag() {
+    (0, _invariant2['default'])(!isCallingCanDrag, 'You may not call monitor.canDrag() inside your canDrag() implementation. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source-monitor.html');
+
+    try {
+      isCallingCanDrag = true;
+      return this.internalMonitor.canDragSource(this.sourceId);
+    } finally {
+      isCallingCanDrag = false;
+    }
+  };
+
+  SourceMonitor.prototype.isDragging = function isDragging() {
+    (0, _invariant2['default'])(!isCallingIsDragging, 'You may not call monitor.isDragging() inside your isDragging() implementation. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source-monitor.html');
+
+    try {
+      isCallingIsDragging = true;
+      return this.internalMonitor.isDraggingSource(this.sourceId);
+    } finally {
+      isCallingIsDragging = false;
+    }
+  };
+
+  SourceMonitor.prototype.getItemType = function getItemType() {
+    return this.internalMonitor.getItemType();
+  };
+
+  SourceMonitor.prototype.getItem = function getItem() {
+    return this.internalMonitor.getItem();
+  };
+
+  SourceMonitor.prototype.getDropResult = function getDropResult() {
+    return this.internalMonitor.getDropResult();
+  };
+
+  SourceMonitor.prototype.didDrop = function didDrop() {
+    return this.internalMonitor.didDrop();
+  };
+
+  SourceMonitor.prototype.getInitialClientOffset = function getInitialClientOffset() {
+    return this.internalMonitor.getInitialClientOffset();
+  };
+
+  SourceMonitor.prototype.getInitialSourceClientOffset = function getInitialSourceClientOffset() {
+    return this.internalMonitor.getInitialSourceClientOffset();
+  };
+
+  SourceMonitor.prototype.getSourceClientOffset = function getSourceClientOffset() {
+    return this.internalMonitor.getSourceClientOffset();
+  };
+
+  SourceMonitor.prototype.getClientOffset = function getClientOffset() {
+    return this.internalMonitor.getClientOffset();
+  };
+
+  SourceMonitor.prototype.getDifferenceFromInitialOffset = function getDifferenceFromInitialOffset() {
+    return this.internalMonitor.getDifferenceFromInitialOffset();
+  };
+
+  return SourceMonitor;
+})();
+
+function createSourceMonitor(manager) {
+  return new SourceMonitor(manager);
+}
+
+module.exports = exports['default'];
+},{"invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetConnector.js":[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+exports["default"] = createTargetConnector;
+
+function createTargetConnector(backend) {
+  return {
+    dropTarget: backend.connectDropTarget.bind(backend)
+  };
+}
+
+module.exports = exports["default"];
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetFactory.js":[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = createTargetFactory;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _lodashLangIsPlainObject = require('lodash/lang/isPlainObject');
+
+var _lodashLangIsPlainObject2 = _interopRequireDefault(_lodashLangIsPlainObject);
+
+var ALLOWED_SPEC_METHODS = ['canDrop', 'hover', 'drop'];
+
+function createTargetFactory(spec) {
+  Object.keys(spec).forEach(function (key) {
+    (0, _invariant2['default'])(ALLOWED_SPEC_METHODS.indexOf(key) > -1, 'Expected the drop target specification to only have ' + 'some of the following keys: %s. ' + 'Instead received a specification with an unexpected "%s" key. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', ALLOWED_SPEC_METHODS.join(', '), key);
+    (0, _invariant2['default'])(typeof spec[key] === 'function', 'Expected %s in the drop target specification to be a function. ' + 'Instead received a specification with %s: %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', key, key, spec[key]);
+  });
+
+  var Target = (function () {
+    function Target(monitor) {
+      _classCallCheck(this, Target);
+
+      this.monitor = monitor;
+      this.props = null;
+      this.component = null;
+    }
+
+    Target.prototype.receiveProps = function receiveProps(props) {
+      this.props = props;
+    };
+
+    Target.prototype.receiveMonitor = function receiveMonitor(monitor) {
+      this.monitor = monitor;
+    };
+
+    Target.prototype.receiveComponent = function receiveComponent(component) {
+      this.component = component;
+    };
+
+    Target.prototype.canDrop = function canDrop() {
+      if (!spec.canDrop) {
+        return true;
+      }
+
+      return spec.canDrop(this.props, this.monitor);
+    };
+
+    Target.prototype.hover = function hover() {
+      if (!spec.hover) {
+        return;
+      }
+
+      spec.hover(this.props, this.monitor, this.component);
+    };
+
+    Target.prototype.drop = function drop() {
+      if (!spec.drop) {
+        return;
+      }
+
+      var dropResult = spec.drop(this.props, this.monitor, this.component);
+      if (process.env.NODE_ENV !== 'production') {
+        (0, _invariant2['default'])(typeof dropResult === 'undefined' || (0, _lodashLangIsPlainObject2['default'])(dropResult), 'drop() must either return undefined, or an object that represents the drop result. ' + 'Instead received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', dropResult);
+      }
+      return dropResult;
+    };
+
+    return Target;
+  })();
+
+  return function createTarget(monitor) {
+    return new Target(monitor);
+  };
+}
+
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"_process":"/home/ganesh/dev/Generator/node_modules/grunt-browserify/node_modules/browserify/node_modules/process/browser.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","lodash/lang/isPlainObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isPlainObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetMonitor.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = createTargetMonitor;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var isCallingCanDrop = false;
+
+var TargetMonitor = (function () {
+  function TargetMonitor(manager) {
+    _classCallCheck(this, TargetMonitor);
+
+    this.internalMonitor = manager.getMonitor();
+  }
+
+  TargetMonitor.prototype.receiveHandlerId = function receiveHandlerId(targetId) {
+    this.targetId = targetId;
+  };
+
+  TargetMonitor.prototype.canDrop = function canDrop() {
+    (0, _invariant2['default'])(!isCallingCanDrop, 'You may not call monitor.canDrop() inside your canDrop() implementation. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target-monitor.html');
+
+    try {
+      isCallingCanDrop = true;
+      return this.internalMonitor.canDropOnTarget(this.targetId);
+    } finally {
+      isCallingCanDrop = false;
+    }
+  };
+
+  TargetMonitor.prototype.isOver = function isOver(options) {
+    return this.internalMonitor.isOverTarget(this.targetId, options);
+  };
+
+  TargetMonitor.prototype.getItemType = function getItemType() {
+    return this.internalMonitor.getItemType();
+  };
+
+  TargetMonitor.prototype.getItem = function getItem() {
+    return this.internalMonitor.getItem();
+  };
+
+  TargetMonitor.prototype.getDropResult = function getDropResult() {
+    return this.internalMonitor.getDropResult();
+  };
+
+  TargetMonitor.prototype.didDrop = function didDrop() {
+    return this.internalMonitor.didDrop();
+  };
+
+  TargetMonitor.prototype.getInitialClientOffset = function getInitialClientOffset() {
+    return this.internalMonitor.getInitialClientOffset();
+  };
+
+  TargetMonitor.prototype.getInitialSourceClientOffset = function getInitialSourceClientOffset() {
+    return this.internalMonitor.getInitialSourceClientOffset();
+  };
+
+  TargetMonitor.prototype.getSourceClientOffset = function getSourceClientOffset() {
+    return this.internalMonitor.getSourceClientOffset();
+  };
+
+  TargetMonitor.prototype.getClientOffset = function getClientOffset() {
+    return this.internalMonitor.getClientOffset();
+  };
+
+  TargetMonitor.prototype.getDifferenceFromInitialOffset = function getDifferenceFromInitialOffset() {
+    return this.internalMonitor.getDifferenceFromInitialOffset();
+  };
+
+  return TargetMonitor;
+})();
+
+function createTargetMonitor(manager) {
+  return new TargetMonitor(manager);
+}
+
+module.exports = exports['default'];
+},{"invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/decorateHandler.js":[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+exports['default'] = decorateHandler;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _disposables = require('disposables');
+
+var _utilsShallowEqual = require('./utils/shallowEqual');
+
+var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
+
+var _utilsShallowEqualScalar = require('./utils/shallowEqualScalar');
+
+var _utilsShallowEqualScalar2 = _interopRequireDefault(_utilsShallowEqualScalar);
+
+var _lodashLangIsPlainObject = require('lodash/lang/isPlainObject');
+
+var _lodashLangIsPlainObject2 = _interopRequireDefault(_lodashLangIsPlainObject);
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _bindConnector2 = require('./bindConnector');
+
+var _bindConnector3 = _interopRequireDefault(_bindConnector2);
+
+function decorateHandler(_ref) {
+  var DecoratedComponent = _ref.DecoratedComponent;
+  var createHandler = _ref.createHandler;
+  var createMonitor = _ref.createMonitor;
+  var createConnector = _ref.createConnector;
+  var registerHandler = _ref.registerHandler;
+  var containerDisplayName = _ref.containerDisplayName;
+  var getType = _ref.getType;
+  var collect = _ref.collect;
+  var options = _ref.options;
+  var _options$arePropsEqual = options.arePropsEqual;
+  var arePropsEqual = _options$arePropsEqual === undefined ? _utilsShallowEqualScalar2['default'] : _options$arePropsEqual;
+
+  var displayName = DecoratedComponent.displayName || DecoratedComponent.name || 'Component';
+
+  return (function (_Component) {
+    function DragDropContainer(props, context) {
+      _classCallCheck(this, DragDropContainer);
+
+      _Component.call(this, props, context);
+      this.handleChange = this.handleChange.bind(this);
+      this.handleChildRef = this.handleChildRef.bind(this);
+
+      (0, _invariant2['default'])(typeof this.context.dragDropManager === 'object', 'Could not find the drag and drop manager in the context of %s. ' + 'Make sure to wrap the top-level component of your app with DragDropContext. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-troubleshooting.html#could-not-find-the-drag-and-drop-manager-in-the-context', displayName, displayName);
+
+      this.manager = this.context.dragDropManager;
+      this.handlerMonitor = createMonitor(this.manager);
+      this.handler = createHandler(this.handlerMonitor);
+      this.disposable = new _disposables.SerialDisposable();
+
+      this.receiveProps(props);
+      this.state = this.getCurrentState();
+    }
+
+    _inherits(DragDropContainer, _Component);
+
+    DragDropContainer.prototype.getHandlerId = function getHandlerId() {
+      return this.handlerId;
+    };
+
+    DragDropContainer.prototype.getDecoratedComponentInstance = function getDecoratedComponentInstance() {
+      return this.decoratedComponentInstance;
+    };
+
+    DragDropContainer.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps, nextState) {
+      return !arePropsEqual(nextProps, this.props) || !(0, _utilsShallowEqual2['default'])(nextState, this.state);
+    };
+
+    DragDropContainer.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+      if (!arePropsEqual(nextProps, this.props)) {
+        this.receiveProps(nextProps);
+        this.handleChange();
+      }
+    };
+
+    DragDropContainer.prototype.componentWillUnmount = function componentWillUnmount() {
+      this.disposable.dispose();
+    };
+
+    DragDropContainer.prototype.receiveProps = function receiveProps(props) {
+      this.handler.receiveProps(props);
+      this.receiveType(getType(props));
+    };
+
+    DragDropContainer.prototype.receiveType = function receiveType(type) {
+      if (type === this.currentType) {
+        return;
+      }
+
+      this.currentType = type;
+
+      var _registerHandler = registerHandler(type, this.handler, this.manager);
+
+      var handlerId = _registerHandler.handlerId;
+      var unregister = _registerHandler.unregister;
+
+      var connector = createConnector(this.manager.getBackend());
+
+      var _bindConnector = (0, _bindConnector3['default'])(connector, handlerId);
+
+      var handlerConnector = _bindConnector.handlerConnector;
+      var connectorDisposable = _bindConnector.disposable;
+
+      var globalMonitor = this.manager.getMonitor();
+      var unsubscribe = globalMonitor.subscribeToStateChange(this.handleChange, { handlerIds: [handlerId] });
+
+      this.disposable.setDisposable(new _disposables.CompositeDisposable(new _disposables.Disposable(unregister), new _disposables.Disposable(unsubscribe), connectorDisposable));
+
+      this.handlerMonitor.receiveHandlerId(handlerId);
+      this.handlerConnector = handlerConnector;
+      this.handlerId = handlerId;
+    };
+
+    DragDropContainer.prototype.handleChange = function handleChange() {
+      var nextState = this.getCurrentState();
+      if (!(0, _utilsShallowEqual2['default'])(nextState, this.state)) {
+        this.setState(nextState);
+      }
+    };
+
+    DragDropContainer.prototype.handleChildRef = function handleChildRef(component) {
+      this.decoratedComponentInstance = component;
+      this.handler.receiveComponent(component);
+    };
+
+    DragDropContainer.prototype.getCurrentState = function getCurrentState() {
+      var nextState = collect(this.handlerConnector, this.handlerMonitor);
+      if (process.env.NODE_ENV !== 'production') {
+        (0, _invariant2['default'])((0, _lodashLangIsPlainObject2['default'])(nextState), 'Expected `collect` specified as the second argument to ' + '%s for %s to return a plain object of props to inject. ' + 'Instead, received %s.', containerDisplayName, displayName, nextState);
+      }
+      return nextState;
+    };
+
+    DragDropContainer.prototype.render = function render() {
+      return _react2['default'].createElement(DecoratedComponent, _extends({}, this.props, this.state, {
+        ref: this.handleChildRef }));
+    };
+
+    _createClass(DragDropContainer, null, [{
+      key: 'DecoratedComponent',
+      value: DecoratedComponent,
+      enumerable: true
+    }, {
+      key: 'displayName',
+      value: '' + containerDisplayName + '(' + displayName + ')',
+      enumerable: true
+    }, {
+      key: 'contextTypes',
+      value: {
+        dragDropManager: _react.PropTypes.object.isRequired
+      },
+      enumerable: true
+    }]);
+
+    return DragDropContainer;
+  })(_react.Component);
+}
+
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"./bindConnector":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/bindConnector.js","./utils/shallowEqual":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqual.js","./utils/shallowEqualScalar":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqualScalar.js","_process":"/home/ganesh/dev/Generator/node_modules/grunt-browserify/node_modules/browserify/node_modules/process/browser.js","disposables":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/index.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","lodash/lang/isPlainObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isPlainObject.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/index.js":[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+function _interopRequire(obj) { return obj && obj.__esModule ? obj['default'] : obj; }
+
+var _DragDropContext = require('./DragDropContext');
+
+exports.DragDropContext = _interopRequire(_DragDropContext);
+
+var _DragLayer = require('./DragLayer');
+
+exports.DragLayer = _interopRequire(_DragLayer);
+
+var _DragSource = require('./DragSource');
+
+exports.DragSource = _interopRequire(_DragSource);
+
+var _DropTarget = require('./DropTarget');
+
+exports.DropTarget = _interopRequire(_DropTarget);
+
+if (process.env.NODE_ENV !== 'production') {
+  Object.defineProperty(exports, 'default', {
+    get: function get() {
+      console.error('React DnD does not provide a default export. ' + 'You are probably missing the curly braces in the import statement. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-troubleshooting.html#react-dnd-does-not-provide-a-default-export');
+    }
+  });
+}
+}).call(this,require('_process'))
+},{"./DragDropContext":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/DragDropContext.js","./DragLayer":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/DragLayer.js","./DragSource":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/DragSource.js","./DropTarget":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/DropTarget.js","_process":"/home/ganesh/dev/Generator/node_modules/grunt-browserify/node_modules/browserify/node_modules/process/browser.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/registerSource.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = registerSource;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+function registerSource(type, source, manager) {
+  var registry = manager.getRegistry();
+  var sourceId = registry.addSource(type, source);
+
+  function unregisterSource() {
+    registry.removeSource(sourceId);
+  };
+
+  return {
+    handlerId: sourceId,
+    unregister: unregisterSource
+  };
+}
+
+module.exports = exports['default'];
+},{"invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/registerTarget.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = registerTarget;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+function registerTarget(type, target, manager) {
+  var registry = manager.getRegistry();
+  var targetId = registry.addTarget(type, target);
+
+  function unregisterTarget() {
+    registry.removeTarget(targetId);
+  };
+
+  return {
+    handlerId: targetId,
+    unregister: unregisterTarget
+  };
+}
+
+module.exports = exports['default'];
+},{"invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/checkDecoratorArguments.js":[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = checkDecoratorArguments;
+
+function checkDecoratorArguments(functionName, signature) {
+  for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    args[_key - 2] = arguments[_key];
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    for (var i = 0; i < args.length; i++) {
+      var arg = args[i];
+      if (arg && arg.prototype && arg.prototype.render) {
+        console.error('You seem to be applying the arguments in the wrong order. ' + ('It should be ' + functionName + '(' + signature + ')(Component), not the other way around. ') + 'Read more: http://gaearon.github.io/react-dnd/docs-troubleshooting.html#you-seem-to-be-applying-the-arguments-in-the-wrong-order');
+        return;
+      }
+    }
+  }
+}
+
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"_process":"/home/ganesh/dev/Generator/node_modules/grunt-browserify/node_modules/browserify/node_modules/process/browser.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/cloneWithRef.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = cloneWithRef;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _react = require('react');
+
+function cloneWithRef(element, newRef) {
+  var previousRef = element.ref;
+  (0, _invariant2['default'])(typeof previousRef !== 'string', 'Cannot connect React DnD to an element with an existing string ref. ' + 'Please convert it to use a callback ref instead, or wrap it into a <span> or <div>. ' + 'Read more: https://facebook.github.io/react/docs/more-about-refs.html#the-ref-callback-attribute');
+
+  return (0, _react.cloneElement)(element, {
+    ref: function ref(instance) {
+      newRef(instance);
+
+      if (previousRef) {
+        previousRef(instance);
+      }
+    }
+  });
+}
+
+module.exports = exports['default'];
+},{"invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/isValidType.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = isValidType;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _lodashLangIsArray = require('lodash/lang/isArray');
+
+var _lodashLangIsArray2 = _interopRequireDefault(_lodashLangIsArray);
+
+function isValidType(type, allowArray) {
+       return typeof type === 'string' || typeof type === 'symbol' || allowArray && (0, _lodashLangIsArray2['default'])(type) && type.every(function (t) {
+              return isValidType(t, false);
+       });
+}
+
+module.exports = exports['default'];
+},{"lodash/lang/isArray":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArray.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqual.js":[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+exports["default"] = shallowEqual;
+
+function shallowEqual(objA, objB) {
+  if (objA === objB) {
+    return true;
+  }
+
+  var keysA = Object.keys(objA);
+  var keysB = Object.keys(objB);
+
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+
+  // Test for A's keys different from B.
+  var hasOwn = Object.prototype.hasOwnProperty;
+  for (var i = 0; i < keysA.length; i++) {
+    if (!hasOwn.call(objB, keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+
+      return false;
+    }
+
+    var valA = objA[keysA[i]];
+    var valB = objB[keysA[i]];
+
+    if (valA !== valB) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+module.exports = exports["default"];
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqualScalar.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = shallowEqualScalar;
+
+function shallowEqualScalar(objA, objB) {
+  if (objA === objB) {
+    return true;
+  }
+
+  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+    return false;
+  }
+
+  var keysA = Object.keys(objA);
+  var keysB = Object.keys(objB);
+
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+
+  // Test for A's keys different from B.
+  var hasOwn = Object.prototype.hasOwnProperty;
+  for (var i = 0; i < keysA.length; i++) {
+    if (!hasOwn.call(objB, keysA[i])) {
+      return false;
+    }
+
+    var valA = objA[keysA[i]];
+    var valB = objB[keysA[i]];
+
+    if (valA !== valB || typeof valA === 'object' || typeof valB === 'object') {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+module.exports = exports['default'];
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/CompositeDisposable.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+exports.__esModule = true;
+
+var _isDisposable = require('./isDisposable');
+
+var _isDisposable2 = _interopRequireWildcard(_isDisposable);
+
+/**
+ * Represents a group of disposable resources that are disposed together.
+ */
+
+var CompositeDisposable = (function () {
+  function CompositeDisposable() {
+    for (var _len = arguments.length, disposables = Array(_len), _key = 0; _key < _len; _key++) {
+      disposables[_key] = arguments[_key];
+    }
+
+    _classCallCheck(this, CompositeDisposable);
+
+    if (Array.isArray(disposables[0]) && disposables.length === 1) {
+      disposables = disposables[0];
+    }
+
+    for (var i = 0; i < disposables.length; i++) {
+      if (!_isDisposable2['default'](disposables[i])) {
+        throw new Error('Expected a disposable');
+      }
+    }
+
+    this.disposables = disposables;
+    this.isDisposed = false;
+  }
+
+  /**
+   * Adds a disposable to the CompositeDisposable or disposes the disposable if the CompositeDisposable is disposed.
+   * @param {Disposable} item Disposable to add.
+   */
+
+  CompositeDisposable.prototype.add = function add(item) {
+    if (this.isDisposed) {
+      item.dispose();
+    } else {
+      this.disposables.push(item);
+    }
+  };
+
+  /**
+   * Removes and disposes the first occurrence of a disposable from the CompositeDisposable.
+   * @param {Disposable} item Disposable to remove.
+   * @returns {Boolean} true if found; false otherwise.
+   */
+
+  CompositeDisposable.prototype.remove = function remove(item) {
+    if (this.isDisposed) {
+      return false;
+    }
+
+    var index = this.disposables.indexOf(item);
+    if (index === -1) {
+      return false;
+    }
+
+    this.disposables.splice(index, 1);
+    item.dispose();
+    return true;
+  };
+
+  /**
+   * Disposes all disposables in the group and removes them from the group.
+   */
+
+  CompositeDisposable.prototype.dispose = function dispose() {
+    if (this.isDisposed) {
+      return;
+    }
+
+    var len = this.disposables.length;
+    var currentDisposables = new Array(len);
+    for (var i = 0; i < len; i++) {
+      currentDisposables[i] = this.disposables[i];
+    }
+
+    this.isDisposed = true;
+    this.disposables = [];
+    this.length = 0;
+
+    for (var i = 0; i < len; i++) {
+      currentDisposables[i].dispose();
+    }
+  };
+
+  return CompositeDisposable;
+})();
+
+exports['default'] = CompositeDisposable;
+module.exports = exports['default'];
+},{"./isDisposable":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/isDisposable.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/Disposable.js":[function(require,module,exports){
+"use strict";
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+exports.__esModule = true;
+var noop = function noop() {};
+
+/**
+ * The basic disposable.
+ */
+
+var Disposable = (function () {
+  function Disposable(action) {
+    _classCallCheck(this, Disposable);
+
+    this.isDisposed = false;
+    this.action = action || noop;
+  }
+
+  Disposable.prototype.dispose = function dispose() {
+    if (!this.isDisposed) {
+      this.action.call(null);
+      this.isDisposed = true;
+    }
+  };
+
+  _createClass(Disposable, null, [{
+    key: "empty",
+    enumerable: true,
+    value: { dispose: noop }
+  }]);
+
+  return Disposable;
+})();
+
+exports["default"] = Disposable;
+module.exports = exports["default"];
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/SerialDisposable.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+exports.__esModule = true;
+
+var _isDisposable = require('./isDisposable');
+
+var _isDisposable2 = _interopRequireWildcard(_isDisposable);
+
+var SerialDisposable = (function () {
+  function SerialDisposable() {
+    _classCallCheck(this, SerialDisposable);
+
+    this.isDisposed = false;
+    this.current = null;
+  }
+
+  /**
+   * Gets the underlying disposable.
+   * @return The underlying disposable.
+   */
+
+  SerialDisposable.prototype.getDisposable = function getDisposable() {
+    return this.current;
+  };
+
+  /**
+   * Sets the underlying disposable.
+   * @param {Disposable} value The new underlying disposable.
+   */
+
+  SerialDisposable.prototype.setDisposable = function setDisposable() {
+    var value = arguments[0] === undefined ? null : arguments[0];
+
+    if (value != null && !_isDisposable2['default'](value)) {
+      throw new Error('Expected either an empty value or a valid disposable');
+    }
+
+    var isDisposed = this.isDisposed;
+    var previous = undefined;
+
+    if (!isDisposed) {
+      previous = this.current;
+      this.current = value;
+    }
+
+    if (previous) {
+      previous.dispose();
+    }
+
+    if (isDisposed && value) {
+      value.dispose();
+    }
+  };
+
+  /**
+   * Disposes the underlying disposable as well as all future replacements.
+   */
+
+  SerialDisposable.prototype.dispose = function dispose() {
+    if (this.isDisposed) {
+      return;
+    }
+
+    this.isDisposed = true;
+    var previous = this.current;
+    this.current = null;
+
+    if (previous) {
+      previous.dispose();
+    }
+  };
+
+  return SerialDisposable;
+})();
+
+exports['default'] = SerialDisposable;
+module.exports = exports['default'];
+},{"./isDisposable":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/isDisposable.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/index.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+exports.__esModule = true;
+
+var _isDisposable2 = require('./isDisposable');
+
+var _isDisposable3 = _interopRequireWildcard(_isDisposable2);
+
+exports.isDisposable = _isDisposable3['default'];
+
+var _Disposable2 = require('./Disposable');
+
+var _Disposable3 = _interopRequireWildcard(_Disposable2);
+
+exports.Disposable = _Disposable3['default'];
+
+var _CompositeDisposable2 = require('./CompositeDisposable');
+
+var _CompositeDisposable3 = _interopRequireWildcard(_CompositeDisposable2);
+
+exports.CompositeDisposable = _CompositeDisposable3['default'];
+
+var _SerialDisposable2 = require('./SerialDisposable');
+
+var _SerialDisposable3 = _interopRequireWildcard(_SerialDisposable2);
+
+exports.SerialDisposable = _SerialDisposable3['default'];
+},{"./CompositeDisposable":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/CompositeDisposable.js","./Disposable":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/Disposable.js","./SerialDisposable":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/SerialDisposable.js","./isDisposable":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/isDisposable.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/disposables/modules/isDisposable.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports['default'] = isDisposable;
+
+function isDisposable(obj) {
+  return Boolean(obj && typeof obj.dispose === 'function');
+}
+
+module.exports = exports['default'];
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/DragDropManager.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+exports.__esModule = true;
+
+var _Flux = require('./Flux');
+
+var _Flux2 = _interopRequireWildcard(_Flux);
+
+var _DragDropMonitor = require('./DragDropMonitor');
+
+var _DragDropMonitor2 = _interopRequireWildcard(_DragDropMonitor);
+
+var _HandlerRegistry = require('./utils/HandlerRegistry');
+
+var _HandlerRegistry2 = _interopRequireWildcard(_HandlerRegistry);
+
+var DragDropManager = (function () {
+  function DragDropManager(createBackend) {
+    _classCallCheck(this, DragDropManager);
+
+    var flux = new _Flux2['default'](this);
+
+    this.flux = flux;
+    this.registry = new _HandlerRegistry2['default'](flux.registryActions);
+    this.monitor = new _DragDropMonitor2['default'](flux, this.registry);
+    this.backend = createBackend(this);
+
+    flux.refCountStore.addListener('change', this.handleRefCountChange, this);
+  }
+
+  DragDropManager.prototype.handleRefCountChange = function handleRefCountChange() {
+    var shouldSetUp = this.flux.refCountStore.hasRefs();
+    if (shouldSetUp && !this.isSetUp) {
+      this.backend.setup();
+      this.isSetUp = true;
+    } else if (!shouldSetUp && this.isSetUp) {
+      this.backend.teardown();
+      this.isSetUp = false;
+    }
+  };
+
+  DragDropManager.prototype.getMonitor = function getMonitor() {
+    return this.monitor;
+  };
+
+  DragDropManager.prototype.getBackend = function getBackend() {
+    return this.backend;
+  };
+
+  DragDropManager.prototype.getRegistry = function getRegistry() {
+    return this.registry;
+  };
+
+  DragDropManager.prototype.getActions = function getActions() {
+    return this.flux.dragDropActions;
+  };
+
+  return DragDropManager;
+})();
+
+exports['default'] = DragDropManager;
+module.exports = exports['default'];
+},{"./DragDropMonitor":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/DragDropMonitor.js","./Flux":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/Flux.js","./utils/HandlerRegistry":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/utils/HandlerRegistry.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/DragDropMonitor.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+exports.__esModule = true;
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireWildcard(_invariant);
+
+var _matchesType = require('./utils/matchesType');
+
+var _matchesType2 = _interopRequireWildcard(_matchesType);
+
+var _isArray = require('lodash/lang/isArray');
+
+var _isArray2 = _interopRequireWildcard(_isArray);
+
+var DragDropMonitor = (function () {
+  function DragDropMonitor(flux, registry) {
+    _classCallCheck(this, DragDropMonitor);
+
+    this.dragOperationStore = flux.dragOperationStore;
+    this.dragOffsetStore = flux.dragOffsetStore;
+    this.registry = registry;
+  }
+
+  DragDropMonitor.prototype.subscribeToStateChange = function subscribeToStateChange(listener) {
+    var _ref = arguments[1] === undefined ? {} : arguments[1];
+
+    var _ref$handlerIds = _ref.handlerIds;
+    var handlerIds = _ref$handlerIds === undefined ? null : _ref$handlerIds;
+
+    _invariant2['default'](typeof listener === 'function', 'listener must be a function.');
+
+    var dragOperationStore = this.dragOperationStore;
+
+    var handleChange = listener;
+    if (handlerIds) {
+      _invariant2['default'](_isArray2['default'](handlerIds), 'handlerIds, when specified, must be an array of strings.');
+      handleChange = function () {
+        if (dragOperationStore.areDirty(handlerIds)) {
+          listener();
+        }
+      };
+    }
+
+    dragOperationStore.addListener('change', handleChange);
+
+    return function dispose() {
+      dragOperationStore.removeListener('change', handleChange);
+    };
+  };
+
+  DragDropMonitor.prototype.subscribeToOffsetChange = function subscribeToOffsetChange(listener) {
+    _invariant2['default'](typeof listener === 'function', 'listener must be a function.');
+
+    var dragOffsetStore = this.dragOffsetStore;
+
+    dragOffsetStore.addListener('change', listener);
+
+    return function dispose() {
+      dragOffsetStore.removeListener('change', listener);
+    };
+  };
+
+  DragDropMonitor.prototype.canDragSource = function canDragSource(sourceId) {
+    var source = this.registry.getSource(sourceId);
+    _invariant2['default'](source, 'Expected to find a valid source.');
+
+    if (this.isDragging()) {
+      return false;
+    }
+
+    return source.canDrag(this, sourceId);
+  };
+
+  DragDropMonitor.prototype.canDropOnTarget = function canDropOnTarget(targetId) {
+    var target = this.registry.getTarget(targetId);
+    _invariant2['default'](target, 'Expected to find a valid target.');
+
+    if (!this.isDragging() || this.didDrop()) {
+      return false;
+    }
+
+    var targetType = this.registry.getTargetType(targetId);
+    var draggedItemType = this.getItemType();
+    return _matchesType2['default'](targetType, draggedItemType) && target.canDrop(this, targetId);
+  };
+
+  DragDropMonitor.prototype.isDragging = function isDragging() {
+    return this.dragOperationStore.isDragging();
+  };
+
+  DragDropMonitor.prototype.isDraggingSource = function isDraggingSource(sourceId) {
+    var source = this.registry.getSource(sourceId, true);
+    _invariant2['default'](source, 'Expected to find a valid source.');
+
+    if (!this.isDragging() || !this.isSourcePublic()) {
+      return false;
+    }
+
+    var sourceType = this.registry.getSourceType(sourceId);
+    var draggedItemType = this.getItemType();
+    if (sourceType !== draggedItemType) {
+      return false;
+    }
+
+    return source.isDragging(this, sourceId);
+  };
+
+  DragDropMonitor.prototype.isOverTarget = function isOverTarget(targetId) {
+    var _ref2 = arguments[1] === undefined ? {} : arguments[1];
+
+    var _ref2$shallow = _ref2.shallow;
+    var shallow = _ref2$shallow === undefined ? false : _ref2$shallow;
+
+    if (!this.isDragging()) {
+      return false;
+    }
+
+    var targetType = this.registry.getTargetType(targetId);
+    var draggedItemType = this.getItemType();
+    if (!_matchesType2['default'](targetType, draggedItemType)) {
+      return false;
+    }
+
+    var targetIds = this.getTargetIds();
+    if (!targetIds.length) {
+      return false;
+    }
+
+    var index = targetIds.indexOf(targetId);
+    if (shallow) {
+      return index === targetIds.length - 1;
+    } else {
+      return index > -1;
+    }
+  };
+
+  DragDropMonitor.prototype.getItemType = function getItemType() {
+    return this.dragOperationStore.getItemType();
+  };
+
+  DragDropMonitor.prototype.getItem = function getItem() {
+    return this.dragOperationStore.getItem();
+  };
+
+  DragDropMonitor.prototype.getSourceId = function getSourceId() {
+    return this.dragOperationStore.getSourceId();
+  };
+
+  DragDropMonitor.prototype.getTargetIds = function getTargetIds() {
+    return this.dragOperationStore.getTargetIds();
+  };
+
+  DragDropMonitor.prototype.getDropResult = function getDropResult() {
+    return this.dragOperationStore.getDropResult();
+  };
+
+  DragDropMonitor.prototype.didDrop = function didDrop() {
+    return this.dragOperationStore.didDrop();
+  };
+
+  DragDropMonitor.prototype.isSourcePublic = function isSourcePublic() {
+    return this.dragOperationStore.isSourcePublic();
+  };
+
+  DragDropMonitor.prototype.getInitialClientOffset = function getInitialClientOffset() {
+    return this.dragOffsetStore.getInitialClientOffset();
+  };
+
+  DragDropMonitor.prototype.getInitialSourceClientOffset = function getInitialSourceClientOffset() {
+    return this.dragOffsetStore.getInitialSourceClientOffset();
+  };
+
+  DragDropMonitor.prototype.getSourceClientOffset = function getSourceClientOffset() {
+    return this.dragOffsetStore.getSourceClientOffset();
+  };
+
+  DragDropMonitor.prototype.getClientOffset = function getClientOffset() {
+    return this.dragOffsetStore.getClientOffset();
+  };
+
+  DragDropMonitor.prototype.getDifferenceFromInitialOffset = function getDifferenceFromInitialOffset() {
+    return this.dragOffsetStore.getDifferenceFromInitialOffset();
+  };
+
+  return DragDropMonitor;
+})();
+
+exports['default'] = DragDropMonitor;
+module.exports = exports['default'];
+},{"./utils/matchesType":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/utils/matchesType.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","lodash/lang/isArray":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArray.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/DragSource.js":[function(require,module,exports){
+"use strict";
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+exports.__esModule = true;
+
+var DragSource = (function () {
+  function DragSource() {
+    _classCallCheck(this, DragSource);
+  }
+
+  DragSource.prototype.canDrag = function canDrag() {
+    return true;
+  };
+
+  DragSource.prototype.isDragging = function isDragging(monitor, handle) {
+    return handle === monitor.getSourceId();
+  };
+
+  DragSource.prototype.endDrag = function endDrag() {};
+
+  return DragSource;
+})();
+
+exports["default"] = DragSource;
+module.exports = exports["default"];
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/DropTarget.js":[function(require,module,exports){
+"use strict";
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+exports.__esModule = true;
+
+var DropTarget = (function () {
+  function DropTarget() {
+    _classCallCheck(this, DropTarget);
+  }
+
+  DropTarget.prototype.canDrop = function canDrop() {
+    return true;
+  };
+
+  DropTarget.prototype.hover = function hover() {};
+
+  DropTarget.prototype.drop = function drop() {};
+
+  return DropTarget;
+})();
+
+exports["default"] = DropTarget;
+module.exports = exports["default"];
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/Flux.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+exports.__esModule = true;
+
+var _Flummox2 = require('flummox');
+
+var _DragDropActions = require('./actions/DragDropActions');
+
+var _DragDropActions2 = _interopRequireWildcard(_DragDropActions);
+
+var _RegistryActions = require('./actions/RegistryActions');
+
+var _RegistryActions2 = _interopRequireWildcard(_RegistryActions);
+
+var _DragOperationStore = require('./stores/DragOperationStore');
+
+var _DragOperationStore2 = _interopRequireWildcard(_DragOperationStore);
+
+var _DragOffsetStore = require('./stores/DragOffsetStore');
+
+var _DragOffsetStore2 = _interopRequireWildcard(_DragOffsetStore);
+
+var _RefCountStore = require('./stores/RefCountStore');
+
+var _RefCountStore2 = _interopRequireWildcard(_RefCountStore);
+
+var Flux = (function (_Flummox) {
+  function Flux(manager) {
+    _classCallCheck(this, Flux);
+
+    _Flummox.call(this);
+
+    this.dragDropActions = this.createActions('dragDropActions', _DragDropActions2['default'], manager);
+    this.dragDropActionIds = this.getActionIds('dragDropActions');
+
+    this.registryActions = this.createActions('registryActions', _RegistryActions2['default']);
+    this.registryActionIds = this.getActionIds('registryActions');
+
+    this.dragOperationStore = this.createStore('dragOperationStore', _DragOperationStore2['default'], this);
+
+    this.dragOffsetStore = this.createStore('dragOffsetStore', _DragOffsetStore2['default'], this);
+
+    this.refCountStore = this.createStore('refCountStore', _RefCountStore2['default'], this);
+  }
+
+  _inherits(Flux, _Flummox);
+
+  return Flux;
+})(_Flummox2.Flummox);
+
+exports['default'] = Flux;
+module.exports = exports['default'];
+},{"./actions/DragDropActions":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/actions/DragDropActions.js","./actions/RegistryActions":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/actions/RegistryActions.js","./stores/DragOffsetStore":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/stores/DragOffsetStore.js","./stores/DragOperationStore":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/stores/DragOperationStore.js","./stores/RefCountStore":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/stores/RefCountStore.js","flummox":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/lib/Flux.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/actions/DragDropActions.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+exports.__esModule = true;
+
+var _Actions2 = require('flummox');
+
+var _matchesType = require('../utils/matchesType');
+
+var _matchesType2 = _interopRequireWildcard(_matchesType);
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireWildcard(_invariant);
+
+var _isArray = require('lodash/lang/isArray');
+
+var _isArray2 = _interopRequireWildcard(_isArray);
+
+var _isObject = require('lodash/lang/isObject');
+
+var _isObject2 = _interopRequireWildcard(_isObject);
+
+var DragDropActions = (function (_Actions) {
+  function DragDropActions(manager) {
+    _classCallCheck(this, DragDropActions);
+
+    _Actions.call(this);
+    this.manager = manager;
+  }
+
+  _inherits(DragDropActions, _Actions);
+
+  DragDropActions.prototype.beginDrag = function beginDrag(sourceIds) {
+    var _ref = arguments[1] === undefined ? {} : arguments[1];
+
+    var _ref$publishSource = _ref.publishSource;
+    var publishSource = _ref$publishSource === undefined ? true : _ref$publishSource;
+    var _ref$clientOffset = _ref.clientOffset;
+    var clientOffset = _ref$clientOffset === undefined ? null : _ref$clientOffset;
+    var getSourceClientOffset = _ref.getSourceClientOffset;
+
+    _invariant2['default'](_isArray2['default'](sourceIds), 'Expected sourceIds to be an array.');
+
+    var monitor = this.manager.getMonitor();
+    var registry = this.manager.getRegistry();
+    _invariant2['default'](!monitor.isDragging(), 'Cannot call beginDrag while dragging.');
+
+    for (var i = 0; i < sourceIds.length; i++) {
+      _invariant2['default'](registry.getSource(sourceIds[i]), 'Expected sourceIds to be registered.');
+    }
+
+    var sourceId = null;
+    for (var i = sourceIds.length - 1; i >= 0; i--) {
+      if (monitor.canDragSource(sourceIds[i])) {
+        sourceId = sourceIds[i];
+        break;
+      }
+    }
+    if (sourceId === null) {
+      return;
+    }
+
+    var sourceClientOffset = null;
+    if (clientOffset) {
+      _invariant2['default'](typeof getSourceClientOffset === 'function', 'When clientOffset is provided, getSourceClientOffset must be a function.');
+      sourceClientOffset = getSourceClientOffset(sourceId);
+    }
+
+    var source = registry.getSource(sourceId);
+    var item = source.beginDrag(monitor, sourceId);
+    _invariant2['default'](_isObject2['default'](item), 'Item must be an object.');
+
+    registry.pinSource(sourceId);
+
+    var itemType = registry.getSourceType(sourceId);
+    return {
+      itemType: itemType,
+      item: item,
+      sourceId: sourceId,
+      clientOffset: clientOffset,
+      sourceClientOffset: sourceClientOffset,
+      isSourcePublic: publishSource
+    };
+  };
+
+  DragDropActions.prototype.publishDragSource = function publishDragSource() {
+    var monitor = this.manager.getMonitor();
+    if (!monitor.isDragging()) {
+      return;
+    }
+
+    return {};
+  };
+
+  DragDropActions.prototype.hover = function hover(targetIds) {
+    var _ref2 = arguments[1] === undefined ? {} : arguments[1];
+
+    var _ref2$clientOffset = _ref2.clientOffset;
+    var clientOffset = _ref2$clientOffset === undefined ? null : _ref2$clientOffset;
+
+    _invariant2['default'](_isArray2['default'](targetIds), 'Expected targetIds to be an array.');
+    targetIds = targetIds.slice(0);
+
+    var monitor = this.manager.getMonitor();
+    var registry = this.manager.getRegistry();
+    _invariant2['default'](monitor.isDragging(), 'Cannot call hover while not dragging.');
+    _invariant2['default'](!monitor.didDrop(), 'Cannot call hover after drop.');
+
+    var draggedItemType = monitor.getItemType();
+    for (var i = 0; i < targetIds.length; i++) {
+      var targetId = targetIds[i];
+      _invariant2['default'](targetIds.lastIndexOf(targetId) === i, 'Expected targetIds to be unique in the passed array.');
+
+      var target = registry.getTarget(targetId);
+      _invariant2['default'](target, 'Expected targetIds to be registered.');
+
+      var targetType = registry.getTargetType(targetId);
+      if (_matchesType2['default'](targetType, draggedItemType)) {
+        target.hover(monitor, targetId);
+      }
+    }
+
+    return { targetIds: targetIds, clientOffset: clientOffset };
+  };
+
+  DragDropActions.prototype.drop = function drop() {
+    var _this = this;
+
+    var monitor = this.manager.getMonitor();
+    var registry = this.manager.getRegistry();
+    _invariant2['default'](monitor.isDragging(), 'Cannot call drop while not dragging.');
+    _invariant2['default'](!monitor.didDrop(), 'Cannot call drop twice during one drag operation.');
+
+    var _getActionIds = this.getActionIds();
+
+    var dropActionId = _getActionIds.drop;
+
+    var targetIds = monitor.getTargetIds().filter(monitor.canDropOnTarget, monitor);
+
+    targetIds.reverse();
+    targetIds.forEach(function (targetId, index) {
+      var target = registry.getTarget(targetId);
+
+      var dropResult = target.drop(monitor, targetId);
+      _invariant2['default'](typeof dropResult === 'undefined' || _isObject2['default'](dropResult), 'Drop result must either be an object or undefined.');
+      if (typeof dropResult === 'undefined') {
+        dropResult = index === 0 ? {} : monitor.getDropResult();
+      }
+
+      _this.dispatch(dropActionId, { dropResult: dropResult });
+    });
+  };
+
+  DragDropActions.prototype.endDrag = function endDrag() {
+    var monitor = this.manager.getMonitor();
+    var registry = this.manager.getRegistry();
+    _invariant2['default'](monitor.isDragging(), 'Cannot call endDrag while not dragging.');
+
+    var sourceId = monitor.getSourceId();
+    var source = registry.getSource(sourceId, true);
+    source.endDrag(monitor, sourceId);
+
+    registry.unpinSource();
+
+    return {};
+  };
+
+  return DragDropActions;
+})(_Actions2.Actions);
+
+exports['default'] = DragDropActions;
+module.exports = exports['default'];
+},{"../utils/matchesType":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/utils/matchesType.js","flummox":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/lib/Flux.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","lodash/lang/isArray":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArray.js","lodash/lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/actions/RegistryActions.js":[function(require,module,exports){
+'use strict';
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+exports.__esModule = true;
+
+var _Actions2 = require('flummox');
+
+var RegistryActions = (function (_Actions) {
+  function RegistryActions() {
+    _classCallCheck(this, RegistryActions);
+
+    if (_Actions != null) {
+      _Actions.apply(this, arguments);
+    }
+  }
+
+  _inherits(RegistryActions, _Actions);
+
+  RegistryActions.prototype.addSource = function addSource(sourceId) {
+    return { sourceId: sourceId };
+  };
+
+  RegistryActions.prototype.addTarget = function addTarget(targetId) {
+    return { targetId: targetId };
+  };
+
+  RegistryActions.prototype.removeSource = function removeSource(sourceId) {
+    return { sourceId: sourceId };
+  };
+
+  RegistryActions.prototype.removeTarget = function removeTarget(targetId) {
+    return { targetId: targetId };
+  };
+
+  return RegistryActions;
+})(_Actions2.Actions);
+
+exports['default'] = RegistryActions;
+module.exports = exports['default'];
+},{"flummox":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/lib/Flux.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/backends/createTestBackend.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+exports.__esModule = true;
+exports['default'] = createBackend;
+
+var _noop = require('lodash/utility/noop');
+
+var _noop2 = _interopRequireWildcard(_noop);
+
+var TestBackend = (function () {
+  function TestBackend(manager) {
+    _classCallCheck(this, TestBackend);
+
+    this.actions = manager.getActions();
+  }
+
+  TestBackend.prototype.setup = function setup() {
+    this.didCallSetup = true;
+  };
+
+  TestBackend.prototype.teardown = function teardown() {
+    this.didCallTeardown = true;
+  };
+
+  TestBackend.prototype.connectDragSource = function connectDragSource() {
+    return _noop2['default'];
+  };
+
+  TestBackend.prototype.connectDragPreview = function connectDragPreview() {
+    return _noop2['default'];
+  };
+
+  TestBackend.prototype.connectDropTarget = function connectDropTarget() {
+    return _noop2['default'];
+  };
+
+  TestBackend.prototype.simulateBeginDrag = function simulateBeginDrag(sourceIds, options) {
+    this.actions.beginDrag(sourceIds, options);
+  };
+
+  TestBackend.prototype.simulatePublishDragSource = function simulatePublishDragSource() {
+    this.actions.publishDragSource();
+  };
+
+  TestBackend.prototype.simulateHover = function simulateHover(targetIds, options) {
+    this.actions.hover(targetIds, options);
+  };
+
+  TestBackend.prototype.simulateDrop = function simulateDrop() {
+    this.actions.drop();
+  };
+
+  TestBackend.prototype.simulateEndDrag = function simulateEndDrag() {
+    this.actions.endDrag();
+  };
+
+  return TestBackend;
+})();
+
+function createBackend(manager) {
+  return new TestBackend(manager);
+}
+
+module.exports = exports['default'];
+},{"lodash/utility/noop":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/utility/noop.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/index.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj['default'] : obj; };
+
+exports.__esModule = true;
+
+var _default = require('./DragDropManager');
+
+exports.DragDropManager = _interopRequire(_default);
+
+var _default2 = require('./DragSource');
+
+exports.DragSource = _interopRequire(_default2);
+
+var _default3 = require('./DropTarget');
+
+exports.DropTarget = _interopRequire(_default3);
+
+var _default4 = require('./backends/createTestBackend');
+
+exports.createTestBackend = _interopRequire(_default4);
+},{"./DragDropManager":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/DragDropManager.js","./DragSource":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/DragSource.js","./DropTarget":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/DropTarget.js","./backends/createTestBackend":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/backends/createTestBackend.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/stores/DragOffsetStore.js":[function(require,module,exports){
+'use strict';
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+exports.__esModule = true;
+
+var _Store2 = require('flummox');
+
+function areOffsetsEqual(offsetA, offsetB) {
+  if (offsetA === offsetB) {
+    return true;
+  }
+
+  return offsetA && offsetB && offsetA.x === offsetB.x && offsetA.y === offsetB.y;
+}
+
+var DragOffsetStore = (function (_Store) {
+  function DragOffsetStore(flux) {
+    _classCallCheck(this, DragOffsetStore);
+
+    _Store.call(this);
+
+    var dragDropActionIds = flux.dragDropActionIds;
+
+    this.register(dragDropActionIds.beginDrag, this.handleBeginDrag);
+    this.register(dragDropActionIds.hover, this.handleHover);
+    this.register(dragDropActionIds.endDrag, this.handleEndDrag);
+    this.register(dragDropActionIds.drop, this.handleDrop);
+
+    this.state = {
+      initialSourceClientOffset: null,
+      initialClientOffset: null,
+      clientOffset: null
+    };
+  }
+
+  _inherits(DragOffsetStore, _Store);
+
+  DragOffsetStore.prototype.handleBeginDrag = function handleBeginDrag(_ref) {
+    var clientOffset = _ref.clientOffset;
+    var sourceClientOffset = _ref.sourceClientOffset;
+
+    this.setState({
+      initialClientOffset: clientOffset,
+      initialSourceClientOffset: sourceClientOffset,
+      clientOffset: clientOffset
+    });
+  };
+
+  DragOffsetStore.prototype.handleHover = function handleHover(_ref2) {
+    var clientOffset = _ref2.clientOffset;
+    var prevClientOffset = this.state.clientOffset;
+
+    if (!areOffsetsEqual(clientOffset, prevClientOffset)) {
+      this.setState({
+        clientOffset: clientOffset
+      });
+    }
+  };
+
+  DragOffsetStore.prototype.handleEndDrag = function handleEndDrag() {
+    this.setState({
+      initialClientOffset: null,
+      initialSourceClientOffset: null,
+      clientOffset: null
+    });
+  };
+
+  DragOffsetStore.prototype.handleDrop = function handleDrop() {
+    this.setState({
+      initialClientOffset: null,
+      initialSourceClientOffset: null,
+      clientOffset: null
+    });
+  };
+
+  DragOffsetStore.prototype.getInitialClientOffset = function getInitialClientOffset() {
+    return this.state.initialClientOffset;
+  };
+
+  DragOffsetStore.prototype.getInitialSourceClientOffset = function getInitialSourceClientOffset() {
+    return this.state.initialSourceClientOffset;
+  };
+
+  DragOffsetStore.prototype.getClientOffset = function getClientOffset() {
+    return this.state.clientOffset;
+  };
+
+  DragOffsetStore.prototype.getSourceClientOffset = function getSourceClientOffset() {
+    var _state = this.state;
+    var clientOffset = _state.clientOffset;
+    var initialClientOffset = _state.initialClientOffset;
+    var initialSourceClientOffset = _state.initialSourceClientOffset;
+
+    if (!clientOffset || !initialClientOffset || !initialSourceClientOffset) {
+      return null;
+    }
+
+    return {
+      x: clientOffset.x + initialSourceClientOffset.x - initialClientOffset.x,
+      y: clientOffset.y + initialSourceClientOffset.y - initialClientOffset.y
+    };
+  };
+
+  DragOffsetStore.prototype.getDifferenceFromInitialOffset = function getDifferenceFromInitialOffset() {
+    var _state2 = this.state;
+    var clientOffset = _state2.clientOffset;
+    var initialClientOffset = _state2.initialClientOffset;
+
+    if (!clientOffset || !initialClientOffset) {
+      return null;
+    }
+
+    return {
+      x: clientOffset.x - initialClientOffset.x,
+      y: clientOffset.y - initialClientOffset.y
+    };
+  };
+
+  return DragOffsetStore;
+})(_Store2.Store);
+
+exports['default'] = DragOffsetStore;
+module.exports = exports['default'];
+},{"flummox":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/lib/Flux.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/stores/DragOperationStore.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+exports.__esModule = true;
+
+var _Store2 = require('flummox');
+
+var _xor = require('lodash/array/xor');
+
+var _xor2 = _interopRequireWildcard(_xor);
+
+var _without = require('lodash/array/without');
+
+var _without2 = _interopRequireWildcard(_without);
+
+var _intersection = require('lodash/array/intersection');
+
+var _intersection2 = _interopRequireWildcard(_intersection);
+
+var ALL_DIRTY_WILDCARD = { __all__: true };
+
+var DragOperationStore = (function (_Store) {
+  function DragOperationStore(flux) {
+    _classCallCheck(this, DragOperationStore);
+
+    _Store.call(this);
+
+    var dragDropActionIds = flux.dragDropActionIds;
+    var registryActionIds = flux.registryActionIds;
+
+    this.register(dragDropActionIds.beginDrag, this.handleBeginDrag);
+    this.register(dragDropActionIds.publishDragSource, this.handlePublishDragSource);
+    this.register(dragDropActionIds.hover, this.handleHover);
+    this.register(dragDropActionIds.endDrag, this.handleEndDrag);
+    this.register(dragDropActionIds.drop, this.handleDrop);
+    this.register(registryActionIds.removeTarget, this.handleRemoveTarget);
+
+    this.dirtyHandlerIds = [];
+    this.state = {
+      itemType: null,
+      item: null,
+      sourceId: null,
+      targetIds: [],
+      dropResult: null,
+      didDrop: false,
+      isSourcePublic: null
+    };
+  }
+
+  _inherits(DragOperationStore, _Store);
+
+  DragOperationStore.prototype.setState = function setState(nextState) {
+    var dirtyHandlerIds = arguments[1] === undefined ? ALL_DIRTY_WILDCARD : arguments[1];
+
+    this.dirtyHandlerIds = dirtyHandlerIds;
+    _Store.prototype.setState.call(this, nextState);
+  };
+
+  DragOperationStore.prototype.handleBeginDrag = function handleBeginDrag(_ref) {
+    var itemType = _ref.itemType;
+    var item = _ref.item;
+    var sourceId = _ref.sourceId;
+    var isSourcePublic = _ref.isSourcePublic;
+
+    this.setState({
+      itemType: itemType,
+      item: item,
+      sourceId: sourceId,
+      isSourcePublic: isSourcePublic,
+      dropResult: null,
+      didDrop: false
+    });
+  };
+
+  DragOperationStore.prototype.handlePublishDragSource = function handlePublishDragSource() {
+    this.setState({
+      isSourcePublic: true
+    });
+  };
+
+  DragOperationStore.prototype.handleHover = function handleHover(_ref2) {
+    var targetIds = _ref2.targetIds;
+    var prevTargetIds = this.state.targetIds;
+
+    var dirtyHandlerIds = _xor2['default'](targetIds, prevTargetIds);
+
+    var didChange = false;
+    if (dirtyHandlerIds.length === 0) {
+      for (var i = 0; i < targetIds.length; i++) {
+        if (targetIds[i] !== prevTargetIds[i]) {
+          didChange = true;
+          break;
+        }
+      }
+    } else {
+      didChange = true;
+    }
+
+    if (!didChange) {
+      return;
+    }
+
+    var prevInnermostTargetId = prevTargetIds[prevTargetIds.length - 1];
+    var innermostTargetId = targetIds[targetIds.length - 1];
+
+    if (prevInnermostTargetId !== innermostTargetId) {
+      if (prevInnermostTargetId) {
+        dirtyHandlerIds.push(prevInnermostTargetId);
+      }
+      if (innermostTargetId) {
+        dirtyHandlerIds.push(innermostTargetId);
+      }
+    }
+
+    this.setState({
+      targetIds: targetIds
+    }, dirtyHandlerIds);
+  };
+
+  DragOperationStore.prototype.handleRemoveTarget = function handleRemoveTarget(_ref3) {
+    var targetId = _ref3.targetId;
+    var targetIds = this.state.targetIds;
+
+    if (targetIds.indexOf(targetId) === -1) {
+      return;
+    }
+
+    this.setState({
+      targetIds: _without2['default'](targetIds, targetId)
+    }, []);
+  };
+
+  DragOperationStore.prototype.handleDrop = function handleDrop(_ref4) {
+    var dropResult = _ref4.dropResult;
+
+    this.setState({
+      dropResult: dropResult,
+      didDrop: true,
+      targetIds: []
+    });
+  };
+
+  DragOperationStore.prototype.handleEndDrag = function handleEndDrag() {
+    this.setState({
+      itemType: null,
+      item: null,
+      sourceId: null,
+      dropResult: null,
+      didDrop: false,
+      isSourcePublic: null,
+      targetIds: []
+    });
+  };
+
+  DragOperationStore.prototype.isDragging = function isDragging() {
+    return Boolean(this.getItemType());
+  };
+
+  DragOperationStore.prototype.getItemType = function getItemType() {
+    return this.state.itemType;
+  };
+
+  DragOperationStore.prototype.getSourceId = function getSourceId() {
+    return this.state.sourceId;
+  };
+
+  DragOperationStore.prototype.getTargetIds = function getTargetIds() {
+    return this.state.targetIds.slice(0);
+  };
+
+  DragOperationStore.prototype.getItem = function getItem() {
+    return this.state.item;
+  };
+
+  DragOperationStore.prototype.getDropResult = function getDropResult() {
+    return this.state.dropResult;
+  };
+
+  DragOperationStore.prototype.didDrop = function didDrop() {
+    return this.state.didDrop;
+  };
+
+  DragOperationStore.prototype.isSourcePublic = function isSourcePublic() {
+    return this.state.isSourcePublic;
+  };
+
+  DragOperationStore.prototype.areDirty = function areDirty(handlerIds) {
+    if (this.dirtyHandlerIds === ALL_DIRTY_WILDCARD) {
+      return true;
+    }
+
+    return _intersection2['default'](handlerIds, this.dirtyHandlerIds).length > 0;
+  };
+
+  return DragOperationStore;
+})(_Store2.Store);
+
+exports['default'] = DragOperationStore;
+module.exports = exports['default'];
+},{"flummox":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/lib/Flux.js","lodash/array/intersection":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/array/intersection.js","lodash/array/without":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/array/without.js","lodash/array/xor":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/array/xor.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/stores/RefCountStore.js":[function(require,module,exports){
+'use strict';
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+exports.__esModule = true;
+
+var _Store2 = require('flummox');
+
+var RefCountStore = (function (_Store) {
+  function RefCountStore(flux) {
+    _classCallCheck(this, RefCountStore);
+
+    _Store.call(this);
+
+    var registryActionIds = flux.registryActionIds;
+
+    this.register(registryActionIds.addSource, this.addRef);
+    this.register(registryActionIds.addTarget, this.addRef);
+    this.register(registryActionIds.removeSource, this.removeRef);
+    this.register(registryActionIds.removeTarget, this.removeRef);
+
+    this.state = {
+      refCount: 0
+    };
+  }
+
+  _inherits(RefCountStore, _Store);
+
+  RefCountStore.prototype.addRef = function addRef() {
+    this.setState({
+      refCount: this.state.refCount + 1
+    });
+  };
+
+  RefCountStore.prototype.removeRef = function removeRef() {
+    this.setState({
+      refCount: this.state.refCount - 1
+    });
+  };
+
+  RefCountStore.prototype.hasRefs = function hasRefs() {
+    return this.state.refCount > 0;
+  };
+
+  return RefCountStore;
+})(_Store2.Store);
+
+exports['default'] = RefCountStore;
+module.exports = exports['default'];
+},{"flummox":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/lib/Flux.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/utils/HandlerRegistry.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+exports.__esModule = true;
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireWildcard(_invariant);
+
+var _keyMirror = require('keymirror');
+
+var _keyMirror2 = _interopRequireWildcard(_keyMirror);
+
+var _isArray = require('lodash/lang/isArray');
+
+var _isArray2 = _interopRequireWildcard(_isArray);
+
+var _getNextUniqueId = require('./getNextUniqueId');
+
+var _getNextUniqueId2 = _interopRequireWildcard(_getNextUniqueId);
+
+var HandlerRoles = _keyMirror2['default']({
+  SOURCE: null,
+  TARGET: null
+});
+
+function validateSourceContract(source) {
+  _invariant2['default'](typeof source.canDrag === 'function', 'Expected canDrag to be a function.');
+  _invariant2['default'](typeof source.beginDrag === 'function', 'Expected beginDrag to be a function.');
+  _invariant2['default'](typeof source.endDrag === 'function', 'Expected endDrag to be a function.');
+}
+
+function validateTargetContract(target) {
+  _invariant2['default'](typeof target.canDrop === 'function', 'Expected canDrop to be a function.');
+  _invariant2['default'](typeof target.hover === 'function', 'Expected hover to be a function.');
+  _invariant2['default'](typeof target.drop === 'function', 'Expected beginDrag to be a function.');
+}
+
+function validateType(type, allowArray) {
+  if (allowArray && _isArray2['default'](type)) {
+    type.forEach(function (t) {
+      return validateType(t, false);
+    });
+    return;
+  }
+
+  _invariant2['default'](typeof type === 'string' || typeof type === 'symbol', allowArray ? 'Type can only be a string, a symbol, or an array of either.' : 'Type can only be a string or a symbol.');
+}
+
+function getNextHandlerId(role) {
+  var id = _getNextUniqueId2['default']().toString();
+  switch (role) {
+    case HandlerRoles.SOURCE:
+      return 'S' + id;
+    case HandlerRoles.TARGET:
+      return 'T' + id;
+    default:
+      _invariant2['default'](false, 'Unknown role: ' + role);
+  }
+}
+
+function parseRoleFromHandlerId(handlerId) {
+  switch (handlerId[0]) {
+    case 'S':
+      return HandlerRoles.SOURCE;
+    case 'T':
+      return HandlerRoles.TARGET;
+    default:
+      _invariant2['default'](false, 'Cannot parse handler ID: ' + handlerId);
+  }
+}
+
+var HandlerRegistry = (function () {
+  function HandlerRegistry(actions) {
+    _classCallCheck(this, HandlerRegistry);
+
+    this.actions = actions;
+
+    this.types = {};
+    this.handlers = {};
+
+    this.pinnedSourceId = null;
+    this.pinnedSource = null;
+  }
+
+  HandlerRegistry.prototype.addSource = function addSource(type, source) {
+    validateType(type);
+    validateSourceContract(source);
+
+    var sourceId = this.addHandler(HandlerRoles.SOURCE, type, source);
+    this.actions.addSource(sourceId);
+    return sourceId;
+  };
+
+  HandlerRegistry.prototype.addTarget = function addTarget(type, target) {
+    validateType(type, true);
+    validateTargetContract(target);
+
+    var targetId = this.addHandler(HandlerRoles.TARGET, type, target);
+    this.actions.addTarget(targetId);
+    return targetId;
+  };
+
+  HandlerRegistry.prototype.addHandler = function addHandler(role, type, handler) {
+    var id = getNextHandlerId(role);
+    this.types[id] = type;
+    this.handlers[id] = handler;
+
+    return id;
+  };
+
+  HandlerRegistry.prototype.containsHandler = function containsHandler(handler) {
+    var _this = this;
+
+    return Object.keys(this.handlers).some(function (key) {
+      return _this.handlers[key] === handler;
+    });
+  };
+
+  HandlerRegistry.prototype.getSource = function getSource(sourceId, includePinned) {
+    _invariant2['default'](this.isSourceId(sourceId), 'Expected a valid source ID.');
+
+    var isPinned = includePinned && sourceId === this.pinnedSourceId;
+    var source = isPinned ? this.pinnedSource : this.handlers[sourceId];
+
+    return source;
+  };
+
+  HandlerRegistry.prototype.getTarget = function getTarget(targetId) {
+    _invariant2['default'](this.isTargetId(targetId), 'Expected a valid target ID.');
+    return this.handlers[targetId];
+  };
+
+  HandlerRegistry.prototype.getSourceType = function getSourceType(sourceId) {
+    _invariant2['default'](this.isSourceId(sourceId), 'Expected a valid source ID.');
+    return this.types[sourceId];
+  };
+
+  HandlerRegistry.prototype.getTargetType = function getTargetType(targetId) {
+    _invariant2['default'](this.isTargetId(targetId), 'Expected a valid target ID.');
+    return this.types[targetId];
+  };
+
+  HandlerRegistry.prototype.isSourceId = function isSourceId(handlerId) {
+    var role = parseRoleFromHandlerId(handlerId);
+    return role === HandlerRoles.SOURCE;
+  };
+
+  HandlerRegistry.prototype.isTargetId = function isTargetId(handlerId) {
+    var role = parseRoleFromHandlerId(handlerId);
+    return role === HandlerRoles.TARGET;
+  };
+
+  HandlerRegistry.prototype.removeSource = function removeSource(sourceId) {
+    _invariant2['default'](this.getSource(sourceId), 'Expected an existing source.');
+
+    delete this.handlers[sourceId];
+    delete this.types[sourceId];
+
+    this.actions.removeSource(sourceId);
+  };
+
+  HandlerRegistry.prototype.removeTarget = function removeTarget(targetId) {
+    _invariant2['default'](this.getTarget(targetId), 'Expected an existing target.');
+
+    delete this.handlers[targetId];
+    delete this.types[targetId];
+
+    this.actions.removeTarget(targetId);
+  };
+
+  HandlerRegistry.prototype.pinSource = function pinSource(sourceId) {
+    var source = this.getSource(sourceId);
+    _invariant2['default'](source, 'Expected an existing source.');
+
+    this.pinnedSourceId = sourceId;
+    this.pinnedSource = source;
+  };
+
+  HandlerRegistry.prototype.unpinSource = function unpinSource() {
+    _invariant2['default'](this.pinnedSource, 'No source is pinned at the time.');
+
+    this.pinnedSourceId = null;
+    this.pinnedSource = null;
+  };
+
+  return HandlerRegistry;
+})();
+
+exports['default'] = HandlerRegistry;
+module.exports = exports['default'];
+},{"./getNextUniqueId":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/utils/getNextUniqueId.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","keymirror":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/keymirror/index.js","lodash/lang/isArray":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArray.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/utils/getNextUniqueId.js":[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+exports["default"] = getNextUniqueId;
+var nextUniqueId = 0;
+
+function getNextUniqueId() {
+  return nextUniqueId++;
+}
+
+module.exports = exports["default"];
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/utils/matchesType.js":[function(require,module,exports){
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+exports.__esModule = true;
+exports['default'] = matchesType;
+
+var _isArray = require('lodash/lang/isArray');
+
+var _isArray2 = _interopRequireWildcard(_isArray);
+
+function matchesType(targetType, draggedItemType) {
+  if (_isArray2['default'](targetType)) {
+    return targetType.some(function (t) {
+      return t === draggedItemType;
+    });
+  } else {
+    return targetType === draggedItemType;
+  }
+}
+
+module.exports = exports['default'];
+},{"lodash/lang/isArray":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArray.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/lib/Actions.js":[function(require,module,exports){
+(function (process){
+"use strict";
+
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+/**
+ * Actions
+ *
+ * Instances of the Actions class represent a set of actions. (In Flux parlance,
+ * these might be more accurately denoted as Action Creators, while Action
+ * refers to the payload sent to the dispatcher, but this is... confusing. We
+ * will use Action to mean the function you call to trigger a dispatch.)
+ *
+ * Create actions by extending from the base Actions class and adding methods.
+ * All methods on the prototype (except the constructor) will be
+ * converted into actions. The return value of an action is used as the body
+ * of the payload sent to the dispatcher.
+ */
+
+var uniqueId = _interopRequire(require("uniqueid"));
+
+var Actions = (function () {
+  function Actions() {
+    _classCallCheck(this, Actions);
+
+    this._baseId = uniqueId();
+
+    var methodNames = this._getActionMethodNames();
+    for (var i = 0; i < methodNames.length; i++) {
+      var methodName = methodNames[i];
+      this._wrapAction(methodName);
+    }
+
+    this.getConstants = this.getActionIds;
+  }
+
+  _prototypeProperties(Actions, null, {
+    getActionIds: {
+      value: function getActionIds() {
+        var _this = this;
+        return this._getActionMethodNames().reduce(function (result, actionName) {
+          result[actionName] = _this[actionName]._id;
+          return result;
+        }, {});
+      },
+      writable: true,
+      configurable: true
+    },
+    _getActionMethodNames: {
+      value: function _getActionMethodNames(instance) {
+        var _this = this;
+        return Object.getOwnPropertyNames(this.constructor.prototype).filter(function (name) {
+          return name !== "constructor" && typeof _this[name] === "function";
+        });
+      },
+      writable: true,
+      configurable: true
+    },
+    _wrapAction: {
+      value: function _wrapAction(methodName) {
+        var _this = this;
+        var originalMethod = this[methodName];
+        var actionId = this._createActionId(methodName);
+
+        var action = function () {
+          for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          var body = originalMethod.apply(_this, args);
+
+          if (isPromise(body)) {
+            var promise = body;
+            _this._dispatchAsync(actionId, promise, args, methodName)
+            // Catch errors and do nothing
+            // They can be handled by store or caller
+            ["catch"](function (error) {});
+
+            return promise;
+          } else {
+            return _this._dispatch(actionId, body, args, methodName);
+          }
+        };
+
+        action._id = actionId;
+
+        this[methodName] = action;
+      },
+      writable: true,
+      configurable: true
+    },
+    _createActionId: {
+
+      /**
+       * Create unique string constant for an action method, using
+       * @param {string} methodName - Name of the action method
+       */
+      value: function _createActionId(methodName) {
+        return "" + this._baseId + "-" + methodName;
+      },
+      writable: true,
+      configurable: true
+    },
+    _dispatch: {
+      value: function _dispatch(actionId, body, args, methodName) {
+        if (typeof this.dispatch === "function") {
+          if (typeof body !== "undefined") {
+            this.dispatch(actionId, body, args);
+          }
+        } else {
+          if (process.env.NODE_ENV !== "production") {
+            console.warn("You've attempted to perform the action " + ("" + this.constructor.name + "#" + methodName + ", but it hasn't been added ") + "to a Flux instance.");
+          }
+        }
+
+        return body;
+      },
+      writable: true,
+      configurable: true
+    },
+    _dispatchAsync: {
+      value: function _dispatchAsync(actionId, promise, args, methodName) {
+        if (typeof this.dispatchAsync === "function") {
+          return this.dispatchAsync(actionId, promise, args);
+        } else {
+          if (process.env.NODE_ENV !== "production") {
+            console.warn("You've attempted to perform the asynchronous action " + ("" + this.constructor.name + "#" + methodName + ", but it hasn't been added ") + "to a Flux instance.");
+          }
+
+          return promise;
+        }
+      },
+      writable: true,
+      configurable: true
+    }
+  });
+
+  return Actions;
+})();
+
+module.exports = Actions;
+
+
+function isPromise(value) {
+  return value && typeof value.then === "function";
+}
+
+}).call(this,require('_process'))
+},{"_process":"/home/ganesh/dev/Generator/node_modules/grunt-browserify/node_modules/browserify/node_modules/process/browser.js","uniqueid":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/uniqueid/index.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/lib/Flux.js":[function(require,module,exports){
+(function (process){
+"use strict";
+
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+
+var _applyConstructor = function (Constructor, args) { var instance = Object.create(Constructor.prototype); var result = Constructor.apply(instance, args); return result != null && (typeof result == "object" || typeof result == "function") ? result : instance; };
+
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+/**
+ * Flux
+ *
+ * The main Flux class.
+ */
+
+var Store = _interopRequire(require("./Store"));
+
+var Actions = _interopRequire(require("./Actions"));
+
+var Dispatcher = require("flux").Dispatcher;
+var EventEmitter = _interopRequire(require("eventemitter3"));
+
+var Flux = (function (EventEmitter) {
+  function Flux() {
+    _classCallCheck(this, Flux);
+
+    this.dispatcher = new Dispatcher();
+
+    this._stores = {};
+    this._actions = {};
+  }
+
+  _inherits(Flux, EventEmitter);
+
+  _prototypeProperties(Flux, null, {
+    createStore: {
+      value: function createStore(key, _Store) {
+        for (var _len = arguments.length, constructorArgs = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+          constructorArgs[_key - 2] = arguments[_key];
+        }
+
+        if (!(_Store.prototype instanceof Store)) {
+          var className = getClassName(_Store);
+
+          throw new Error("You've attempted to create a store from the class " + className + ", which " + "does not have the base Store class in its prototype chain. Make sure " + ("you're using the `extends` keyword: `class " + className + " extends ") + "Store { ... }`");
+        }
+
+        if (this._stores.hasOwnProperty(key) && this._stores[key]) {
+          throw new Error("You've attempted to create multiple stores with key " + key + ". Keys must " + "be unique.");
+        }
+
+        var store = _applyConstructor(_Store, constructorArgs);
+        var token = this.dispatcher.register(store.handler.bind(store));
+
+        store._waitFor = this.waitFor.bind(this);
+        store._token = token;
+
+        this._stores[key] = store;
+
+        return store;
+      },
+      writable: true,
+      configurable: true
+    },
+    getStore: {
+      value: function getStore(key) {
+        return this._stores.hasOwnProperty(key) ? this._stores[key] : undefined;
+      },
+      writable: true,
+      configurable: true
+    },
+    createActions: {
+      value: function createActions(key, _Actions) {
+        for (var _len = arguments.length, constructorArgs = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+          constructorArgs[_key - 2] = arguments[_key];
+        }
+
+        if (!(_Actions.prototype instanceof Actions) && _Actions !== Actions) {
+          var className = getClassName(_Actions);
+
+          throw new Error("You've attempted to create actions from the class " + className + ", which " + "does not have the base Actions class in its prototype chain. Make " + ("sure you're using the `extends` keyword: `class " + className + " ") + "extends Actions { ... }`");
+        }
+
+        if (this._actions.hasOwnProperty(key) && this._actions[key]) {
+          throw new Error("You've attempted to create multiple actions with key " + key + ". Keys " + "must be unique.");
+        }
+
+        var actions = _applyConstructor(_Actions, constructorArgs);
+        actions.dispatch = this.dispatch.bind(this);
+        actions.dispatchAsync = this.dispatchAsync.bind(this);
+
+        this._actions[key] = actions;
+
+        return actions;
+      },
+      writable: true,
+      configurable: true
+    },
+    getActions: {
+      value: function getActions(key) {
+        return this._actions.hasOwnProperty(key) ? this._actions[key] : undefined;
+      },
+      writable: true,
+      configurable: true
+    },
+    getActionIds: {
+      value: function getActionIds(key) {
+        var actions = this.getActions(key);
+
+        if (!actions) {
+          return;
+        }return actions.getConstants();
+      },
+      writable: true,
+      configurable: true
+    },
+    dispatch: {
+      value: function dispatch(actionId, body) {
+        this._dispatch({ actionId: actionId, body: body });
+      },
+      writable: true,
+      configurable: true
+    },
+    dispatchAsync: {
+      value: function dispatchAsync(actionId, promise, actionArgs) {
+        var _this = this;
+        var payload = {
+          actionId: actionId,
+          async: "begin" };
+
+        if (actionArgs) payload.actionArgs = actionArgs;
+
+        this._dispatch(payload);
+
+        return promise.then(function (body) {
+          _this._dispatch({
+            actionId: actionId,
+            body: body,
+            async: "success"
+          });
+
+          return body;
+        }, function (error) {
+          _this._dispatch({
+            actionId: actionId,
+            error: error,
+            async: "failure" });
+
+          return Promise.reject(error);
+        })["catch"](function (error) {
+          _this.emit("error", error);
+
+          return Promise.reject(error);
+        });
+      },
+      writable: true,
+      configurable: true
+    },
+    _dispatch: {
+      value: function _dispatch(payload) {
+        this.dispatcher.dispatch(payload);
+        this.emit("dispatch", payload);
+      },
+      writable: true,
+      configurable: true
+    },
+    waitFor: {
+      value: function waitFor(tokensOrStores) {
+        if (!Array.isArray(tokensOrStores)) tokensOrStores = [tokensOrStores];
+
+        var ensureIsToken = function (tokenOrStore) {
+          return tokenOrStore instanceof Store ? tokenOrStore._token : tokenOrStore;
+        };
+
+        var tokens = tokensOrStores.map(ensureIsToken);
+
+        this.dispatcher.waitFor(tokens);
+      },
+      writable: true,
+      configurable: true
+    },
+    removeAllStoreListeners: {
+      value: function removeAllStoreListeners(event) {
+        for (var key in this._stores) {
+          if (!this._stores.hasOwnProperty(key)) continue;
+
+          var store = this._stores[key];
+
+          store.removeAllListeners(event);
+        }
+      },
+      writable: true,
+      configurable: true
+    },
+    serialize: {
+      value: function serialize() {
+        var stateTree = {};
+
+        for (var key in this._stores) {
+          if (!this._stores.hasOwnProperty(key)) continue;
+
+          var store = this._stores[key];
+
+          var serialize = store.constructor.serialize;
+
+          if (typeof serialize !== "function") continue;
+
+          var serializedStoreState = serialize(store.state);
+
+          if (typeof serializedStoreState !== "string") {
+            var className = store.constructor.name;
+
+            if (process.env.NODE_ENV !== "production") {
+              console.warn("The store with key '" + key + "' was not serialized because the static " + ("method `" + className + ".serialize()` returned a non-string with type ") + ("'" + typeof serializedStoreState + "'."));
+            }
+          }
+
+          stateTree[key] = serializedStoreState;
+
+          if (typeof store.constructor.deserialize !== "function") {
+            var className = store.constructor.name;
+
+            if (process.env.NODE_ENV !== "production") {
+              console.warn("The class `" + className + "` has a `serialize()` method, but no " + "corresponding `deserialize()` method.");
+            }
+          }
+        }
+
+        return JSON.stringify(stateTree);
+      },
+      writable: true,
+      configurable: true
+    },
+    deserialize: {
+      value: function deserialize(serializedState) {
+        var stateMap = undefined;
+
+        try {
+          stateMap = JSON.parse(serializedState);
+        } catch (error) {
+          var className = this.constructor.name;
+
+          if (process.env.NODE_ENV !== "production") {
+            throw new Error("Invalid value passed to `" + className + "#deserialize()`: " + ("" + serializedState));
+          }
+        }
+
+        for (var key in this._stores) {
+          if (!this._stores.hasOwnProperty(key)) continue;
+
+          var store = this._stores[key];
+
+          var deserialize = store.constructor.deserialize;
+
+          if (typeof deserialize !== "function") continue;
+
+          var storeStateString = stateMap[key];
+          var storeState = deserialize(storeStateString);
+
+          store.replaceState(storeState);
+
+          if (typeof store.constructor.serialize !== "function") {
+            var className = store.constructor.name;
+
+            if (process.env.NODE_ENV !== "production") {
+              console.warn("The class `" + className + "` has a `deserialize()` method, but no " + "corresponding `serialize()` method.");
+            }
+          }
+        }
+      },
+      writable: true,
+      configurable: true
+    }
+  });
+
+  return Flux;
+})(EventEmitter);
+
+exports["default"] = Flux;
+
+
+// Aliases
+Flux.prototype.getConstants = Flux.prototype.getActionIds;
+Flux.prototype.dehydrate = Flux.prototype.serialize;
+Flux.prototype.hydrate = Flux.prototype.deserialize;
+
+function getClassName(Class) {
+  return Class.prototype.constructor.name;
+}
+
+var Flummox = Flux;
+
+exports.Flux = Flux;
+exports.Flummox = Flummox;
+exports.Store = Store;
+exports.Actions = Actions;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+}).call(this,require('_process'))
+},{"./Actions":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/lib/Actions.js","./Store":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/lib/Store.js","_process":"/home/ganesh/dev/Generator/node_modules/grunt-browserify/node_modules/browserify/node_modules/process/browser.js","eventemitter3":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/eventemitter3/index.js","flux":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/flux/index.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/lib/Store.js":[function(require,module,exports){
+(function (process){
+"use strict";
+
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+/**
+ * Store
+ *
+ * Stores hold application state. They respond to actions sent by the dispatcher
+ * and broadcast change events to listeners, so they can grab the latest data.
+ * The key thing to remember is that the only way stores receive information
+ * from the outside world is via the dispatcher.
+ */
+
+var EventEmitter = _interopRequire(require("eventemitter3"));
+
+var assign = _interopRequire(require("object-assign"));
+
+var Store = (function (EventEmitter) {
+  /**
+   * Stores are initialized with a reference
+   * @type {Object}
+   */
+  function Store() {
+    _classCallCheck(this, Store);
+
+    this.state = undefined;
+
+    this._handlers = {};
+    this._asyncHandlers = {};
+  }
+
+  _inherits(Store, EventEmitter);
+
+  _prototypeProperties(Store, null, {
+    getState: {
+
+      /**
+       * Return a (shallow) copy of the store's internal state, so that it is
+       * protected from mutation by the consumer.
+       * @returns {object}
+       */
+      value: function getState() {
+        return assign({}, this.state);
+      },
+      writable: true,
+      configurable: true
+    },
+    setState: {
+      value: function setState(newState) {
+        if (typeof this.state === "undefined") this.state = {};
+
+        if (this._isHandlingDispatch) {
+          this._pendingState = assign(this._pendingState, newState);
+          this._emitChangeAfterHandlingDispatch = true;
+        } else {
+          if (process.env.NODE_ENV !== "production") {
+            console.warn("Store#setState() called from outside an action handler. This is likely " + "a mistake. Flux stores should manage their own state.");
+          }
+
+          this.state = assign({}, this.state, newState);
+          this.emit("change");
+        }
+      },
+      writable: true,
+      configurable: true
+    },
+    replaceState: {
+      value: function replaceState(newState) {
+        if (typeof this.state === "undefined") this.state = {};
+
+        if (this._isHandlingDispatch) {
+          this._pendingState = assign({}, newState);
+          this._emitChangeAfterHandlingDispatch = true;
+        } else {
+          this.state = assign({}, newState);
+          this.emit("change");
+        }
+      },
+      writable: true,
+      configurable: true
+    },
+    forceUpdate: {
+      value: function forceUpdate() {
+        if (this._isHandlingDispatch) {
+          this._emitChangeAfterHandlingDispatch = true;
+        } else {
+          this.emit("change");
+        }
+      },
+      writable: true,
+      configurable: true
+    },
+    register: {
+      value: function register(actionId, handler) {
+        actionId = ensureActionId(actionId);
+
+        if (typeof handler !== "function") {
+          return;
+        }this._handlers[actionId] = handler.bind(this);
+      },
+      writable: true,
+      configurable: true
+    },
+    registerAsync: {
+      value: function registerAsync(actionId, beginHandler, successHandler, failureHandler) {
+        actionId = ensureActionId(actionId);
+
+        var asyncHandlers = {
+          begin: beginHandler,
+          success: successHandler,
+          failure: failureHandler };
+
+        for (var key in asyncHandlers) {
+          if (!asyncHandlers.hasOwnProperty(key)) continue;
+
+          var handler = asyncHandlers[key];
+
+          if (typeof handler === "function") {
+            asyncHandlers[key] = handler.bind(this);
+          } else {
+            delete asyncHandlers[key];
+          }
+        }
+
+        this._asyncHandlers[actionId] = asyncHandlers;
+      },
+      writable: true,
+      configurable: true
+    },
+    waitFor: {
+      value: function waitFor(tokensOrStores) {
+        this._waitFor(tokensOrStores);
+      },
+      writable: true,
+      configurable: true
+    },
+    handler: {
+      value: function handler(payload) {
+        var body = payload.body;
+        var actionId = payload.actionId;
+        var _async = payload.async;
+        var actionArgs = payload.actionArgs;
+        var error = payload.error;
+
+
+        var _handler = this._handlers[actionId];
+        var _asyncHandler = this._asyncHandlers[actionId] && this._asyncHandlers[actionId][_async];
+
+        if (_async) {
+          switch (_async) {
+            case "begin":
+              if (typeof _asyncHandler === "function") {
+                this._performHandler.apply(this, [_asyncHandler].concat(actionArgs));
+              }
+              return;
+            case "failure":
+              if (typeof _asyncHandler === "function") {
+                this._performHandler(_asyncHandler, error);
+              }
+              return;
+            case "success":
+              if (typeof _asyncHandler === "function") {
+                _handler = _asyncHandler;
+              }
+              break;
+            default:
+              return;
+          }
+        }
+
+        if (typeof _handler !== "function") {
+          return;
+        }this._performHandler(_handler, body);
+      },
+      writable: true,
+      configurable: true
+    },
+    _performHandler: {
+      value: function _performHandler(_handler) {
+        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+
+        this._isHandlingDispatch = true;
+        this._pendingState = assign({}, this.state);
+        this._emitChangeAfterHandlingDispatch = false;
+
+        try {
+          _handler.apply(this, args);
+        } finally {
+          if (this._emitChangeAfterHandlingDispatch) {
+            this.state = this._pendingState;
+            this.emit("change");
+          }
+
+          this._isHandlingDispatch = false;
+          this._pendingState = {};
+          this._emitChangeAfterHandlingDispatch = false;
+        }
+      },
+      writable: true,
+      configurable: true
+    }
+  });
+
+  return Store;
+})(EventEmitter);
+
+module.exports = Store;
+
+
+function ensureActionId(actionOrActionId) {
+  return typeof actionOrActionId === "function" ? actionOrActionId._id : actionOrActionId;
+}
+
+}).call(this,require('_process'))
+},{"_process":"/home/ganesh/dev/Generator/node_modules/grunt-browserify/node_modules/browserify/node_modules/process/browser.js","eventemitter3":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/eventemitter3/index.js","object-assign":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/object-assign/index.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/eventemitter3/index.js":[function(require,module,exports){
+'use strict';
+
+/**
+ * Representation of a single EventEmitter function.
+ *
+ * @param {Function} fn Event handler to be called.
+ * @param {Mixed} context Context for function execution.
+ * @param {Boolean} once Only emit once
+ * @api private
+ */
+function EE(fn, context, once) {
+  this.fn = fn;
+  this.context = context;
+  this.once = once || false;
+}
+
+/**
+ * Minimal EventEmitter interface that is molded against the Node.js
+ * EventEmitter interface.
+ *
+ * @constructor
+ * @api public
+ */
+function EventEmitter() { /* Nothing to set */ }
+
+/**
+ * Holds the assigned EventEmitters by name.
+ *
+ * @type {Object}
+ * @private
+ */
+EventEmitter.prototype._events = undefined;
+
+/**
+ * Return a list of assigned event listeners.
+ *
+ * @param {String} event The events that should be listed.
+ * @returns {Array}
+ * @api public
+ */
+EventEmitter.prototype.listeners = function listeners(event) {
+  if (!this._events || !this._events[event]) return [];
+  if (this._events[event].fn) return [this._events[event].fn];
+
+  for (var i = 0, l = this._events[event].length, ee = new Array(l); i < l; i++) {
+    ee[i] = this._events[event][i].fn;
+  }
+
+  return ee;
+};
+
+/**
+ * Emit an event to all registered event listeners.
+ *
+ * @param {String} event The name of the event.
+ * @returns {Boolean} Indication if we've emitted an event.
+ * @api public
+ */
+EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+  if (!this._events || !this._events[event]) return false;
+
+  var listeners = this._events[event]
+    , len = arguments.length
+    , args
+    , i;
+
+  if ('function' === typeof listeners.fn) {
+    if (listeners.once) this.removeListener(event, listeners.fn, true);
+
+    switch (len) {
+      case 1: return listeners.fn.call(listeners.context), true;
+      case 2: return listeners.fn.call(listeners.context, a1), true;
+      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+    }
+
+    for (i = 1, args = new Array(len -1); i < len; i++) {
+      args[i - 1] = arguments[i];
+    }
+
+    listeners.fn.apply(listeners.context, args);
+  } else {
+    var length = listeners.length
+      , j;
+
+    for (i = 0; i < length; i++) {
+      if (listeners[i].once) this.removeListener(event, listeners[i].fn, true);
+
+      switch (len) {
+        case 1: listeners[i].fn.call(listeners[i].context); break;
+        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+        default:
+          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+            args[j - 1] = arguments[j];
+          }
+
+          listeners[i].fn.apply(listeners[i].context, args);
+      }
+    }
+  }
+
+  return true;
+};
+
+/**
+ * Register a new EventListener for the given event.
+ *
+ * @param {String} event Name of the event.
+ * @param {Functon} fn Callback function.
+ * @param {Mixed} context The context of the function.
+ * @api public
+ */
+EventEmitter.prototype.on = function on(event, fn, context) {
+  var listener = new EE(fn, context || this);
+
+  if (!this._events) this._events = {};
+  if (!this._events[event]) this._events[event] = listener;
+  else {
+    if (!this._events[event].fn) this._events[event].push(listener);
+    else this._events[event] = [
+      this._events[event], listener
+    ];
+  }
+
+  return this;
+};
+
+/**
+ * Add an EventListener that's only called once.
+ *
+ * @param {String} event Name of the event.
+ * @param {Function} fn Callback function.
+ * @param {Mixed} context The context of the function.
+ * @api public
+ */
+EventEmitter.prototype.once = function once(event, fn, context) {
+  var listener = new EE(fn, context || this, true);
+
+  if (!this._events) this._events = {};
+  if (!this._events[event]) this._events[event] = listener;
+  else {
+    if (!this._events[event].fn) this._events[event].push(listener);
+    else this._events[event] = [
+      this._events[event], listener
+    ];
+  }
+
+  return this;
+};
+
+/**
+ * Remove event listeners.
+ *
+ * @param {String} event The event we want to remove.
+ * @param {Function} fn The listener that we need to find.
+ * @param {Boolean} once Only remove once listeners.
+ * @api public
+ */
+EventEmitter.prototype.removeListener = function removeListener(event, fn, once) {
+  if (!this._events || !this._events[event]) return this;
+
+  var listeners = this._events[event]
+    , events = [];
+
+  if (fn) {
+    if (listeners.fn && (listeners.fn !== fn || (once && !listeners.once))) {
+      events.push(listeners);
+    }
+    if (!listeners.fn) for (var i = 0, length = listeners.length; i < length; i++) {
+      if (listeners[i].fn !== fn || (once && !listeners[i].once)) {
+        events.push(listeners[i]);
+      }
+    }
+  }
+
+  //
+  // Reset the array, or remove it completely if we have no more listeners.
+  //
+  if (events.length) {
+    this._events[event] = events.length === 1 ? events[0] : events;
+  } else {
+    delete this._events[event];
+  }
+
+  return this;
+};
+
+/**
+ * Remove all listeners or only the listeners for the specified event.
+ *
+ * @param {String} event The event want to remove all listeners for.
+ * @api public
+ */
+EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+  if (!this._events) return this;
+
+  if (event) delete this._events[event];
+  else this._events = {};
+
+  return this;
+};
+
+//
+// Alias methods names because people roll like that.
+//
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+//
+// This function doesn't apply anymore.
+//
+EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
+  return this;
+};
+
+//
+// Expose the module.
+//
+EventEmitter.EventEmitter = EventEmitter;
+EventEmitter.EventEmitter2 = EventEmitter;
+EventEmitter.EventEmitter3 = EventEmitter;
+
+//
+// Expose the module.
+//
+module.exports = EventEmitter;
+
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/flux/index.js":[function(require,module,exports){
+/**
+ * Copyright (c) 2014-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+module.exports.Dispatcher = require('./lib/Dispatcher')
+
+},{"./lib/Dispatcher":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/flux/lib/Dispatcher.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/flux/lib/Dispatcher.js":[function(require,module,exports){
+/*
+ * Copyright (c) 2014, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule Dispatcher
+ * @typechecks
+ */
+
+"use strict";
+
+var invariant = require('./invariant');
+
+var _lastID = 1;
+var _prefix = 'ID_';
+
+/**
+ * Dispatcher is used to broadcast payloads to registered callbacks. This is
+ * different from generic pub-sub systems in two ways:
+ *
+ *   1) Callbacks are not subscribed to particular events. Every payload is
+ *      dispatched to every registered callback.
+ *   2) Callbacks can be deferred in whole or part until other callbacks have
+ *      been executed.
+ *
+ * For example, consider this hypothetical flight destination form, which
+ * selects a default city when a country is selected:
+ *
+ *   var flightDispatcher = new Dispatcher();
+ *
+ *   // Keeps track of which country is selected
+ *   var CountryStore = {country: null};
+ *
+ *   // Keeps track of which city is selected
+ *   var CityStore = {city: null};
+ *
+ *   // Keeps track of the base flight price of the selected city
+ *   var FlightPriceStore = {price: null}
+ *
+ * When a user changes the selected city, we dispatch the payload:
+ *
+ *   flightDispatcher.dispatch({
+ *     actionType: 'city-update',
+ *     selectedCity: 'paris'
+ *   });
+ *
+ * This payload is digested by `CityStore`:
+ *
+ *   flightDispatcher.register(function(payload) {
+ *     if (payload.actionType === 'city-update') {
+ *       CityStore.city = payload.selectedCity;
+ *     }
+ *   });
+ *
+ * When the user selects a country, we dispatch the payload:
+ *
+ *   flightDispatcher.dispatch({
+ *     actionType: 'country-update',
+ *     selectedCountry: 'australia'
+ *   });
+ *
+ * This payload is digested by both stores:
+ *
+ *    CountryStore.dispatchToken = flightDispatcher.register(function(payload) {
+ *     if (payload.actionType === 'country-update') {
+ *       CountryStore.country = payload.selectedCountry;
+ *     }
+ *   });
+ *
+ * When the callback to update `CountryStore` is registered, we save a reference
+ * to the returned token. Using this token with `waitFor()`, we can guarantee
+ * that `CountryStore` is updated before the callback that updates `CityStore`
+ * needs to query its data.
+ *
+ *   CityStore.dispatchToken = flightDispatcher.register(function(payload) {
+ *     if (payload.actionType === 'country-update') {
+ *       // `CountryStore.country` may not be updated.
+ *       flightDispatcher.waitFor([CountryStore.dispatchToken]);
+ *       // `CountryStore.country` is now guaranteed to be updated.
+ *
+ *       // Select the default city for the new country
+ *       CityStore.city = getDefaultCityForCountry(CountryStore.country);
+ *     }
+ *   });
+ *
+ * The usage of `waitFor()` can be chained, for example:
+ *
+ *   FlightPriceStore.dispatchToken =
+ *     flightDispatcher.register(function(payload) {
+ *       switch (payload.actionType) {
+ *         case 'country-update':
+ *           flightDispatcher.waitFor([CityStore.dispatchToken]);
+ *           FlightPriceStore.price =
+ *             getFlightPriceStore(CountryStore.country, CityStore.city);
+ *           break;
+ *
+ *         case 'city-update':
+ *           FlightPriceStore.price =
+ *             FlightPriceStore(CountryStore.country, CityStore.city);
+ *           break;
+ *     }
+ *   });
+ *
+ * The `country-update` payload will be guaranteed to invoke the stores'
+ * registered callbacks in order: `CountryStore`, `CityStore`, then
+ * `FlightPriceStore`.
+ */
+
+  function Dispatcher() {
+    this.$Dispatcher_callbacks = {};
+    this.$Dispatcher_isPending = {};
+    this.$Dispatcher_isHandled = {};
+    this.$Dispatcher_isDispatching = false;
+    this.$Dispatcher_pendingPayload = null;
+  }
+
+  /**
+   * Registers a callback to be invoked with every dispatched payload. Returns
+   * a token that can be used with `waitFor()`.
+   *
+   * @param {function} callback
+   * @return {string}
+   */
+  Dispatcher.prototype.register=function(callback) {
+    var id = _prefix + _lastID++;
+    this.$Dispatcher_callbacks[id] = callback;
+    return id;
+  };
+
+  /**
+   * Removes a callback based on its token.
+   *
+   * @param {string} id
+   */
+  Dispatcher.prototype.unregister=function(id) {
+    invariant(
+      this.$Dispatcher_callbacks[id],
+      'Dispatcher.unregister(...): `%s` does not map to a registered callback.',
+      id
+    );
+    delete this.$Dispatcher_callbacks[id];
+  };
+
+  /**
+   * Waits for the callbacks specified to be invoked before continuing execution
+   * of the current callback. This method should only be used by a callback in
+   * response to a dispatched payload.
+   *
+   * @param {array<string>} ids
+   */
+  Dispatcher.prototype.waitFor=function(ids) {
+    invariant(
+      this.$Dispatcher_isDispatching,
+      'Dispatcher.waitFor(...): Must be invoked while dispatching.'
+    );
+    for (var ii = 0; ii < ids.length; ii++) {
+      var id = ids[ii];
+      if (this.$Dispatcher_isPending[id]) {
+        invariant(
+          this.$Dispatcher_isHandled[id],
+          'Dispatcher.waitFor(...): Circular dependency detected while ' +
+          'waiting for `%s`.',
+          id
+        );
+        continue;
+      }
+      invariant(
+        this.$Dispatcher_callbacks[id],
+        'Dispatcher.waitFor(...): `%s` does not map to a registered callback.',
+        id
+      );
+      this.$Dispatcher_invokeCallback(id);
+    }
+  };
+
+  /**
+   * Dispatches a payload to all registered callbacks.
+   *
+   * @param {object} payload
+   */
+  Dispatcher.prototype.dispatch=function(payload) {
+    invariant(
+      !this.$Dispatcher_isDispatching,
+      'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.'
+    );
+    this.$Dispatcher_startDispatching(payload);
+    try {
+      for (var id in this.$Dispatcher_callbacks) {
+        if (this.$Dispatcher_isPending[id]) {
+          continue;
+        }
+        this.$Dispatcher_invokeCallback(id);
+      }
+    } finally {
+      this.$Dispatcher_stopDispatching();
+    }
+  };
+
+  /**
+   * Is this Dispatcher currently dispatching.
+   *
+   * @return {boolean}
+   */
+  Dispatcher.prototype.isDispatching=function() {
+    return this.$Dispatcher_isDispatching;
+  };
+
+  /**
+   * Call the callback stored with the given id. Also do some internal
+   * bookkeeping.
+   *
+   * @param {string} id
+   * @internal
+   */
+  Dispatcher.prototype.$Dispatcher_invokeCallback=function(id) {
+    this.$Dispatcher_isPending[id] = true;
+    this.$Dispatcher_callbacks[id](this.$Dispatcher_pendingPayload);
+    this.$Dispatcher_isHandled[id] = true;
+  };
+
+  /**
+   * Set up bookkeeping needed when dispatching.
+   *
+   * @param {object} payload
+   * @internal
+   */
+  Dispatcher.prototype.$Dispatcher_startDispatching=function(payload) {
+    for (var id in this.$Dispatcher_callbacks) {
+      this.$Dispatcher_isPending[id] = false;
+      this.$Dispatcher_isHandled[id] = false;
+    }
+    this.$Dispatcher_pendingPayload = payload;
+    this.$Dispatcher_isDispatching = true;
+  };
+
+  /**
+   * Clear bookkeeping used for dispatching.
+   *
+   * @internal
+   */
+  Dispatcher.prototype.$Dispatcher_stopDispatching=function() {
+    this.$Dispatcher_pendingPayload = null;
+    this.$Dispatcher_isDispatching = false;
+  };
+
+
+module.exports = Dispatcher;
+
+},{"./invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/flux/lib/invariant.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/flux/lib/invariant.js":[function(require,module,exports){
+/**
+ * Copyright (c) 2014, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule invariant
+ */
+
+"use strict";
+
+/**
+ * Use invariant() to assert state which your program assumes to be true.
+ *
+ * Provide sprintf-style format (only %s is supported) and arguments
+ * to provide information about what broke and what you were
+ * expecting.
+ *
+ * The invariant message will be stripped in production, but the invariant
+ * will remain to ensure logic does not differ in production.
+ */
+
+var invariant = function(condition, format, a, b, c, d, e, f) {
+  if (false) {
+    if (format === undefined) {
+      throw new Error('invariant requires an error message argument');
+    }
+  }
+
+  if (!condition) {
+    var error;
+    if (format === undefined) {
+      error = new Error(
+        'Minified exception occurred; use the non-minified dev environment ' +
+        'for the full error message and additional helpful warnings.'
+      );
+    } else {
+      var args = [a, b, c, d, e, f];
+      var argIndex = 0;
+      error = new Error(
+        'Invariant Violation: ' +
+        format.replace(/%s/g, function() { return args[argIndex++]; })
+      );
+    }
+
+    error.framesToPop = 1; // we don't care about invariant's own frame
+    throw error;
+  }
+};
+
+module.exports = invariant;
+
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/object-assign/index.js":[function(require,module,exports){
+'use strict';
+
+function ToObject(val) {
+	if (val == null) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+module.exports = Object.assign || function (target, source) {
+	var from;
+	var keys;
+	var to = ToObject(target);
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = arguments[s];
+		keys = Object.keys(Object(from));
+
+		for (var i = 0; i < keys.length; i++) {
+			to[keys[i]] = from[keys[i]];
+		}
+	}
+
+	return to;
+};
+
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/uniqueid/index.js":[function(require,module,exports){
+'use strict';
+
+
+var count = 0;
+
+/**
+ * Generate a unique ID.
+ *
+ * Optionally pass a prefix to prepend, a suffix to append, or a
+ * multiplier to use on the ID.
+ *
+ * ```js
+ * uniqueId(); //=> '25'
+ *
+ * uniqueId({prefix: 'apple_'});
+ * //=> 'apple_10'
+ *
+ * uniqueId({suffix: '_orange'});
+ * //=> '10_orange'
+ *
+ * uniqueId({multiplier: 5});
+ * //=> 5, 10, 15, 20...
+ * ```
+ *
+ * To reset the `id` to zero, do `id.reset()`.
+ *
+ * @param  {Object} `options` Optionally pass a `prefix`, `suffix` and/or `multiplier.
+ * @return {String} The unique id.
+ * @api public
+ */
+
+var id = module.exports = function (options) {
+  options = options || {};
+
+  var prefix = options.prefix;
+  var suffix = options.suffix;
+
+  var id = ++count * (options.multiplier || 1);
+
+  if (prefix == null) {
+    prefix = '';
+  }
+
+  if (suffix == null) {
+    suffix = '';
+  }
+
+  return String(prefix) + id + String(suffix);
+};
+
+
+id.reset = function() {
+  return count = 0;
+};
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/keymirror/index.js":[function(require,module,exports){
+/**
+ * Copyright 2013-2014 Facebook, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+"use strict";
+
+/**
+ * Constructs an enumeration with keys equal to their value.
+ *
+ * For example:
+ *
+ *   var COLORS = keyMirror({blue: null, red: null});
+ *   var myColor = COLORS.blue;
+ *   var isColorValid = !!COLORS[myColor];
+ *
+ * The last line could not be performed if the values of the generated enum were
+ * not equal to their keys.
+ *
+ *   Input:  {key1: val1, key2: val2}
+ *   Output: {key1: key1, key2: key2}
+ *
+ * @param {object} obj
+ * @return {object}
+ */
+var keyMirror = function(obj) {
+  var ret = {};
+  var key;
+  if (!(obj instanceof Object && !Array.isArray(obj))) {
+    throw new Error('keyMirror(...): Argument must be an object.');
+  }
+  for (key in obj) {
+    if (!obj.hasOwnProperty(key)) {
+      continue;
+    }
+    ret[key] = key;
+  }
+  return ret;
+};
+
+module.exports = keyMirror;
+
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js":[function(require,module,exports){
+(function (process){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule invariant
+ */
+
+'use strict';
+
+/**
+ * Use invariant() to assert state which your program assumes to be true.
+ *
+ * Provide sprintf-style format (only %s is supported) and arguments
+ * to provide information about what broke and what you were
+ * expecting.
+ *
+ * The invariant message will be stripped in production, but the invariant
+ * will remain to ensure logic does not differ in production.
+ */
+
+var invariant = function(condition, format, a, b, c, d, e, f) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (format === undefined) {
+      throw new Error('invariant requires an error message argument');
+    }
+  }
+
+  if (!condition) {
+    var error;
+    if (format === undefined) {
+      error = new Error(
+        'Minified exception occurred; use the non-minified dev environment ' +
+        'for the full error message and additional helpful warnings.'
+      );
+    } else {
+      var args = [a, b, c, d, e, f];
+      var argIndex = 0;
+      error = new Error(
+        'Invariant Violation: ' +
+        format.replace(/%s/g, function() { return args[argIndex++]; })
+      );
+    }
+
+    error.framesToPop = 1; // we don't care about invariant's own frame
+    throw error;
+  }
+};
+
+module.exports = invariant;
+
+}).call(this,require('_process'))
+},{"_process":"/home/ganesh/dev/Generator/node_modules/grunt-browserify/node_modules/browserify/node_modules/process/browser.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/array/intersection.js":[function(require,module,exports){
+var baseIndexOf = require('../internal/baseIndexOf'),
+    cacheIndexOf = require('../internal/cacheIndexOf'),
+    createCache = require('../internal/createCache'),
+    isArrayLike = require('../internal/isArrayLike'),
+    restParam = require('../function/restParam');
+
+/**
+ * Creates an array of unique values that are included in all of the provided
+ * arrays using [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * @static
+ * @memberOf _
+ * @category Array
+ * @param {...Array} [arrays] The arrays to inspect.
+ * @returns {Array} Returns the new array of shared values.
+ * @example
+ * _.intersection([1, 2], [4, 2], [2, 1]);
+ * // => [2]
+ */
+var intersection = restParam(function(arrays) {
+  var othLength = arrays.length,
+      othIndex = othLength,
+      caches = Array(length),
+      indexOf = baseIndexOf,
+      isCommon = true,
+      result = [];
+
+  while (othIndex--) {
+    var value = arrays[othIndex] = isArrayLike(value = arrays[othIndex]) ? value : [];
+    caches[othIndex] = (isCommon && value.length >= 120) ? createCache(othIndex && value) : null;
+  }
+  var array = arrays[0],
+      index = -1,
+      length = array ? array.length : 0,
+      seen = caches[0];
+
+  outer:
+  while (++index < length) {
+    value = array[index];
+    if ((seen ? cacheIndexOf(seen, value) : indexOf(result, value, 0)) < 0) {
+      var othIndex = othLength;
+      while (--othIndex) {
+        var cache = caches[othIndex];
+        if ((cache ? cacheIndexOf(cache, value) : indexOf(arrays[othIndex], value, 0)) < 0) {
+          continue outer;
+        }
+      }
+      if (seen) {
+        seen.push(value);
+      }
+      result.push(value);
+    }
+  }
+  return result;
+});
+
+module.exports = intersection;
+
+},{"../function/restParam":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/restParam.js","../internal/baseIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseIndexOf.js","../internal/cacheIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js","../internal/createCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createCache.js","../internal/isArrayLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/array/without.js":[function(require,module,exports){
+var baseDifference = require('../internal/baseDifference'),
+    isArrayLike = require('../internal/isArrayLike'),
+    restParam = require('../function/restParam');
+
+/**
+ * Creates an array excluding all provided values using
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * @static
+ * @memberOf _
+ * @category Array
+ * @param {Array} array The array to filter.
+ * @param {...*} [values] The values to exclude.
+ * @returns {Array} Returns the new array of filtered values.
+ * @example
+ *
+ * _.without([1, 2, 1, 3], 1, 2);
+ * // => [3]
+ */
+var without = restParam(function(array, values) {
+  return isArrayLike(array)
+    ? baseDifference(array, values)
+    : [];
+});
+
+module.exports = without;
+
+},{"../function/restParam":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/restParam.js","../internal/baseDifference":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseDifference.js","../internal/isArrayLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/array/xor.js":[function(require,module,exports){
+var arrayPush = require('../internal/arrayPush'),
+    baseDifference = require('../internal/baseDifference'),
+    baseUniq = require('../internal/baseUniq'),
+    isArrayLike = require('../internal/isArrayLike');
+
+/**
+ * Creates an array of unique values that is the [symmetric difference](https://en.wikipedia.org/wiki/Symmetric_difference)
+ * of the provided arrays.
+ *
+ * @static
+ * @memberOf _
+ * @category Array
+ * @param {...Array} [arrays] The arrays to inspect.
+ * @returns {Array} Returns the new array of values.
+ * @example
+ *
+ * _.xor([1, 2], [4, 2]);
+ * // => [1, 4]
+ */
+function xor() {
+  var index = -1,
+      length = arguments.length;
+
+  while (++index < length) {
+    var array = arguments[index];
+    if (isArrayLike(array)) {
+      var result = result
+        ? arrayPush(baseDifference(result, array), baseDifference(array, result))
+        : array;
+    }
+  }
+  return result ? baseUniq(result) : [];
+}
+
+module.exports = xor;
+
+},{"../internal/arrayPush":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/arrayPush.js","../internal/baseDifference":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseDifference.js","../internal/baseUniq":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseUniq.js","../internal/isArrayLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/restParam.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/function/restParam.js"][0].apply(exports,arguments)
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/SetCache.js":[function(require,module,exports){
+(function (global){
+var cachePush = require('./cachePush'),
+    getNative = require('./getNative');
+
+/** Native method references. */
+var Set = getNative(global, 'Set');
+
+/* Native method references for those with the same name as other `lodash` methods. */
+var nativeCreate = getNative(Object, 'create');
+
+/**
+ *
+ * Creates a cache object to store unique values.
+ *
+ * @private
+ * @param {Array} [values] The values to cache.
+ */
+function SetCache(values) {
+  var length = values ? values.length : 0;
+
+  this.data = { 'hash': nativeCreate(null), 'set': new Set };
+  while (length--) {
+    this.push(values[length]);
+  }
+}
+
+// Add functions to the `Set` cache.
+SetCache.prototype.push = cachePush;
+
+module.exports = SetCache;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./cachePush":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cachePush.js","./getNative":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getNative.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/arrayPush.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/arrayPush.js"][0].apply(exports,arguments)
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseDifference.js":[function(require,module,exports){
+var baseIndexOf = require('./baseIndexOf'),
+    cacheIndexOf = require('./cacheIndexOf'),
+    createCache = require('./createCache');
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/**
+ * The base implementation of `_.difference` which accepts a single array
+ * of values to exclude.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Array} values The values to exclude.
+ * @returns {Array} Returns the new array of filtered values.
+ */
+function baseDifference(array, values) {
+  var length = array ? array.length : 0,
+      result = [];
+
+  if (!length) {
+    return result;
+  }
+  var index = -1,
+      indexOf = baseIndexOf,
+      isCommon = true,
+      cache = (isCommon && values.length >= LARGE_ARRAY_SIZE) ? createCache(values) : null,
+      valuesLength = values.length;
+
+  if (cache) {
+    indexOf = cacheIndexOf;
+    isCommon = false;
+    values = cache;
+  }
+  outer:
+  while (++index < length) {
+    var value = array[index];
+
+    if (isCommon && value === value) {
+      var valuesIndex = valuesLength;
+      while (valuesIndex--) {
+        if (values[valuesIndex] === value) {
+          continue outer;
+        }
+      }
+      result.push(value);
+    }
+    else if (indexOf(values, value, 0) < 0) {
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+module.exports = baseDifference;
+
+},{"./baseIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseIndexOf.js","./cacheIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js","./createCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createCache.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseFor.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/baseFor.js"][0].apply(exports,arguments)
+},{"./createBaseFor":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createBaseFor.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseForIn.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/baseForIn.js"][0].apply(exports,arguments)
+},{"../object/keysIn":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/keysIn.js","./baseFor":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseFor.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseIndexOf.js":[function(require,module,exports){
+var indexOfNaN = require('./indexOfNaN');
+
+/**
+ * The base implementation of `_.indexOf` without support for binary searches.
+ *
+ * @private
+ * @param {Array} array The array to search.
+ * @param {*} value The value to search for.
+ * @param {number} fromIndex The index to search from.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseIndexOf(array, value, fromIndex) {
+  if (value !== value) {
+    return indexOfNaN(array, fromIndex);
+  }
+  var index = fromIndex - 1,
+      length = array.length;
+
+  while (++index < length) {
+    if (array[index] === value) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+module.exports = baseIndexOf;
+
+},{"./indexOfNaN":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/indexOfNaN.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseProperty.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/baseProperty.js"][0].apply(exports,arguments)
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseUniq.js":[function(require,module,exports){
+var baseIndexOf = require('./baseIndexOf'),
+    cacheIndexOf = require('./cacheIndexOf'),
+    createCache = require('./createCache');
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/**
+ * The base implementation of `_.uniq` without support for callback shorthands
+ * and `this` binding.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Function} [iteratee] The function invoked per iteration.
+ * @returns {Array} Returns the new duplicate-value-free array.
+ */
+function baseUniq(array, iteratee) {
+  var index = -1,
+      indexOf = baseIndexOf,
+      length = array.length,
+      isCommon = true,
+      isLarge = isCommon && length >= LARGE_ARRAY_SIZE,
+      seen = isLarge ? createCache() : null,
+      result = [];
+
+  if (seen) {
+    indexOf = cacheIndexOf;
+    isCommon = false;
+  } else {
+    isLarge = false;
+    seen = iteratee ? [] : result;
+  }
+  outer:
+  while (++index < length) {
+    var value = array[index],
+        computed = iteratee ? iteratee(value, index, array) : value;
+
+    if (isCommon && value === value) {
+      var seenIndex = seen.length;
+      while (seenIndex--) {
+        if (seen[seenIndex] === computed) {
+          continue outer;
+        }
+      }
+      if (iteratee) {
+        seen.push(computed);
+      }
+      result.push(value);
+    }
+    else if (indexOf(seen, computed, 0) < 0) {
+      if (iteratee || isLarge) {
+        seen.push(computed);
+      }
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+module.exports = baseUniq;
+
+},{"./baseIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseIndexOf.js","./cacheIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js","./createCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createCache.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js":[function(require,module,exports){
+var isObject = require('../lang/isObject');
+
+/**
+ * Checks if `value` is in `cache` mimicking the return signature of
+ * `_.indexOf` by returning `0` if the value is found, else `-1`.
+ *
+ * @private
+ * @param {Object} cache The cache to search.
+ * @param {*} value The value to search for.
+ * @returns {number} Returns `0` if `value` is found, else `-1`.
+ */
+function cacheIndexOf(cache, value) {
+  var data = cache.data,
+      result = (typeof value == 'string' || isObject(value)) ? data.set.has(value) : data.hash[value];
+
+  return result ? 0 : -1;
+}
+
+module.exports = cacheIndexOf;
+
+},{"../lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cachePush.js":[function(require,module,exports){
+var isObject = require('../lang/isObject');
+
+/**
+ * Adds `value` to the cache.
+ *
+ * @private
+ * @name push
+ * @memberOf SetCache
+ * @param {*} value The value to cache.
+ */
+function cachePush(value) {
+  var data = this.data;
+  if (typeof value == 'string' || isObject(value)) {
+    data.set.add(value);
+  } else {
+    data.hash[value] = true;
+  }
+}
+
+module.exports = cachePush;
+
+},{"../lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createBaseFor.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/createBaseFor.js"][0].apply(exports,arguments)
+},{"./toObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/toObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createCache.js":[function(require,module,exports){
+(function (global){
+var SetCache = require('./SetCache'),
+    getNative = require('./getNative');
+
+/** Native method references. */
+var Set = getNative(global, 'Set');
+
+/* Native method references for those with the same name as other `lodash` methods. */
+var nativeCreate = getNative(Object, 'create');
+
+/**
+ * Creates a `Set` cache object to optimize linear searches of large arrays.
+ *
+ * @private
+ * @param {Array} [values] The values to cache.
+ * @returns {null|Object} Returns the new cache object if `Set` is supported, else `null`.
+ */
+function createCache(values) {
+  return (nativeCreate && Set) ? new SetCache(values) : null;
+}
+
+module.exports = createCache;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./SetCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/SetCache.js","./getNative":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getNative.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getLength.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/getLength.js"][0].apply(exports,arguments)
+},{"./baseProperty":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseProperty.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getNative.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/getNative.js"][0].apply(exports,arguments)
+},{"../lang/isNative":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isNative.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/indexOfNaN.js":[function(require,module,exports){
+/**
+ * Gets the index at which the first occurrence of `NaN` is found in `array`.
+ *
+ * @private
+ * @param {Array} array The array to search.
+ * @param {number} fromIndex The index to search from.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {number} Returns the index of the matched `NaN`, else `-1`.
+ */
+function indexOfNaN(array, fromIndex, fromRight) {
+  var length = array.length,
+      index = fromIndex + (fromRight ? 0 : -1);
+
+  while ((fromRight ? index-- : ++index < length)) {
+    var other = array[index];
+    if (other !== other) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+module.exports = indexOfNaN;
+
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/isArrayLike.js"][0].apply(exports,arguments)
+},{"./getLength":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getLength.js","./isLength":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isLength.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isIndex.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/isIndex.js"][0].apply(exports,arguments)
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isLength.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/isLength.js"][0].apply(exports,arguments)
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isObjectLike.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/isObjectLike.js"][0].apply(exports,arguments)
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/toObject.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/toObject.js"][0].apply(exports,arguments)
+},{"../lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArguments.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/lang/isArguments.js"][0].apply(exports,arguments)
+},{"../internal/isArrayLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js","../internal/isObjectLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isObjectLike.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArray.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/lang/isArray.js"][0].apply(exports,arguments)
+},{"../internal/getNative":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getNative.js","../internal/isLength":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isLength.js","../internal/isObjectLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isObjectLike.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isFunction.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/lang/isFunction.js"][0].apply(exports,arguments)
+},{"./isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isNative.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/lang/isNative.js"][0].apply(exports,arguments)
+},{"../internal/isObjectLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isObjectLike.js","./isFunction":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isFunction.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/lang/isObject.js"][0].apply(exports,arguments)
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isPlainObject.js":[function(require,module,exports){
+var baseForIn = require('../internal/baseForIn'),
+    isArguments = require('./isArguments'),
+    isObjectLike = require('../internal/isObjectLike');
+
+/** `Object#toString` result references. */
+var objectTag = '[object Object]';
+
+/** Used for native method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objToString = objectProto.toString;
+
+/**
+ * Checks if `value` is a plain object, that is, an object created by the
+ * `Object` constructor or one with a `[[Prototype]]` of `null`.
+ *
+ * **Note:** This method assumes objects created by the `Object` constructor
+ * have no inherited enumerable properties.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ * }
+ *
+ * _.isPlainObject(new Foo);
+ * // => false
+ *
+ * _.isPlainObject([1, 2, 3]);
+ * // => false
+ *
+ * _.isPlainObject({ 'x': 0, 'y': 0 });
+ * // => true
+ *
+ * _.isPlainObject(Object.create(null));
+ * // => true
+ */
+function isPlainObject(value) {
+  var Ctor;
+
+  // Exit early for non `Object` objects.
+  if (!(isObjectLike(value) && objToString.call(value) == objectTag && !isArguments(value)) ||
+      (!hasOwnProperty.call(value, 'constructor') && (Ctor = value.constructor, typeof Ctor == 'function' && !(Ctor instanceof Ctor)))) {
+    return false;
+  }
+  // IE < 9 iterates inherited properties before own properties. If the first
+  // iterated property is an object's own property then there are no inherited
+  // enumerable properties.
+  var result;
+  // In most environments an object's own properties are iterated before
+  // its inherited properties. If the last iterated property is an object's
+  // own property then there are no inherited enumerable properties.
+  baseForIn(value, function(subValue, key) {
+    result = key;
+  });
+  return result === undefined || hasOwnProperty.call(value, result);
+}
+
+module.exports = isPlainObject;
+
+},{"../internal/baseForIn":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseForIn.js","../internal/isObjectLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isObjectLike.js","./isArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArguments.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/keysIn.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/object/keysIn.js"][0].apply(exports,arguments)
+},{"../internal/isIndex":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isIndex.js","../internal/isLength":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isLength.js","../lang/isArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArguments.js","../lang/isArray":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArray.js","../lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/utility/noop.js":[function(require,module,exports){
+/**
+ * A no-operation function that returns `undefined` regardless of the
+ * arguments it receives.
+ *
+ * @static
+ * @memberOf _
+ * @category Utility
+ * @example
+ *
+ * var object = { 'user': 'fred' };
+ *
+ * _.noop(object) === undefined;
+ * // => true
+ */
+function noop() {
+  // No operation performed.
+}
+
+module.exports = noop;
+
 },{}],"/home/ganesh/dev/Generator/node_modules/react-dropzone/index.js":[function(require,module,exports){
 var React = require('react');
 
@@ -72778,33 +77622,7 @@ function supportsHistory() {
 
 module.exports = supportsHistory;
 },{}],"/home/ganesh/dev/Generator/node_modules/react-router/node_modules/object-assign/index.js":[function(require,module,exports){
-'use strict';
-
-function ToObject(val) {
-	if (val == null) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
-}
-
-module.exports = Object.assign || function (target, source) {
-	var from;
-	var keys;
-	var to = ToObject(target);
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = arguments[s];
-		keys = Object.keys(Object(from));
-
-		for (var i = 0; i < keys.length; i++) {
-			to[keys[i]] = from[keys[i]];
-		}
-	}
-
-	return to;
-};
-
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/node_modules/flummox/node_modules/object-assign/index.js"][0].apply(exports,arguments)
 },{}],"/home/ganesh/dev/Generator/node_modules/react-router/node_modules/qs/index.js":[function(require,module,exports){
 module.exports = require('./lib/');
 
@@ -97775,6 +102593,42 @@ var jQuery = require('jquery');
 
 
 var AppStore = require('./stores/AppStore.jsx');
+var DragSource = require('react-dnd').DragSource;
+var PropTypes = React.PropTypes;
+
+var Panel = require('react-bootstrap').Panel;
+var PanelGroup = require('react-bootstrap').PanelGroup;
+var Button = require('react-bootstrap').Button;
+
+var Attribute = React.createClass({displayName: "Attribute",
+	getInitialState: function(){
+		return {open: true}
+	},
+	onClick: function(){
+		this.setState({open: !this.state.open})
+	},
+	render: function(){
+		var self = this;
+
+		console.log(self.props.data);
+		return (
+			React.createElement("div", {className: "col-md-12"}, 
+			React.createElement(PanelGroup, null, 
+			React.createElement(Panel, {collapsible: true, defaultExpanded: true, header: self.props.data.name, style: {margin: 2}}, 
+
+				React.createElement("div", {className: "attributeType", style: {display: "block", height: 30	}}, 
+					self.props.data.type
+				), 
+				React.createElement("div", {className: "attributeMean", style: {display: "block"}}, 
+					Math.round(self.props.data.mean*10)/10
+				)
+			)
+			)
+			)
+		);
+	}
+});
+
 
 var InteractiveFilters = React.createClass({displayName: "InteractiveFilters",
 	getInitialState: function(){
@@ -97782,8 +102636,8 @@ var InteractiveFilters = React.createClass({displayName: "InteractiveFilters",
 	},
 
 	componentDidMount: function(){
-		console.log(AppStore.getData());
-		var attributes = 	AppStore.getData()["attributes"];
+		
+		var attributes = 	AppStore.getData();
 		this.setState({attributes: attributes});
 
 
@@ -97792,10 +102646,9 @@ var InteractiveFilters = React.createClass({displayName: "InteractiveFilters",
     	if(this.state.attributes){
 
     		Attributes = this.state.attributes.map(function(attribute){
+    		console.log(attribute)
     		return(
-    			React.createElement("div", {className: "attribute"}, 
-    				attribute
-    			) 
+    			React.createElement(Attribute, {data: attribute}, " ")
     		);
     	})
 
@@ -97804,14 +102657,21 @@ var InteractiveFilters = React.createClass({displayName: "InteractiveFilters",
     	}
         return(
             React.createElement("div", null, 
+                React.createElement("div", {id: "interactiveFiltersAttributes", className: "col-md-4"}, 
                 Attributes
+                ), 
+
+                React.createElement("div", {className: "col-md-8"}, 
+                	"Filters"
+                )
+
             )
         );
     }
 });
 
 module.exports = InteractiveFilters;
-},{"./stores/AppStore.jsx":"/home/ganesh/dev/Generator/public/javascripts/stores/AppStore.jsx","jquery":"/home/ganesh/dev/Generator/node_modules/jquery/dist/jquery.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/public/javascripts/Main.jsx":[function(require,module,exports){
+},{"./stores/AppStore.jsx":"/home/ganesh/dev/Generator/public/javascripts/stores/AppStore.jsx","jquery":"/home/ganesh/dev/Generator/node_modules/jquery/dist/jquery.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js","react-bootstrap":"/home/ganesh/dev/Generator/node_modules/react-bootstrap/lib/index.js","react-dnd":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/index.js"}],"/home/ganesh/dev/Generator/public/javascripts/Main.jsx":[function(require,module,exports){
 var React = require('react');
 
 var router = require('react-router');
@@ -97928,7 +102788,7 @@ var AttributeBox = React.createClass({displayName: "AttributeBox",
             React.createElement("div", {bsSize: "small", className: "attribute"}, 
                 React.createElement("div", {className: "attributeHeader"}, 
                     
-                    React.createElement("div", {className: "attributeName"}, attribute), 
+                    React.createElement("div", {className: "attributeName"}, attribute.name), 
                     React.createElement("div", {className: "attributeCollapse", onClick: this.handleAttributeOptions}, 
 
                     self.state.attributeOptions ?
@@ -98228,19 +103088,40 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
     },
 	add(){
 		this.setState({ showModal: false });
-        var sourceName = this.state.sourceName;
         var sourceType = this.state.sourceType;
-        var options = this.state.files[0].name;
+        var sourceName = this.state.sourceName;
         var dataSources = this.state.dataSources,
-            dataSourceConfig = this.state.dataSourceConfig;
+                    dataSourceConfig = this.state.dataSourceConfig;
+        var options = {};
 
-        var path = "data/"+options;
+        switch(sourceType){
+
+            case "csvFile":
+            case "jsonFile":
+                options = this.state.files[0].name;
+                
+                options = {
+                    "path": "data/"+options
+                };
+
+            case "csvREST":
+            case "jsonREST":
+                var hostName = this.state.hostName;
+                var port = this.state.port *1;
+                var path = this.state.path;
+                var headers = this.state.headers;
+                options = {
+                    hostName : hostName,
+                    port: port,
+                    path :path,
+                    headers: headers
+                }
+
+        }
         dataSourceConfig["dataSources"].push({
             "sourceName": this.state.sourceName,
             "sourceType": this.state.sourceType,
-            "options":{
-                "path": path
-            }
+            "options": options
         });
         dataSources.push({"name": sourceName, sourceType: sourceType, "options": options })
         console.log(dataSources)
@@ -98260,7 +103141,7 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
 
     },
     selectType: function(event){
-
+        console.log(sourceType)
         this.setState({sourceType: event.target.value});
 
     	//this.setState({sourceType: "file"});
@@ -98278,8 +103159,11 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
     onDrop: function(files){
         var dataSourceConfig = this.state.dataSourceConfig;
         var req = request.post('/upload');
+        console.log(files)
+        var file = {};
+        if(files.length > 0)
+            file = files[0];
 
-        var file = files[0];
         console.log(file)
         req.attach(file.name, file)
         req.end(function(){
@@ -98302,7 +103186,8 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
         var dataSourceConfig = this.state.dataSourceConfig;
         $.get("/loadData?dataSourceConfig="+encodeURIComponent(JSON.stringify(dataSourceConfig)), function(data){
             AppActions.dataSourceConfig(data);
-            self.setState({attributes: data["attributes"]});
+            console.log(data);
+            self.setState({attributes: data});
 
         })
     },
@@ -98312,6 +103197,15 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
     dontShowDataSourceConfig: function(){
 
         this.setState({showDataSourceConfig: false});
+    },
+    handleHostName: function(event){
+        this.setState({hostName: event.target.value});
+    },
+    handlePath: function(event){
+        this.setState({path: event.target.value});
+    },
+    handlePort: function(event){
+        this.setState({port: event.target.value});
     },
     render: function(){
         var self = this;
@@ -98326,7 +103220,7 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
                 );
             })  
         }
-
+        console.log(this.state.sourceType)
         return(
 
             React.createElement("div", null, 
@@ -98335,14 +103229,14 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
                         React.createElement("h3", null, "Data sources"), 
                         React.createElement(DataSources, {dataSources: self.state.dataSources}), 
 
-                        React.createElement(Button, {bsStyle: "success", onClick: this.open}, React.createElement(Glyphicon, {glyph: "glyphicon glyphicon-plus"}), " Add"), 
+                        React.createElement(Button, {bsStyle: "success", onClick: this.open, id: "addDataSource"}, " ", React.createElement(Glyphicon, {glyph: "glyphicon glyphicon-plus"}), " Add"), 
                             React.createElement("br", null), 
 
                         React.createElement("br", null), 
                         
                         this.state.dataSources.length ? 
                             React.createElement("div", null, 
-                            React.createElement(Button, {bsStyle: "primary", onClick: this.loadData}, "Load Data"), 
+                            React.createElement(Button, {bsStyle: "primary", onClick: this.loadData, id: "btnLoadData"}, "Load Data"), 
                             React.createElement(Button, {bsStyle: "default", onClick: this.showDataSourceConfig}, "dataSource.json")
                             ) 
                             :
@@ -98355,9 +103249,9 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
     			            React.createElement(Modal.Title, null, "Add Data Source")
     			          ), 
     			          React.createElement(Modal.Body, null, 
-    			            React.createElement("form", {className: "form-horizontal", encType: "multipart/form-data"}, 
-    					    	React.createElement(Input, {type: "text", onChange: this.handleSourceName, label: "sourceName", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10"}), 
-    						    React.createElement(Input, {type: "select", onChange: this.selectType, value: this.sourceType, label: "sourceType", placeholder: "select", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10"}, 
+    			            React.createElement("form", {className: "form-horizontal", encType: "multipart/form-data", id: "addDataSourceForm"}, 
+    					    	React.createElement(Input, {type: "text", onChange: this.handleSourceName, id: "sourceName", label: "sourceName", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10"}), 
+    						    React.createElement(Input, {type: "select", onChange: this.selectType, id: "sourceType", value: this.sourceType, label: "sourceType", placeholder: "select", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10"}, 
     						      React.createElement("option", {value: "csvFile"}, "CSV File"), 
     						      React.createElement("option", {value: "jsonFile"}, "JSON File"), 
                                   React.createElement("option", {value: "csvREST"}, "CSV REST"), 
@@ -98365,14 +103259,34 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
                                   React.createElement("option", {value: "odbc"}, "ODBC")
                                   
     						    ), 
-    						   	React.createElement(Dropzone, {ref: "dropzone", onDrop: self.onDrop, size: 150, style: {margin: 10, border:1, borderColor: "grey", borderStyle: "dashed", width:500}}, 
-                  					React.createElement("div", {style: {padding: "10"}}, "Drop file here")
-                				), 
 
-                                filesComponent, 
-                                React.createElement(Input, {type: "text", label: "path", labelClassName: "col-xs-2", value: fileName, wrapperClassName: "col-xs-10", disabled: true}), 
+                                
 
-                                React.createElement(Button, {bsStyle: "success", onClick: this.add}, "Add")
+                                    this.state.sourceType == "csvFile" || this.state.sourceType =="jsonFile" ?
+                                        React.createElement("div", {id: "fileStuff"}, 
+                                            React.createElement("div", {id: "sourceFile"}, 
+                                            React.createElement(Dropzone, {ref: "dropzone", onDrop: self.onDrop, size: 150, style: {margin: 10, border:1, borderColor: "grey", borderStyle: "dashed", width:500}}, 
+                                                React.createElement("div", {style: {padding: "10"}}, "Drop file here")
+                                            )
+                                            ), 
+
+                                            filesComponent, 
+                                            React.createElement(Input, {type: "text", label: "path", labelClassName: "col-xs-2", value: fileName, wrapperClassName: "col-xs-10", disabled: true})
+                                        )
+                                    :
+                                        React.createElement("div", {id: "restStuff"}, 
+                                            React.createElement(Input, {type: "text", onChange: this.handleHostName, id: "hostName", label: "hostName", labelClassName: "col-xs-2", wrapperClassName: "col-xs-6"}), 
+                                            React.createElement(Input, {type: "text", onChange: this.handlePort, id: "port", label: "Port", labelClassName: "col-xs-2", wrapperClassName: "col-xs-6"}), 
+                                            React.createElement(Input, {type: "text", onChange: this.handlePath, id: "port", label: "Path", labelClassName: "col-xs-2", wrapperClassName: "col-xs-6"}), 
+                                            React.createElement(Input, {type: "textarea", label: "Headers", placeholder: "", labelClassName: "col-xs-2", wrapperClassName: "col-xs-6"})
+
+                                        ), 
+                                
+
+                                React.createElement(Button, {bsStyle: "success", onClick: this.add, id: "addSingleSourceButton"}, "Add")
+                                
+
+
     					  	)
     			          )
     			        ), 
@@ -98461,4 +103375,4 @@ var AppStore = Reflux.createStore({
 });
 
 module.exports = AppStore;    
-},{"../actions/AppActions.jsx":"/home/ganesh/dev/Generator/public/javascripts/actions/AppActions.jsx","reflux":"/home/ganesh/dev/Generator/node_modules/reflux/index.js"}]},{},["/home/ganesh/dev/Generator/public/javascripts/App.jsx","/home/ganesh/dev/Generator/public/javascripts/components/AttributeBox.jsx","/home/ganesh/dev/Generator/public/javascripts/components/Attributes.jsx","/home/ganesh/dev/Generator/public/javascripts/components/Chart.jsx","/home/ganesh/dev/Generator/public/javascripts/components/DataSources.jsx","/home/ganesh/dev/Generator/public/javascripts/components/DataSourcesNav.jsx","/home/ganesh/dev/Generator/public/javascripts/components/DataSourcesPanel.jsx"]);
+},{"../actions/AppActions.jsx":"/home/ganesh/dev/Generator/public/javascripts/actions/AppActions.jsx","reflux":"/home/ganesh/dev/Generator/node_modules/reflux/index.js"}]},{},["/home/ganesh/dev/Generator/public/javascripts/App.jsx","/home/ganesh/dev/Generator/public/javascripts/DataSources.jsx","/home/ganesh/dev/Generator/public/javascripts/InteractiveFilters.jsx","/home/ganesh/dev/Generator/public/javascripts/Main.jsx","/home/ganesh/dev/Generator/public/javascripts/Visualizations.jsx","/home/ganesh/dev/Generator/public/javascripts/actions/AppActions.jsx","/home/ganesh/dev/Generator/public/javascripts/components/AttributeBox.jsx","/home/ganesh/dev/Generator/public/javascripts/components/Attributes.jsx","/home/ganesh/dev/Generator/public/javascripts/components/Chart.jsx","/home/ganesh/dev/Generator/public/javascripts/components/DataSources.jsx","/home/ganesh/dev/Generator/public/javascripts/components/DataSourcesNav.jsx","/home/ganesh/dev/Generator/public/javascripts/components/DataSourcesPanel.jsx","/home/ganesh/dev/Generator/public/javascripts/components/Nav.jsx","/home/ganesh/dev/Generator/public/javascripts/stores/AppStore.jsx"]);
