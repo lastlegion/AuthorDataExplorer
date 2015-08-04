@@ -53,6 +53,7 @@ var DataSourcesPanel = React.createClass({
         this.setState({ showModal: false });
     },
 	add(){
+        var self = this;
 		this.setState({ showModal: false });
         var sourceType = this.state.sourceType;
         var sourceName = this.state.sourceName;
@@ -174,6 +175,13 @@ var DataSourcesPanel = React.createClass({
     handlePort: function(event){
         this.setState({port: event.target.value});
     },
+    handleJoinKey: function(event){
+        console.log(event.target.value)
+
+        var dataSourceConfig = this.state.dataSourceConfig
+        dataSourceConfig["joinKey"] = event.target.value;
+        this.setState({joinKey: event.target.value, dataSourceConfig: dataSourceConfig});
+    },
     render: function(){
         var self = this;
         var fileName = "";
@@ -201,8 +209,19 @@ var DataSourcesPanel = React.createClass({
 
                         <br />
                         {
-                        this.state.dataSources.length ? 
-                            <div>
+                            this.state.dataSources.length > 1 ?
+                                <div className = "row"> 
+                                   <Input type='text' onChange={this.handleJoinKey} id='joinKey' label='joinKey' labelClassName='col-xs-2' wrapperClassName='col-xs-4' />
+                                </div>
+                            :
+                                <div>
+                                </div>
+                        }
+
+                        {
+                        (this.state.dataSources.length ==1) || (this.state.dataSources.length > 1 && this.state.joinKey) ?
+
+                            <div className="row">
                             <Button bsStyle='primary' onClick={this.loadData} id="btnLoadData">Load Data</Button>
                             <Button bsStyle='default' onClick={this.showDataSourceConfig}>dataSource.json</Button>
                             </div> 

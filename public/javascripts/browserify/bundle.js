@@ -104721,6 +104721,7 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
         this.setState({ showModal: false });
     },
 	add(){
+        var self = this;
 		this.setState({ showModal: false });
         var sourceType = this.state.sourceType;
         var sourceName = this.state.sourceName;
@@ -104842,6 +104843,13 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
     handlePort: function(event){
         this.setState({port: event.target.value});
     },
+    handleJoinKey: function(event){
+        console.log(event.target.value)
+
+        var dataSourceConfig = this.state.dataSourceConfig
+        dataSourceConfig["joinKey"] = event.target.value;
+        this.setState({joinKey: event.target.value, dataSourceConfig: dataSourceConfig});
+    },
     render: function(){
         var self = this;
         var fileName = "";
@@ -104869,8 +104877,19 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
 
                         React.createElement("br", null), 
                         
-                        this.state.dataSources.length ? 
-                            React.createElement("div", null, 
+                            this.state.dataSources.length > 1 ?
+                                React.createElement("div", {className: "row"}, 
+                                   React.createElement(Input, {type: "text", onChange: this.handleJoinKey, id: "joinKey", label: "joinKey", labelClassName: "col-xs-2", wrapperClassName: "col-xs-4"})
+                                )
+                            :
+                                React.createElement("div", null
+                                ), 
+                        
+
+                        
+                        (this.state.dataSources.length ==1) || (this.state.dataSources.length > 1 && this.state.joinKey) ?
+
+                            React.createElement("div", {className: "row"}, 
                             React.createElement(Button, {bsStyle: "primary", onClick: this.loadData, id: "btnLoadData"}, "Load Data"), 
                             React.createElement(Button, {bsStyle: "default", onClick: this.showDataSourceConfig}, "dataSource.json")
                             ) 
