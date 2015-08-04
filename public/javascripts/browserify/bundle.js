@@ -70521,7 +70521,653 @@ function DropTarget(type, spec, collect) {
 }
 
 module.exports = exports['default'];
-},{"./createTargetConnector":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetConnector.js","./createTargetFactory":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetFactory.js","./createTargetMonitor":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetMonitor.js","./decorateHandler":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/decorateHandler.js","./registerTarget":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/registerTarget.js","./utils/checkDecoratorArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/checkDecoratorArguments.js","./utils/isValidType":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/isValidType.js","./utils/shallowEqual":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqual.js","./utils/shallowEqualScalar":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqualScalar.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","lodash/lang/isPlainObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isPlainObject.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/bindConnector.js":[function(require,module,exports){
+},{"./createTargetConnector":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetConnector.js","./createTargetFactory":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetFactory.js","./createTargetMonitor":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/createTargetMonitor.js","./decorateHandler":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/decorateHandler.js","./registerTarget":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/registerTarget.js","./utils/checkDecoratorArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/checkDecoratorArguments.js","./utils/isValidType":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/isValidType.js","./utils/shallowEqual":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqual.js","./utils/shallowEqualScalar":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqualScalar.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","lodash/lang/isPlainObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isPlainObject.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/backends/HTML5.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _nativeTypesConfig;
+
+exports.getEmptyImage = getEmptyImage;
+exports['default'] = createHTML5Backend;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+function _defineProperty(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); }
+
+var _dndCore = require('dnd-core');
+
+var _utilsEnterLeaveCounter = require('../utils/EnterLeaveCounter');
+
+var _utilsEnterLeaveCounter2 = _interopRequireDefault(_utilsEnterLeaveCounter);
+
+var _utilsBrowserDetector = require('../utils/BrowserDetector');
+
+var _utilsOffsetHelpers = require('../utils/OffsetHelpers');
+
+var _utilsShallowEqual = require('../utils/shallowEqual');
+
+var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
+
+var _lodashObjectDefaults = require('lodash/object/defaults');
+
+var _lodashObjectDefaults2 = _interopRequireDefault(_lodashObjectDefaults);
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var emptyImage = undefined;
+
+function getEmptyImage() {
+  if (!emptyImage) {
+    emptyImage = new Image();
+    emptyImage.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+  }
+
+  return emptyImage;
+}
+
+var NativeTypes = {
+  FILE: '__NATIVE_FILE__',
+  URL: '__NATIVE_URL__',
+  TEXT: '__NATIVE_TEXT__'
+};
+
+exports.NativeTypes = NativeTypes;
+function getDataFromDataTransfer(dataTransfer, typesToTry, defaultValue) {
+  var result = typesToTry.reduce(function (resultSoFar, typeToTry) {
+    return resultSoFar || dataTransfer.getData(typeToTry);
+  }, null);
+
+  return result != null ? result : defaultValue;
+}
+
+var nativeTypesConfig = (_nativeTypesConfig = {}, _defineProperty(_nativeTypesConfig, NativeTypes.FILE, {
+  exposeProperty: 'files',
+  matchesTypes: ['Files'],
+  getData: function getData(dataTransfer) {
+    return Array.prototype.slice.call(dataTransfer.files);
+  }
+}), _defineProperty(_nativeTypesConfig, NativeTypes.URL, {
+  exposeProperty: 'urls',
+  matchesTypes: ['Url', 'text/uri-list'],
+  getData: function getData(dataTransfer, matchesTypes) {
+    return getDataFromDataTransfer(dataTransfer, matchesTypes, '').split('\n');
+  }
+}), _defineProperty(_nativeTypesConfig, NativeTypes.TEXT, {
+  exposeProperty: 'text',
+  matchesTypes: ['Text', 'text/plain'],
+  getData: function getData(dataTransfer, matchesTypes) {
+    return getDataFromDataTransfer(dataTransfer, matchesTypes, '');
+  }
+}), _nativeTypesConfig);
+
+function createNativeDragSource(type) {
+  var _nativeTypesConfig$type = nativeTypesConfig[type];
+  var exposeProperty = _nativeTypesConfig$type.exposeProperty;
+  var matchesTypes = _nativeTypesConfig$type.matchesTypes;
+  var getData = _nativeTypesConfig$type.getData;
+
+  return (function (_DragSource) {
+    function NativeDragSource() {
+      _classCallCheck(this, NativeDragSource);
+
+      _DragSource.call(this);
+      this.item = Object.defineProperties({}, _defineProperty({}, exposeProperty, {
+        get: function () {
+          console.warn('Browser doesn\'t allow reading "' + exposeProperty + '" until the drop event.');
+          return null;
+        },
+        configurable: true,
+        enumerable: true
+      }));
+    }
+
+    _inherits(NativeDragSource, _DragSource);
+
+    NativeDragSource.prototype.mutateItemByReadingDataTransfer = function mutateItemByReadingDataTransfer(dataTransfer) {
+      delete this.item[exposeProperty];
+      this.item[exposeProperty] = getData(dataTransfer, matchesTypes);
+    };
+
+    NativeDragSource.prototype.beginDrag = function beginDrag() {
+      return this.item;
+    };
+
+    return NativeDragSource;
+  })(_dndCore.DragSource);
+}
+
+function matchNativeItemType(dataTransfer) {
+  var dataTransferTypes = Array.prototype.slice.call(dataTransfer.types || []);
+
+  return Object.keys(nativeTypesConfig).filter(function (nativeItemType) {
+    var matchesTypes = nativeTypesConfig[nativeItemType].matchesTypes;
+
+    return matchesTypes.some(function (t) {
+      return dataTransferTypes.indexOf(t) > -1;
+    });
+  })[0] || null;
+}
+
+var HTML5Backend = (function () {
+  function HTML5Backend(manager) {
+    _classCallCheck(this, HTML5Backend);
+
+    this.actions = manager.getActions();
+    this.monitor = manager.getMonitor();
+    this.registry = manager.getRegistry();
+
+    this.sourcePreviewNodes = {};
+    this.sourcePreviewNodeOptions = {};
+    this.sourceNodes = {};
+    this.sourceNodeOptions = {};
+    this.enterLeaveCounter = new _utilsEnterLeaveCounter2['default']();
+
+    this.getSourceClientOffset = this.getSourceClientOffset.bind(this);
+    this.handleTopDragStart = this.handleTopDragStart.bind(this);
+    this.handleTopDragStartCapture = this.handleTopDragStartCapture.bind(this);
+    this.handleTopDragEndCapture = this.handleTopDragEndCapture.bind(this);
+    this.handleTopDragEnter = this.handleTopDragEnter.bind(this);
+    this.handleTopDragEnterCapture = this.handleTopDragEnterCapture.bind(this);
+    this.handleTopDragLeaveCapture = this.handleTopDragLeaveCapture.bind(this);
+    this.handleTopDragOver = this.handleTopDragOver.bind(this);
+    this.handleTopDragOverCapture = this.handleTopDragOverCapture.bind(this);
+    this.handleTopDrop = this.handleTopDrop.bind(this);
+    this.handleTopDropCapture = this.handleTopDropCapture.bind(this);
+    this.handleSelectStart = this.handleSelectStart.bind(this);
+    this.endDragIfSourceWasRemovedFromDOM = this.endDragIfSourceWasRemovedFromDOM.bind(this);
+  }
+
+  HTML5Backend.prototype.setup = function setup() {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    (0, _invariant2['default'])(!this.constructor.isSetUp, 'Cannot have two HTML5 backends at the same time.');
+    this.constructor.isSetUp = true;
+
+    window.addEventListener('dragstart', this.handleTopDragStart);
+    window.addEventListener('dragstart', this.handleTopDragStartCapture, true);
+    window.addEventListener('dragend', this.handleTopDragEndCapture, true);
+    window.addEventListener('dragenter', this.handleTopDragEnter);
+    window.addEventListener('dragenter', this.handleTopDragEnterCapture, true);
+    window.addEventListener('dragleave', this.handleTopDragLeaveCapture, true);
+    window.addEventListener('dragover', this.handleTopDragOver);
+    window.addEventListener('dragover', this.handleTopDragOverCapture, true);
+    window.addEventListener('drop', this.handleTopDrop);
+    window.addEventListener('drop', this.handleTopDropCapture, true);
+  };
+
+  HTML5Backend.prototype.teardown = function teardown() {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    this.constructor.isSetUp = false;
+
+    window.removeEventListener('dragstart', this.handleTopDragStart);
+    window.removeEventListener('dragstart', this.handleTopDragStartCapture, true);
+    window.removeEventListener('dragend', this.handleTopDragEndCapture, true);
+    window.removeEventListener('dragenter', this.handleTopDragEnter);
+    window.removeEventListener('dragenter', this.handleTopDragEnterCapture, true);
+    window.removeEventListener('dragleave', this.handleTopDragLeaveCapture, true);
+    window.removeEventListener('dragover', this.handleTopDragOver);
+    window.removeEventListener('dragover', this.handleTopDragOverCapture, true);
+    window.removeEventListener('drop', this.handleTopDrop);
+    window.removeEventListener('drop', this.handleTopDropCapture, true);
+
+    this.clearCurrentDragSourceNode();
+  };
+
+  HTML5Backend.prototype.connectDragPreview = function connectDragPreview(sourceId, node, options) {
+    var _this = this;
+
+    this.sourcePreviewNodeOptions[sourceId] = options;
+    this.sourcePreviewNodes[sourceId] = node;
+
+    return function () {
+      delete _this.sourcePreviewNodes[sourceId];
+      delete _this.sourcePreviewNodeOptions[sourceId];
+    };
+  };
+
+  HTML5Backend.prototype.connectDragSource = function connectDragSource(sourceId, node, options) {
+    var _this2 = this;
+
+    this.sourceNodes[sourceId] = node;
+    this.sourceNodeOptions[sourceId] = options;
+
+    var handleDragStart = function handleDragStart(e) {
+      return _this2.handleDragStart(e, sourceId);
+    };
+    var handleSelectStart = function handleSelectStart(e) {
+      return _this2.handleSelectStart(e, sourceId);
+    };
+
+    node.setAttribute('draggable', true);
+    node.addEventListener('dragstart', handleDragStart);
+    node.addEventListener('selectstart', handleSelectStart);
+
+    return function () {
+      delete _this2.sourceNodes[sourceId];
+      delete _this2.sourceNodeOptions[sourceId];
+
+      node.removeEventListener('dragstart', handleDragStart);
+      node.removeEventListener('selectstart', handleSelectStart);
+      node.setAttribute('draggable', false);
+    };
+  };
+
+  HTML5Backend.prototype.connectDropTarget = function connectDropTarget(targetId, node) {
+    var _this3 = this;
+
+    var handleDragEnter = function handleDragEnter(e) {
+      return _this3.handleDragEnter(e, targetId);
+    };
+    var handleDragOver = function handleDragOver(e) {
+      return _this3.handleDragOver(e, targetId);
+    };
+    var handleDrop = function handleDrop(e) {
+      return _this3.handleDrop(e, targetId);
+    };
+
+    node.addEventListener('dragenter', handleDragEnter);
+    node.addEventListener('dragover', handleDragOver);
+    node.addEventListener('drop', handleDrop);
+
+    return function () {
+      node.removeEventListener('dragenter', handleDragEnter);
+      node.removeEventListener('dragover', handleDragOver);
+      node.removeEventListener('drop', handleDrop);
+    };
+  };
+
+  HTML5Backend.prototype.getCurrentSourceNodeOptions = function getCurrentSourceNodeOptions() {
+    var sourceId = this.monitor.getSourceId();
+    var sourceNodeOptions = this.sourceNodeOptions[sourceId];
+
+    return (0, _lodashObjectDefaults2['default'])(sourceNodeOptions || {}, {
+      dropEffect: 'move'
+    });
+  };
+
+  HTML5Backend.prototype.getCurrentDropEffect = function getCurrentDropEffect() {
+    if (this.isDraggingNativeItem()) {
+      // It makes more sense to default to 'copy' for native resources
+      return 'copy';
+    } else {
+      return this.getCurrentSourceNodeOptions().dropEffect;
+    }
+  };
+
+  HTML5Backend.prototype.getCurrentSourcePreviewNodeOptions = function getCurrentSourcePreviewNodeOptions() {
+    var sourceId = this.monitor.getSourceId();
+    var sourcePreviewNodeOptions = this.sourcePreviewNodeOptions[sourceId];
+
+    return (0, _lodashObjectDefaults2['default'])(sourcePreviewNodeOptions || {}, {
+      anchorX: 0.5,
+      anchorY: 0.5,
+      captureDraggingState: false
+    });
+  };
+
+  HTML5Backend.prototype.getSourceClientOffset = function getSourceClientOffset(sourceId) {
+    return (0, _utilsOffsetHelpers.getElementClientOffset)(this.sourceNodes[sourceId]);
+  };
+
+  HTML5Backend.prototype.isDraggingNativeItem = function isDraggingNativeItem() {
+    var itemType = this.monitor.getItemType();
+    return Object.keys(NativeTypes).some(function (key) {
+      return NativeTypes[key] === itemType;
+    });
+  };
+
+  HTML5Backend.prototype.beginDragNativeItem = function beginDragNativeItem(type) {
+    this.clearCurrentDragSourceNode();
+
+    var SourceType = createNativeDragSource(type);
+    this.currentNativeSource = new SourceType();
+    this.currentNativeHandle = this.registry.addSource(type, this.currentNativeSource);
+    this.actions.beginDrag([this.currentNativeHandle]);
+  };
+
+  HTML5Backend.prototype.endDragNativeItem = function endDragNativeItem() {
+    this.actions.endDrag();
+    this.registry.removeSource(this.currentNativeHandle);
+    this.currentNativeHandle = null;
+    this.currentNativeSource = null;
+  };
+
+  HTML5Backend.prototype.endDragIfSourceWasRemovedFromDOM = function endDragIfSourceWasRemovedFromDOM() {
+    var node = this.currentDragSourceNode;
+    if (document.body.contains(node)) {
+      return;
+    }
+
+    this.actions.endDrag();
+    this.clearCurrentDragSourceNode();
+  };
+
+  HTML5Backend.prototype.setCurrentDragSourceNode = function setCurrentDragSourceNode(node) {
+    this.clearCurrentDragSourceNode();
+    this.currentDragSourceNode = node;
+    this.currentDragSourceNodeOffset = (0, _utilsOffsetHelpers.getElementClientOffset)(node);
+    this.currentDragSourceNodeOffsetChanged = false;
+
+    // Receiving a mouse event in the middle of a dragging operation
+    // means it has ended and the drag source node disappeared from DOM,
+    // so the browser didn't dispatch the dragend event.
+    window.addEventListener('mousemove', this.endDragIfSourceWasRemovedFromDOM, true);
+  };
+
+  HTML5Backend.prototype.clearCurrentDragSourceNode = function clearCurrentDragSourceNode() {
+    if (this.currentDragSourceNode) {
+      this.currentDragSourceNode = null;
+      this.currentDragSourceNodeOffset = null;
+      this.currentDragSourceNodeOffsetChanged = false;
+      window.removeEventListener('mousemove', this.endDragIfSourceWasRemovedFromDOM, true);
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  HTML5Backend.prototype.checkIfCurrentDragSourceRectChanged = function checkIfCurrentDragSourceRectChanged() {
+    var node = this.currentDragSourceNode;
+    if (!node) {
+      return false;
+    }
+
+    if (this.currentDragSourceNodeOffsetChanged) {
+      return true;
+    }
+
+    this.currentDragSourceNodeOffsetChanged = !(0, _utilsShallowEqual2['default'])((0, _utilsOffsetHelpers.getElementClientOffset)(node), this.currentDragSourceNodeOffset);
+
+    return this.currentDragSourceNodeOffsetChanged;
+  };
+
+  HTML5Backend.prototype.handleTopDragStartCapture = function handleTopDragStartCapture() {
+    this.clearCurrentDragSourceNode();
+    this.dragStartSourceIds = [];
+  };
+
+  HTML5Backend.prototype.handleDragStart = function handleDragStart(e, sourceId) {
+    this.dragStartSourceIds.unshift(sourceId);
+  };
+
+  HTML5Backend.prototype.handleTopDragStart = function handleTopDragStart(e) {
+    var _this4 = this;
+
+    var dragStartSourceIds = this.dragStartSourceIds;
+
+    this.dragStartSourceIds = null;
+
+    var clientOffset = (0, _utilsOffsetHelpers.getEventClientOffset)(e);
+
+    // Don't publish the source just yet (see why below)
+    this.actions.beginDrag(dragStartSourceIds, {
+      publishSource: false,
+      getSourceClientOffset: this.getSourceClientOffset,
+      clientOffset: clientOffset
+    });
+
+    var dataTransfer = e.dataTransfer;
+
+    var nativeType = matchNativeItemType(dataTransfer);
+
+    if (this.monitor.isDragging()) {
+      if (typeof dataTransfer.setDragImage === 'function') {
+        // Use custom drag image if user specifies it.
+        // If child drag source refuses drag but parent agrees,
+        // use parent's node as drag image. Neither works in IE though.
+        var sourceId = this.monitor.getSourceId();
+        var sourceNode = this.sourceNodes[sourceId];
+        var dragPreview = this.sourcePreviewNodes[sourceId] || sourceNode;
+
+        var _getCurrentSourcePreviewNodeOptions = this.getCurrentSourcePreviewNodeOptions();
+
+        var anchorX = _getCurrentSourcePreviewNodeOptions.anchorX;
+        var anchorY = _getCurrentSourcePreviewNodeOptions.anchorY;
+
+        var anchorPoint = { anchorX: anchorX, anchorY: anchorY };
+        var dragPreviewOffset = (0, _utilsOffsetHelpers.getDragPreviewOffset)(sourceNode, dragPreview, clientOffset, anchorPoint);
+        dataTransfer.setDragImage(dragPreview, dragPreviewOffset.x, dragPreviewOffset.y);
+      }
+
+      try {
+        // Firefox won't drag without setting data
+        dataTransfer.setData('application/json', {});
+      } catch (err) {}
+
+      // Store drag source node so we can check whether
+      // it is removed from DOM and trigger endDrag manually.
+      this.setCurrentDragSourceNode(e.target);
+
+      // Now we are ready to publish the drag source.. or are we not?
+
+      var _getCurrentSourcePreviewNodeOptions2 = this.getCurrentSourcePreviewNodeOptions();
+
+      var captureDraggingState = _getCurrentSourcePreviewNodeOptions2.captureDraggingState;
+
+      if (!captureDraggingState) {
+        // Usually we want to publish it in the next tick so that browser
+        // is able to screenshot the current (not yet dragging) state.
+        //
+        // It also neatly avoids a situation where render() returns null
+        // in the same tick for the source element, and browser freaks out.
+        setTimeout(function () {
+          return _this4.actions.publishDragSource();
+        });
+      } else {
+        // In some cases the user may want to override this behavior, e.g.
+        // to work around IE not supporting custom drag previews.
+        //
+        // When using a custom drag layer, the only way to prevent
+        // the default drag preview from drawing in IE is to screenshot
+        // the dragging state in which the node itself has zero opacity
+        // and height. In this case, though, returning null from render()
+        // will abruptly end the dragging, which is not obvious.
+        //
+        // This is the reason such behavior is strictly opt-in.
+        this.actions.publishDragSource();
+      }
+    } else if (nativeType) {
+      // A native item (such as URL) dragged from inside the document
+      this.beginDragNativeItem(nativeType);
+    } else if (!dataTransfer.types && (!e.target.hasAttribute || !e.target.hasAttribute('draggable'))) {
+      // Looks like a Safari bug: dataTransfer.types is null, but there was no draggable.
+      // Just let it drag. It's a native type (URL or text) and will be picked up in dragenter handler.
+      return;
+    } else {
+      // If by this time no drag source reacted, tell browser not to drag.
+      e.preventDefault();
+    }
+  };
+
+  HTML5Backend.prototype.handleTopDragEndCapture = function handleTopDragEndCapture() {
+    if (this.clearCurrentDragSourceNode()) {
+      // Firefox can dispatch this event in an infinite loop
+      // if dragend handler does something like showing an alert.
+      // Only proceed if we have not handled it already.
+      this.actions.endDrag();
+    }
+  };
+
+  HTML5Backend.prototype.handleTopDragEnterCapture = function handleTopDragEnterCapture(e) {
+    this.dragEnterTargetIds = [];
+
+    var isFirstEnter = this.enterLeaveCounter.enter(e.target);
+    if (!isFirstEnter || this.monitor.isDragging()) {
+      return;
+    }
+
+    var dataTransfer = e.dataTransfer;
+
+    var nativeType = matchNativeItemType(dataTransfer);
+
+    if (nativeType) {
+      // A native item (such as file or URL) dragged from outside the document
+      this.beginDragNativeItem(nativeType);
+    }
+  };
+
+  HTML5Backend.prototype.handleDragEnter = function handleDragEnter(e, targetId) {
+    this.dragEnterTargetIds.unshift(targetId);
+  };
+
+  HTML5Backend.prototype.handleTopDragEnter = function handleTopDragEnter(e) {
+    var _this5 = this;
+
+    var dragEnterTargetIds = this.dragEnterTargetIds;
+
+    this.dragEnterTargetIds = [];
+
+    if (!this.monitor.isDragging()) {
+      // This is probably a native item type we don't understand.
+      return;
+    }
+
+    if (!(0, _utilsBrowserDetector.isFirefox)()) {
+      // Don't emit hover in `dragenter` on Firefox due to an edge case.
+      // If the target changes position as the result of `dragenter`, Firefox
+      // will still happily dispatch `dragover` despite target being no longer
+      // there. The easy solution is to only fire `hover` in `dragover` on FF.
+      this.actions.hover(dragEnterTargetIds, {
+        clientOffset: (0, _utilsOffsetHelpers.getEventClientOffset)(e)
+      });
+    }
+
+    var canDrop = dragEnterTargetIds.some(function (targetId) {
+      return _this5.monitor.canDropOnTarget(targetId);
+    });
+
+    if (canDrop) {
+      // IE requires this to fire dragover events
+      e.preventDefault();
+      e.dataTransfer.dropEffect = this.getCurrentDropEffect();
+    }
+  };
+
+  HTML5Backend.prototype.handleTopDragOverCapture = function handleTopDragOverCapture() {
+    this.dragOverTargetIds = [];
+  };
+
+  HTML5Backend.prototype.handleDragOver = function handleDragOver(e, targetId) {
+    this.dragOverTargetIds.unshift(targetId);
+  };
+
+  HTML5Backend.prototype.handleTopDragOver = function handleTopDragOver(e) {
+    var _this6 = this;
+
+    var dragOverTargetIds = this.dragOverTargetIds;
+
+    this.dragOverTargetIds = [];
+
+    if (!this.monitor.isDragging()) {
+      // This is probably a native item type we don't understand.
+      // Prevent default "drop and blow away the whole document" action.
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'none';
+      return;
+    }
+
+    this.actions.hover(dragOverTargetIds, {
+      clientOffset: (0, _utilsOffsetHelpers.getEventClientOffset)(e)
+    });
+
+    var canDrop = dragOverTargetIds.some(function (targetId) {
+      return _this6.monitor.canDropOnTarget(targetId);
+    });
+
+    if (canDrop) {
+      // Show user-specified drop effect.
+      e.preventDefault();
+      e.dataTransfer.dropEffect = this.getCurrentDropEffect();
+    } else if (this.isDraggingNativeItem()) {
+      // Don't show a nice cursor but still prevent default
+      // "drop and blow away the whole document" action.
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'none';
+    } else if (this.checkIfCurrentDragSourceRectChanged()) {
+      // Prevent animating to incorrect position.
+      // Drop effect must be other than 'none' to prevent animation.
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    }
+  };
+
+  HTML5Backend.prototype.handleTopDragLeaveCapture = function handleTopDragLeaveCapture(e) {
+    if (this.isDraggingNativeItem()) {
+      e.preventDefault();
+    }
+
+    var isLastLeave = this.enterLeaveCounter.leave(e.target);
+    if (!isLastLeave) {
+      return;
+    }
+
+    if (this.isDraggingNativeItem()) {
+      this.endDragNativeItem();
+    }
+  };
+
+  HTML5Backend.prototype.handleTopDropCapture = function handleTopDropCapture(e) {
+    this.dropTargetIds = [];
+
+    if (this.isDraggingNativeItem()) {
+      e.preventDefault();
+      this.currentNativeSource.mutateItemByReadingDataTransfer(e.dataTransfer);
+    }
+
+    this.enterLeaveCounter.reset();
+  };
+
+  HTML5Backend.prototype.handleDrop = function handleDrop(e, targetId) {
+    this.dropTargetIds.unshift(targetId);
+  };
+
+  HTML5Backend.prototype.handleTopDrop = function handleTopDrop(e) {
+    var dropTargetIds = this.dropTargetIds;
+
+    this.dropTargetIds = [];
+
+    this.actions.hover(dropTargetIds, {
+      clientOffset: (0, _utilsOffsetHelpers.getEventClientOffset)(e)
+    });
+    this.actions.drop();
+
+    if (this.isDraggingNativeItem()) {
+      this.endDragNativeItem();
+    } else {
+      this.endDragIfSourceWasRemovedFromDOM();
+    }
+  };
+
+  HTML5Backend.prototype.handleSelectStart = function handleSelectStart(e) {
+    // Prevent selection on IE
+    // and instead ask it to consider dragging.
+    e.preventDefault();
+    if (typeof e.target.dragDrop === 'function') {
+      e.target.dragDrop();
+    }
+  };
+
+  return HTML5Backend;
+})();
+
+function createHTML5Backend(manager) {
+  return new HTML5Backend(manager);
+}
+
+// IE doesn't support MIME types in setData
+},{"../utils/BrowserDetector":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/BrowserDetector.js","../utils/EnterLeaveCounter":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/EnterLeaveCounter.js","../utils/OffsetHelpers":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/OffsetHelpers.js","../utils/shallowEqual":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/shallowEqual.js","dnd-core":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/dnd-core/modules/index.js","invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","lodash/object/defaults":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/defaults.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/bindConnector.js":[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -71276,7 +71922,178 @@ function registerTarget(type, target, manager) {
 }
 
 module.exports = exports['default'];
-},{"invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/checkDecoratorArguments.js":[function(require,module,exports){
+},{"invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/BrowserDetector.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _lodashFunctionMemoize = require('lodash/function/memoize');
+
+var _lodashFunctionMemoize2 = _interopRequireDefault(_lodashFunctionMemoize);
+
+var isFirefox = (0, _lodashFunctionMemoize2['default'])(function () {
+  return /firefox/i.test(navigator.userAgent);
+});
+
+exports.isFirefox = isFirefox;
+var isSafari = (0, _lodashFunctionMemoize2['default'])(function () {
+  return Boolean(window.safari);
+});
+exports.isSafari = isSafari;
+},{"lodash/function/memoize":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/memoize.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/EnterLeaveCounter.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _lodashArrayUnion = require('lodash/array/union');
+
+var _lodashArrayUnion2 = _interopRequireDefault(_lodashArrayUnion);
+
+var _lodashArrayWithout = require('lodash/array/without');
+
+var _lodashArrayWithout2 = _interopRequireDefault(_lodashArrayWithout);
+
+var EnterLeaveCounter = (function () {
+  function EnterLeaveCounter() {
+    _classCallCheck(this, EnterLeaveCounter);
+
+    this.entered = [];
+  }
+
+  EnterLeaveCounter.prototype.enter = function enter(enteringNode) {
+    var previousLength = this.entered.length;
+
+    this.entered = (0, _lodashArrayUnion2['default'])(this.entered.filter(function (node) {
+      return document.documentElement.contains(node) && (!node.contains || node.contains(enteringNode));
+    }), [enteringNode]);
+
+    return previousLength === 0 && this.entered.length > 0;
+  };
+
+  EnterLeaveCounter.prototype.leave = function leave(leavingNode) {
+    var previousLength = this.entered.length;
+
+    this.entered = (0, _lodashArrayWithout2['default'])(this.entered.filter(function (node) {
+      return document.documentElement.contains(node);
+    }), leavingNode);
+
+    return previousLength > 0 && this.entered.length === 0;
+  };
+
+  EnterLeaveCounter.prototype.reset = function reset() {
+    this.entered = [];
+  };
+
+  return EnterLeaveCounter;
+})();
+
+exports['default'] = EnterLeaveCounter;
+module.exports = exports['default'];
+},{"lodash/array/union":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/array/union.js","lodash/array/without":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/array/without.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/OffsetHelpers.js":[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports.getElementClientOffset = getElementClientOffset;
+exports.getEventClientOffset = getEventClientOffset;
+exports.getDragPreviewOffset = getDragPreviewOffset;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _BrowserDetector = require('./BrowserDetector');
+
+var _createMonotonicInterpolant = require('./createMonotonicInterpolant');
+
+var _createMonotonicInterpolant2 = _interopRequireDefault(_createMonotonicInterpolant);
+
+var ELEMENT_NODE = 1;
+
+function getElementClientOffset(el) {
+  if (el.nodeType !== ELEMENT_NODE) {
+    el = el.parentElement;
+  }
+
+  if (!el) {
+    return null;
+  }
+
+  var _el$getBoundingClientRect = el.getBoundingClientRect();
+
+  var top = _el$getBoundingClientRect.top;
+  var left = _el$getBoundingClientRect.left;
+
+  return { x: left, y: top };
+}
+
+function getEventClientOffset(e) {
+  return {
+    x: e.clientX,
+    y: e.clientY
+  };
+}
+
+function getDragPreviewOffset(sourceNode, dragPreview, clientOffset, anchorPoint) {
+  // The browsers will use the image intrinsic size under different conditions.
+  // Firefox only cares if it's an image, but WebKit also wants it to be detached.
+  var isImage = dragPreview.nodeName === 'IMG' && ((0, _BrowserDetector.isFirefox)() || !document.documentElement.contains(dragPreview));
+  var dragPreviewNode = isImage ? sourceNode : dragPreview;
+
+  var dragPreviewNodeOffsetFromClient = getElementClientOffset(dragPreviewNode);
+  var offsetFromDragPreview = {
+    x: clientOffset.x - dragPreviewNodeOffsetFromClient.x,
+    y: clientOffset.y - dragPreviewNodeOffsetFromClient.y
+  };
+
+  var sourceWidth = sourceNode.offsetWidth;
+  var sourceHeight = sourceNode.offsetHeight;
+  var anchorX = anchorPoint.anchorX;
+  var anchorY = anchorPoint.anchorY;
+
+  var dragPreviewWidth = isImage ? dragPreview.width : sourceWidth;
+  var dragPreviewHeight = isImage ? dragPreview.height : sourceHeight;
+
+  // Work around @2x coordinate discrepancies in browsers
+  if ((0, _BrowserDetector.isSafari)() && isImage) {
+    dragPreviewHeight /= window.devicePixelRatio;
+    dragPreviewWidth /= window.devicePixelRatio;
+  } else if ((0, _BrowserDetector.isFirefox)() && !isImage) {
+    dragPreviewHeight *= window.devicePixelRatio;
+    dragPreviewWidth *= window.devicePixelRatio;
+  }
+
+  // Interpolate coordinates depending on anchor point
+  // If you know a simpler way to do this, let me know
+  var interpolateX = (0, _createMonotonicInterpolant2['default'])([0, 0.5, 1], [
+  // Dock to the left
+  offsetFromDragPreview.x,
+  // Align at the center
+  offsetFromDragPreview.x / sourceWidth * dragPreviewWidth,
+  // Dock to the right
+  offsetFromDragPreview.x + dragPreviewWidth - sourceWidth]);
+  var interpolateY = (0, _createMonotonicInterpolant2['default'])([0, 0.5, 1], [
+  // Dock to the top
+  offsetFromDragPreview.y,
+  // Align at the center
+  offsetFromDragPreview.y / sourceHeight * dragPreviewHeight,
+  // Dock to the bottom
+  offsetFromDragPreview.y + dragPreviewHeight - sourceHeight]);
+  var x = interpolateX(anchorX);
+  var y = interpolateY(anchorY);
+
+  // Work around Safari 8 positioning bug
+  if ((0, _BrowserDetector.isSafari)() && isImage) {
+    // We'll have to wait for @3x to see if this is entirely correct
+    y += (window.devicePixelRatio - 1) * dragPreviewHeight;
+  }
+
+  return { x: x, y: y };
+}
+},{"./BrowserDetector":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/BrowserDetector.js","./createMonotonicInterpolant":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/createMonotonicInterpolant.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/checkDecoratorArguments.js":[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -71331,7 +72148,115 @@ function cloneWithRef(element, newRef) {
 }
 
 module.exports = exports['default'];
-},{"invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/isValidType.js":[function(require,module,exports){
+},{"invariant":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/invariant/browser.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/createMonotonicInterpolant.js":[function(require,module,exports){
+/**
+ * I took this straight from Wikipedia, it must be good!
+ */
+"use strict";
+
+exports.__esModule = true;
+exports["default"] = createMonotonicInterpolant;
+
+function createMonotonicInterpolant(xs, ys) {
+  var length = xs.length;
+
+  // Rearrange xs and ys so that xs is sorted
+  var indexes = [];
+  for (var i = 0; i < length; i++) {
+    indexes.push(i);
+  }
+  indexes.sort(function (a, b) {
+    return xs[a] < xs[b] ? -1 : 1;
+  });
+
+  var oldXs = xs,
+      oldYs = ys;
+  // Impl: Creating new arrays also prevents problems if the input arrays are mutated later
+  xs = [];
+  ys = [];
+  // Impl: Unary plus properly converts values to numbers
+  for (var i = 0; i < length; i++) {
+    xs.push(+oldXs[indexes[i]]);
+    ys.push(+oldYs[indexes[i]]);
+  }
+
+  // Get consecutive differences and slopes
+  var dys = [];
+  var dxs = [];
+  var ms = [];
+  var dx = undefined,
+      dy = undefined;
+  for (var i = 0; i < length - 1; i++) {
+    dx = xs[i + 1] - xs[i];
+    dy = ys[i + 1] - ys[i];
+    dxs.push(dx);
+    dys.push(dy);
+    ms.push(dy / dx);
+  }
+
+  // Get degree-1 coefficients
+  var c1s = [ms[0]];
+  for (var i = 0; i < dxs.length - 1; i++) {
+    var _m = ms[i];
+    var mNext = ms[i + 1];
+    if (_m * mNext <= 0) {
+      c1s.push(0);
+    } else {
+      dx = dxs[i];
+      var dxNext = dxs[i + 1];
+      var common = dx + dxNext;
+      c1s.push(3 * common / ((common + dxNext) / _m + (common + dx) / mNext));
+    }
+  }
+  c1s.push(ms[ms.length - 1]);
+
+  // Get degree-2 and degree-3 coefficients
+  var c2s = [];
+  var c3s = [];
+  var m = undefined;
+  for (var i = 0; i < c1s.length - 1; i++) {
+    m = ms[i];
+    var c1 = c1s[i];
+    var invDx = 1 / dxs[i];
+    var common = c1 + c1s[i + 1] - m - m;
+    c2s.push((m - c1 - common) * invDx);
+    c3s.push(common * invDx * invDx);
+  }
+
+  // Return interpolant function
+  return function (x) {
+    // The rightmost point in the dataset should give an exact result
+    var i = xs.length - 1;
+    if (x === xs[i]) {
+      return ys[i];
+    }
+
+    // Search for the interval x is in, returning the corresponding y if x is one of the original xs
+    var low = 0;
+    var high = c3s.length - 1;
+    var mid = undefined;
+    while (low <= high) {
+      mid = Math.floor(0.5 * (low + high));
+      var xHere = xs[mid];
+      if (xHere < x) {
+        low = mid + 1;
+      } else if (xHere > x) {
+        high = mid - 1;
+      } else {
+        return ys[mid];
+      }
+    }
+    i = Math.max(0, high);
+
+    // Interpolate
+    var diff = x - xs[i],
+        diffSq = diff * diff;
+    return ys[i] + c1s[i] * diff + c2s[i] * diffSq + c3s[i] * diff * diffSq;
+  };
+}
+
+module.exports = exports["default"];
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/utils/isValidType.js":[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -74483,7 +75408,33 @@ var intersection = restParam(function(arrays) {
 
 module.exports = intersection;
 
-},{"../function/restParam":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/restParam.js","../internal/baseIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseIndexOf.js","../internal/cacheIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js","../internal/createCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createCache.js","../internal/isArrayLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/array/without.js":[function(require,module,exports){
+},{"../function/restParam":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/restParam.js","../internal/baseIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseIndexOf.js","../internal/cacheIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js","../internal/createCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createCache.js","../internal/isArrayLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/array/union.js":[function(require,module,exports){
+var baseFlatten = require('../internal/baseFlatten'),
+    baseUniq = require('../internal/baseUniq'),
+    restParam = require('../function/restParam');
+
+/**
+ * Creates an array of unique values, in order, from all of the provided arrays
+ * using [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * @static
+ * @memberOf _
+ * @category Array
+ * @param {...Array} [arrays] The arrays to inspect.
+ * @returns {Array} Returns the new array of combined values.
+ * @example
+ *
+ * _.union([1, 2], [4, 2], [2, 1]);
+ * // => [1, 2, 4]
+ */
+var union = restParam(function(arrays) {
+  return baseUniq(baseFlatten(arrays, false, true));
+});
+
+module.exports = union;
+
+},{"../function/restParam":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/restParam.js","../internal/baseFlatten":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseFlatten.js","../internal/baseUniq":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseUniq.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/array/without.js":[function(require,module,exports){
 var baseDifference = require('../internal/baseDifference'),
     isArrayLike = require('../internal/isArrayLike'),
     restParam = require('../function/restParam');
@@ -74549,9 +75500,117 @@ function xor() {
 
 module.exports = xor;
 
-},{"../internal/arrayPush":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/arrayPush.js","../internal/baseDifference":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseDifference.js","../internal/baseUniq":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseUniq.js","../internal/isArrayLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/restParam.js":[function(require,module,exports){
+},{"../internal/arrayPush":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/arrayPush.js","../internal/baseDifference":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseDifference.js","../internal/baseUniq":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseUniq.js","../internal/isArrayLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/memoize.js":[function(require,module,exports){
+var MapCache = require('../internal/MapCache');
+
+/** Used as the `TypeError` message for "Functions" methods. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/**
+ * Creates a function that memoizes the result of `func`. If `resolver` is
+ * provided it determines the cache key for storing the result based on the
+ * arguments provided to the memoized function. By default, the first argument
+ * provided to the memoized function is coerced to a string and used as the
+ * cache key. The `func` is invoked with the `this` binding of the memoized
+ * function.
+ *
+ * **Note:** The cache is exposed as the `cache` property on the memoized
+ * function. Its creation may be customized by replacing the `_.memoize.Cache`
+ * constructor with one whose instances implement the [`Map`](http://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-map-prototype-object)
+ * method interface of `get`, `has`, and `set`.
+ *
+ * @static
+ * @memberOf _
+ * @category Function
+ * @param {Function} func The function to have its output memoized.
+ * @param {Function} [resolver] The function to resolve the cache key.
+ * @returns {Function} Returns the new memoizing function.
+ * @example
+ *
+ * var upperCase = _.memoize(function(string) {
+ *   return string.toUpperCase();
+ * });
+ *
+ * upperCase('fred');
+ * // => 'FRED'
+ *
+ * // modifying the result cache
+ * upperCase.cache.set('fred', 'BARNEY');
+ * upperCase('fred');
+ * // => 'BARNEY'
+ *
+ * // replacing `_.memoize.Cache`
+ * var object = { 'user': 'fred' };
+ * var other = { 'user': 'barney' };
+ * var identity = _.memoize(_.identity);
+ *
+ * identity(object);
+ * // => { 'user': 'fred' }
+ * identity(other);
+ * // => { 'user': 'fred' }
+ *
+ * _.memoize.Cache = WeakMap;
+ * var identity = _.memoize(_.identity);
+ *
+ * identity(object);
+ * // => { 'user': 'fred' }
+ * identity(other);
+ * // => { 'user': 'barney' }
+ */
+function memoize(func, resolver) {
+  if (typeof func != 'function' || (resolver && typeof resolver != 'function')) {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  var memoized = function() {
+    var args = arguments,
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    var result = func.apply(this, args);
+    memoized.cache = cache.set(key, result);
+    return result;
+  };
+  memoized.cache = new memoize.Cache;
+  return memoized;
+}
+
+// Assign cache to `_.memoize`.
+memoize.Cache = MapCache;
+
+module.exports = memoize;
+
+},{"../internal/MapCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/MapCache.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/restParam.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/function/restParam.js"][0].apply(exports,arguments)
-},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/SetCache.js":[function(require,module,exports){
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/MapCache.js":[function(require,module,exports){
+var mapDelete = require('./mapDelete'),
+    mapGet = require('./mapGet'),
+    mapHas = require('./mapHas'),
+    mapSet = require('./mapSet');
+
+/**
+ * Creates a cache object to store key/value pairs.
+ *
+ * @private
+ * @static
+ * @name Cache
+ * @memberOf _.memoize
+ */
+function MapCache() {
+  this.__data__ = {};
+}
+
+// Add functions to the `Map` cache.
+MapCache.prototype['delete'] = mapDelete;
+MapCache.prototype.get = mapGet;
+MapCache.prototype.has = mapHas;
+MapCache.prototype.set = mapSet;
+
+module.exports = MapCache;
+
+},{"./mapDelete":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/mapDelete.js","./mapGet":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/mapGet.js","./mapHas":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/mapHas.js","./mapSet":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/mapSet.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/SetCache.js":[function(require,module,exports){
 (function (global){
 var cachePush = require('./cachePush'),
     getNative = require('./getNative');
@@ -74586,6 +75645,101 @@ module.exports = SetCache;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./cachePush":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cachePush.js","./getNative":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getNative.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/arrayPush.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/arrayPush.js"][0].apply(exports,arguments)
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/assignDefaults.js":[function(require,module,exports){
+/**
+ * Used by `_.defaults` to customize its `_.assign` use.
+ *
+ * @private
+ * @param {*} objectValue The destination object property value.
+ * @param {*} sourceValue The source object property value.
+ * @returns {*} Returns the value to assign to the destination object.
+ */
+function assignDefaults(objectValue, sourceValue) {
+  return objectValue === undefined ? sourceValue : objectValue;
+}
+
+module.exports = assignDefaults;
+
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/assignWith.js":[function(require,module,exports){
+var keys = require('../object/keys');
+
+/**
+ * A specialized version of `_.assign` for customizing assigned values without
+ * support for argument juggling, multiple sources, and `this` binding `customizer`
+ * functions.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @param {Function} customizer The function to customize assigned values.
+ * @returns {Object} Returns `object`.
+ */
+function assignWith(object, source, customizer) {
+  var index = -1,
+      props = keys(source),
+      length = props.length;
+
+  while (++index < length) {
+    var key = props[index],
+        value = object[key],
+        result = customizer(value, source[key], key, object, source);
+
+    if ((result === result ? (result !== value) : (value === value)) ||
+        (value === undefined && !(key in object))) {
+      object[key] = result;
+    }
+  }
+  return object;
+}
+
+module.exports = assignWith;
+
+},{"../object/keys":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/keys.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseAssign.js":[function(require,module,exports){
+var baseCopy = require('./baseCopy'),
+    keys = require('../object/keys');
+
+/**
+ * The base implementation of `_.assign` without support for argument juggling,
+ * multiple sources, and `customizer` functions.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @returns {Object} Returns `object`.
+ */
+function baseAssign(object, source) {
+  return source == null
+    ? object
+    : baseCopy(source, keys(source), object);
+}
+
+module.exports = baseAssign;
+
+},{"../object/keys":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/keys.js","./baseCopy":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseCopy.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseCopy.js":[function(require,module,exports){
+/**
+ * Copies properties of `source` to `object`.
+ *
+ * @private
+ * @param {Object} source The object to copy properties from.
+ * @param {Array} props The property names to copy.
+ * @param {Object} [object={}] The object to copy properties to.
+ * @returns {Object} Returns `object`.
+ */
+function baseCopy(source, props, object) {
+  object || (object = {});
+
+  var index = -1,
+      length = props.length;
+
+  while (++index < length) {
+    var key = props[index];
+    object[key] = source[key];
+  }
+  return object;
+}
+
+module.exports = baseCopy;
+
 },{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseDifference.js":[function(require,module,exports){
 var baseIndexOf = require('./baseIndexOf'),
     cacheIndexOf = require('./cacheIndexOf'),
@@ -74643,7 +75797,9 @@ function baseDifference(array, values) {
 
 module.exports = baseDifference;
 
-},{"./baseIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseIndexOf.js","./cacheIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js","./createCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createCache.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseFor.js":[function(require,module,exports){
+},{"./baseIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseIndexOf.js","./cacheIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js","./createCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createCache.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseFlatten.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/baseFlatten.js"][0].apply(exports,arguments)
+},{"../lang/isArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArguments.js","../lang/isArray":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArray.js","./arrayPush":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/arrayPush.js","./isArrayLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js","./isObjectLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isObjectLike.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseFor.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/baseFor.js"][0].apply(exports,arguments)
 },{"./createBaseFor":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createBaseFor.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseForIn.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/baseForIn.js"][0].apply(exports,arguments)
@@ -74740,7 +75896,9 @@ function baseUniq(array, iteratee) {
 
 module.exports = baseUniq;
 
-},{"./baseIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseIndexOf.js","./cacheIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js","./createCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createCache.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js":[function(require,module,exports){
+},{"./baseIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseIndexOf.js","./cacheIndexOf":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js","./createCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createCache.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/bindCallback.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/bindCallback.js"][0].apply(exports,arguments)
+},{"../utility/identity":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/utility/identity.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/cacheIndexOf.js":[function(require,module,exports){
 var isObject = require('../lang/isObject');
 
 /**
@@ -74783,7 +75941,50 @@ function cachePush(value) {
 
 module.exports = cachePush;
 
-},{"../lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createBaseFor.js":[function(require,module,exports){
+},{"../lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createAssigner.js":[function(require,module,exports){
+var bindCallback = require('./bindCallback'),
+    isIterateeCall = require('./isIterateeCall'),
+    restParam = require('../function/restParam');
+
+/**
+ * Creates a `_.assign`, `_.defaults`, or `_.merge` function.
+ *
+ * @private
+ * @param {Function} assigner The function to assign values.
+ * @returns {Function} Returns the new assigner function.
+ */
+function createAssigner(assigner) {
+  return restParam(function(object, sources) {
+    var index = -1,
+        length = object == null ? 0 : sources.length,
+        customizer = length > 2 ? sources[length - 2] : undefined,
+        guard = length > 2 ? sources[2] : undefined,
+        thisArg = length > 1 ? sources[length - 1] : undefined;
+
+    if (typeof customizer == 'function') {
+      customizer = bindCallback(customizer, thisArg, 5);
+      length -= 2;
+    } else {
+      customizer = typeof thisArg == 'function' ? thisArg : undefined;
+      length -= (customizer ? 1 : 0);
+    }
+    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+      customizer = length < 3 ? undefined : customizer;
+      length = 1;
+    }
+    while (++index < length) {
+      var source = sources[index];
+      if (source) {
+        assigner(object, source, customizer);
+      }
+    }
+    return object;
+  });
+}
+
+module.exports = createAssigner;
+
+},{"../function/restParam":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/restParam.js","./bindCallback":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/bindCallback.js","./isIterateeCall":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isIterateeCall.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createBaseFor.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/createBaseFor.js"][0].apply(exports,arguments)
 },{"./toObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/toObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createCache.js":[function(require,module,exports){
 (function (global){
@@ -74810,7 +76011,31 @@ function createCache(values) {
 module.exports = createCache;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./SetCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/SetCache.js","./getNative":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getNative.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getLength.js":[function(require,module,exports){
+},{"./SetCache":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/SetCache.js","./getNative":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getNative.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createDefaults.js":[function(require,module,exports){
+var restParam = require('../function/restParam');
+
+/**
+ * Creates a `_.defaults` or `_.defaultsDeep` function.
+ *
+ * @private
+ * @param {Function} assigner The function to assign values.
+ * @param {Function} customizer The function to customize assigned values.
+ * @returns {Function} Returns the new defaults function.
+ */
+function createDefaults(assigner, customizer) {
+  return restParam(function(args) {
+    var object = args[0];
+    if (object == null) {
+      return object;
+    }
+    args.push(customizer);
+    return assigner.apply(undefined, args);
+  });
+}
+
+module.exports = createDefaults;
+
+},{"../function/restParam":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/function/restParam.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getLength.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/getLength.js"][0].apply(exports,arguments)
 },{"./baseProperty":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseProperty.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getNative.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/getNative.js"][0].apply(exports,arguments)
@@ -74843,11 +76068,158 @@ module.exports = indexOfNaN;
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/isArrayLike.js"][0].apply(exports,arguments)
 },{"./getLength":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getLength.js","./isLength":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isLength.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isIndex.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/isIndex.js"][0].apply(exports,arguments)
-},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isLength.js":[function(require,module,exports){
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isIterateeCall.js":[function(require,module,exports){
+var isArrayLike = require('./isArrayLike'),
+    isIndex = require('./isIndex'),
+    isObject = require('../lang/isObject');
+
+/**
+ * Checks if the provided arguments are from an iteratee call.
+ *
+ * @private
+ * @param {*} value The potential iteratee value argument.
+ * @param {*} index The potential iteratee index or key argument.
+ * @param {*} object The potential iteratee object argument.
+ * @returns {boolean} Returns `true` if the arguments are from an iteratee call, else `false`.
+ */
+function isIterateeCall(value, index, object) {
+  if (!isObject(object)) {
+    return false;
+  }
+  var type = typeof index;
+  if (type == 'number'
+      ? (isArrayLike(object) && isIndex(index, object.length))
+      : (type == 'string' && index in object)) {
+    var other = object[index];
+    return value === value ? (value === other) : (other !== other);
+  }
+  return false;
+}
+
+module.exports = isIterateeCall;
+
+},{"../lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js","./isArrayLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js","./isIndex":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isIndex.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isLength.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/isLength.js"][0].apply(exports,arguments)
 },{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isObjectLike.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/isObjectLike.js"][0].apply(exports,arguments)
-},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/toObject.js":[function(require,module,exports){
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/mapDelete.js":[function(require,module,exports){
+/**
+ * Removes `key` and its value from the cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf _.memoize.Cache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed successfully, else `false`.
+ */
+function mapDelete(key) {
+  return this.has(key) && delete this.__data__[key];
+}
+
+module.exports = mapDelete;
+
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/mapGet.js":[function(require,module,exports){
+/**
+ * Gets the cached value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf _.memoize.Cache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the cached value.
+ */
+function mapGet(key) {
+  return key == '__proto__' ? undefined : this.__data__[key];
+}
+
+module.exports = mapGet;
+
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/mapHas.js":[function(require,module,exports){
+/** Used for native method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Checks if a cached value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf _.memoize.Cache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapHas(key) {
+  return key != '__proto__' && hasOwnProperty.call(this.__data__, key);
+}
+
+module.exports = mapHas;
+
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/mapSet.js":[function(require,module,exports){
+/**
+ * Sets `value` to `key` of the cache.
+ *
+ * @private
+ * @name set
+ * @memberOf _.memoize.Cache
+ * @param {string} key The key of the value to cache.
+ * @param {*} value The value to cache.
+ * @returns {Object} Returns the cache object.
+ */
+function mapSet(key, value) {
+  if (key != '__proto__') {
+    this.__data__[key] = value;
+  }
+  return this;
+}
+
+module.exports = mapSet;
+
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/shimKeys.js":[function(require,module,exports){
+var isArguments = require('../lang/isArguments'),
+    isArray = require('../lang/isArray'),
+    isIndex = require('./isIndex'),
+    isLength = require('./isLength'),
+    keysIn = require('../object/keysIn');
+
+/** Used for native method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * A fallback implementation of `Object.keys` which creates an array of the
+ * own enumerable property names of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function shimKeys(object) {
+  var props = keysIn(object),
+      propsLength = props.length,
+      length = propsLength && object.length;
+
+  var allowIndexes = !!length && isLength(length) &&
+    (isArray(object) || isArguments(object));
+
+  var index = -1,
+      result = [];
+
+  while (++index < propsLength) {
+    var key = props[index];
+    if ((allowIndexes && isIndex(key, length)) || hasOwnProperty.call(object, key)) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = shimKeys;
+
+},{"../lang/isArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArguments.js","../lang/isArray":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArray.js","../object/keysIn":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/keysIn.js","./isIndex":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isIndex.js","./isLength":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isLength.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/toObject.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/internal/toObject.js"][0].apply(exports,arguments)
 },{"../lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArguments.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/lang/isArguments.js"][0].apply(exports,arguments)
@@ -74932,9 +76304,130 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"../internal/baseForIn":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseForIn.js","../internal/isObjectLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isObjectLike.js","./isArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArguments.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/keysIn.js":[function(require,module,exports){
+},{"../internal/baseForIn":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseForIn.js","../internal/isObjectLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isObjectLike.js","./isArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArguments.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/assign.js":[function(require,module,exports){
+var assignWith = require('../internal/assignWith'),
+    baseAssign = require('../internal/baseAssign'),
+    createAssigner = require('../internal/createAssigner');
+
+/**
+ * Assigns own enumerable properties of source object(s) to the destination
+ * object. Subsequent sources overwrite property assignments of previous sources.
+ * If `customizer` is provided it is invoked to produce the assigned values.
+ * The `customizer` is bound to `thisArg` and invoked with five arguments:
+ * (objectValue, sourceValue, key, object, source).
+ *
+ * **Note:** This method mutates `object` and is based on
+ * [`Object.assign`](http://ecma-international.org/ecma-262/6.0/#sec-object.assign).
+ *
+ * @static
+ * @memberOf _
+ * @alias extend
+ * @category Object
+ * @param {Object} object The destination object.
+ * @param {...Object} [sources] The source objects.
+ * @param {Function} [customizer] The function to customize assigned values.
+ * @param {*} [thisArg] The `this` binding of `customizer`.
+ * @returns {Object} Returns `object`.
+ * @example
+ *
+ * _.assign({ 'user': 'barney' }, { 'age': 40 }, { 'user': 'fred' });
+ * // => { 'user': 'fred', 'age': 40 }
+ *
+ * // using a customizer callback
+ * var defaults = _.partialRight(_.assign, function(value, other) {
+ *   return _.isUndefined(value) ? other : value;
+ * });
+ *
+ * defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
+ * // => { 'user': 'barney', 'age': 36 }
+ */
+var assign = createAssigner(function(object, source, customizer) {
+  return customizer
+    ? assignWith(object, source, customizer)
+    : baseAssign(object, source);
+});
+
+module.exports = assign;
+
+},{"../internal/assignWith":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/assignWith.js","../internal/baseAssign":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/baseAssign.js","../internal/createAssigner":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createAssigner.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/defaults.js":[function(require,module,exports){
+var assign = require('./assign'),
+    assignDefaults = require('../internal/assignDefaults'),
+    createDefaults = require('../internal/createDefaults');
+
+/**
+ * Assigns own enumerable properties of source object(s) to the destination
+ * object for all destination properties that resolve to `undefined`. Once a
+ * property is set, additional values of the same property are ignored.
+ *
+ * **Note:** This method mutates `object`.
+ *
+ * @static
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The destination object.
+ * @param {...Object} [sources] The source objects.
+ * @returns {Object} Returns `object`.
+ * @example
+ *
+ * _.defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
+ * // => { 'user': 'barney', 'age': 36 }
+ */
+var defaults = createDefaults(assign, assignDefaults);
+
+module.exports = defaults;
+
+},{"../internal/assignDefaults":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/assignDefaults.js","../internal/createDefaults":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/createDefaults.js","./assign":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/assign.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/keys.js":[function(require,module,exports){
+var getNative = require('../internal/getNative'),
+    isArrayLike = require('../internal/isArrayLike'),
+    isObject = require('../lang/isObject'),
+    shimKeys = require('../internal/shimKeys');
+
+/* Native method references for those with the same name as other `lodash` methods. */
+var nativeKeys = getNative(Object, 'keys');
+
+/**
+ * Creates an array of the own enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects. See the
+ * [ES spec](http://ecma-international.org/ecma-262/6.0/#sec-object.keys)
+ * for more details.
+ *
+ * @static
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keys(new Foo);
+ * // => ['a', 'b'] (iteration order is not guaranteed)
+ *
+ * _.keys('hi');
+ * // => ['0', '1']
+ */
+var keys = !nativeKeys ? shimKeys : function(object) {
+  var Ctor = object == null ? undefined : object.constructor;
+  if ((typeof Ctor == 'function' && Ctor.prototype === object) ||
+      (typeof object != 'function' && isArrayLike(object))) {
+    return shimKeys(object);
+  }
+  return isObject(object) ? nativeKeys(object) : [];
+};
+
+module.exports = keys;
+
+},{"../internal/getNative":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/getNative.js","../internal/isArrayLike":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isArrayLike.js","../internal/shimKeys":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/shimKeys.js","../lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/object/keysIn.js":[function(require,module,exports){
 arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/object/keysIn.js"][0].apply(exports,arguments)
-},{"../internal/isIndex":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isIndex.js","../internal/isLength":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isLength.js","../lang/isArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArguments.js","../lang/isArray":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArray.js","../lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/utility/noop.js":[function(require,module,exports){
+},{"../internal/isIndex":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isIndex.js","../internal/isLength":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/internal/isLength.js","../lang/isArguments":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArguments.js","../lang/isArray":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isArray.js","../lang/isObject":"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/lang/isObject.js"}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/utility/identity.js":[function(require,module,exports){
+arguments[4]["/home/ganesh/dev/Generator/node_modules/react-bootstrap/node_modules/lodash/utility/identity.js"][0].apply(exports,arguments)
+},{}],"/home/ganesh/dev/Generator/node_modules/react-dnd/node_modules/lodash/utility/noop.js":[function(require,module,exports){
 /**
  * A no-operation function that returns `undefined` regardless of the
  * arguments it receives.
@@ -102573,21 +104066,7 @@ React.render(
 );
 */
 
-},{"./DataSources.jsx":"/home/ganesh/dev/Generator/public/javascripts/DataSources.jsx","./InteractiveFilters.jsx":"/home/ganesh/dev/Generator/public/javascripts/InteractiveFilters.jsx","./Main.jsx":"/home/ganesh/dev/Generator/public/javascripts/Main.jsx","./Visualizations.jsx":"/home/ganesh/dev/Generator/public/javascripts/Visualizations.jsx","react":"/home/ganesh/dev/Generator/node_modules/react/react.js","react-router":"/home/ganesh/dev/Generator/node_modules/react-router/lib/index.js"}],"/home/ganesh/dev/Generator/public/javascripts/DataSources.jsx":[function(require,module,exports){
-var React = require('react');
-var DataSourcesPanel = require('./components/DataSourcesPanel.jsx');
-var DataSources = React.createClass({displayName: "DataSources",
-
-    render: function(){
-        console.log("rendering....")
-        return(
-            React.createElement(DataSourcesPanel, null)
-        );
-    }
-});
-
-module.exports = DataSources;
-},{"./components/DataSourcesPanel.jsx":"/home/ganesh/dev/Generator/public/javascripts/components/DataSourcesPanel.jsx","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/public/javascripts/InteractiveFilters.jsx":[function(require,module,exports){
+},{"./DataSources.jsx":"/home/ganesh/dev/Generator/public/javascripts/DataSources.jsx","./InteractiveFilters.jsx":"/home/ganesh/dev/Generator/public/javascripts/InteractiveFilters.jsx","./Main.jsx":"/home/ganesh/dev/Generator/public/javascripts/Main.jsx","./Visualizations.jsx":"/home/ganesh/dev/Generator/public/javascripts/Visualizations.jsx","react":"/home/ganesh/dev/Generator/node_modules/react/react.js","react-router":"/home/ganesh/dev/Generator/node_modules/react-router/lib/index.js"}],"/home/ganesh/dev/Generator/public/javascripts/Attribute.jsx":[function(require,module,exports){
 var React = require('react');
 var jQuery = require('jquery');
 
@@ -102595,12 +104074,42 @@ var jQuery = require('jquery');
 var AppStore = require('./stores/AppStore.jsx');
 var DragSource = require('react-dnd').DragSource;
 var PropTypes = React.PropTypes;
+var DragDropContext = require('react-dnd').DragDropContext;
 
 var Panel = require('react-bootstrap').Panel;
 var PanelGroup = require('react-bootstrap').PanelGroup;
 var Button = require('react-bootstrap').Button;
 var Table = require('react-bootstrap').Table;
+
+var DragSource = require('react-dnd').DragSource;
+
+
+var ItemTypes = require('./Constants.js').ItemTypes;
+
+function collect(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  }
+}
+
+var attributeSource = {
+  beginDrag: function (props) {
+    return {
+		allProps: props    	
+    };
+  },
+  endDrag: function(){
+  	this.setState({filteringAttribute: true})
+  }
+
+}
+
 var Attribute = React.createClass({displayName: "Attribute",
+	propTypes: {
+		connectDragSource: PropTypes.func.isRequired,
+		isDragging: PropTypes.bool.isRequired
+	},
 	getInitialState: function(){
 		return {open: true}
 	},
@@ -102608,10 +104117,13 @@ var Attribute = React.createClass({displayName: "Attribute",
 		this.setState({open: !this.state.open})
 	},
 	render: function(){
+	    var connectDragSource = this.props.connectDragSource;
+    	var isDragging = this.props.isDragging;
+	
 		var self = this;
 
 		console.log(self.props.data);
-		return (
+		return connectDragSource(
 			React.createElement("div", {className: "col-md-12"}, 
 			React.createElement(Panel, {collapsible: true, defaultExpanded: true, header: self.props.data.name, style: {margin: 2}}, 
 				React.createElement(Table, {condensed: true, bordered: true}, 
@@ -102653,7 +104165,103 @@ var Attribute = React.createClass({displayName: "Attribute",
 	}
 });
 
+module.exports = DragSource(ItemTypes.ATTRIBUTE, attributeSource, collect)(Attribute);
 
+},{"./Constants.js":"/home/ganesh/dev/Generator/public/javascripts/Constants.js","./stores/AppStore.jsx":"/home/ganesh/dev/Generator/public/javascripts/stores/AppStore.jsx","jquery":"/home/ganesh/dev/Generator/node_modules/jquery/dist/jquery.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js","react-bootstrap":"/home/ganesh/dev/Generator/node_modules/react-bootstrap/lib/index.js","react-dnd":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/index.js"}],"/home/ganesh/dev/Generator/public/javascripts/Constants.js":[function(require,module,exports){
+
+exports.ItemTypes= {
+	ATTRIBUTE: 'attribute'
+}
+},{}],"/home/ganesh/dev/Generator/public/javascripts/DataSources.jsx":[function(require,module,exports){
+var React = require('react');
+var DataSourcesPanel = require('./components/DataSourcesPanel.jsx');
+var DataSources = React.createClass({displayName: "DataSources",
+
+    render: function(){
+        console.log("rendering....")
+        return(
+            React.createElement(DataSourcesPanel, null)
+        );
+    }
+});
+
+module.exports = DataSources;
+},{"./components/DataSourcesPanel.jsx":"/home/ganesh/dev/Generator/public/javascripts/components/DataSourcesPanel.jsx","react":"/home/ganesh/dev/Generator/node_modules/react/react.js"}],"/home/ganesh/dev/Generator/public/javascripts/FilteringAttributes.jsx":[function(require,module,exports){
+var React = require('react');
+
+
+var PropTypes = React.PropTypes;
+var ItemTypes = require('./Constants').ItemTypes;
+var DropTarget = require('react-dnd').DropTarget;
+
+
+
+var dropTarget = {
+  drop: function (props) {
+  	console.log(props);
+    console.log("dropped...!!!")
+  }
+};
+
+function collect(connect, monitor) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop()
+  };
+}
+
+
+var FilteringAttributes = React.createClass({displayName: "FilteringAttributes",
+  propTypes: {
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    isOver: PropTypes.bool.isRequired,
+    canDrop: PropTypes.bool.isRequired
+  },
+
+	render: function(){
+    	var connectDropTarget = this.props.connectDropTarget;
+    	var isOver = this.props.isOver;
+    	var canDrop = this.props.canDrop;
+
+    	console.log(canDrop)
+		
+		var style = {
+			minHeight: 400,
+			background: "white",
+			padding: 8
+		};
+		if(canDrop){
+			style.background = "darkkhaki";
+		}
+		return connectDropTarget(
+			React.createElement("div", {className: "col-md-7", style: style}, " Filtering Attributes ")
+		
+
+		);
+	}
+});
+module.exports = DropTarget(ItemTypes.ATTRIBUTE, dropTarget, collect)(FilteringAttributes);
+},{"./Constants":"/home/ganesh/dev/Generator/public/javascripts/Constants.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js","react-dnd":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/index.js"}],"/home/ganesh/dev/Generator/public/javascripts/InteractiveFilters.jsx":[function(require,module,exports){
+var React = require('react');
+var jQuery = require('jquery');
+
+
+var AppStore = require('./stores/AppStore.jsx');
+var DragSource = require('react-dnd').DragSource;
+var PropTypes = React.PropTypes;
+var DragDropContext = require('react-dnd').DragDropContext;
+
+var Panel = require('react-bootstrap').Panel;
+var PanelGroup = require('react-bootstrap').PanelGroup;
+var Button = require('react-bootstrap').Button;
+var Table = require('react-bootstrap').Table;
+
+var HTML5Backend = require('react-dnd/modules/backends/HTML5');
+
+var Attribute = require('./Attribute.jsx');
+var FilteringAttributes = require('./FilteringAttributes.jsx');
 var InteractiveFilters = React.createClass({displayName: "InteractiveFilters",
 	getInitialState: function(){
 		return{attributes: []}
@@ -102688,17 +104296,16 @@ var InteractiveFilters = React.createClass({displayName: "InteractiveFilters",
                 Attributes
                 ), 
 
-                React.createElement("div", {className: "col-md-7"}, 
-                	"Filters"
-                )
+                React.createElement(FilteringAttributes, null)
 
             )
         );
     }
 });
 
-module.exports = InteractiveFilters;
-},{"./stores/AppStore.jsx":"/home/ganesh/dev/Generator/public/javascripts/stores/AppStore.jsx","jquery":"/home/ganesh/dev/Generator/node_modules/jquery/dist/jquery.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js","react-bootstrap":"/home/ganesh/dev/Generator/node_modules/react-bootstrap/lib/index.js","react-dnd":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/index.js"}],"/home/ganesh/dev/Generator/public/javascripts/Main.jsx":[function(require,module,exports){
+
+module.exports = DragDropContext(HTML5Backend)(InteractiveFilters);
+},{"./Attribute.jsx":"/home/ganesh/dev/Generator/public/javascripts/Attribute.jsx","./FilteringAttributes.jsx":"/home/ganesh/dev/Generator/public/javascripts/FilteringAttributes.jsx","./stores/AppStore.jsx":"/home/ganesh/dev/Generator/public/javascripts/stores/AppStore.jsx","jquery":"/home/ganesh/dev/Generator/node_modules/jquery/dist/jquery.js","react":"/home/ganesh/dev/Generator/node_modules/react/react.js","react-bootstrap":"/home/ganesh/dev/Generator/node_modules/react-bootstrap/lib/index.js","react-dnd":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/index.js","react-dnd/modules/backends/HTML5":"/home/ganesh/dev/Generator/node_modules/react-dnd/modules/backends/HTML5.js"}],"/home/ganesh/dev/Generator/public/javascripts/Main.jsx":[function(require,module,exports){
 var React = require('react');
 
 var router = require('react-router');

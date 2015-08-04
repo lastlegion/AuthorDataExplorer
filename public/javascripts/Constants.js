@@ -1,0 +1,4 @@
+
+exports.ItemTypes= {
+	ATTRIBUTE: 'attribute'
+}
