@@ -102599,7 +102599,7 @@ var PropTypes = React.PropTypes;
 var Panel = require('react-bootstrap').Panel;
 var PanelGroup = require('react-bootstrap').PanelGroup;
 var Button = require('react-bootstrap').Button;
-
+var Table = require('react-bootstrap').Table;
 var Attribute = React.createClass({displayName: "Attribute",
 	getInitialState: function(){
 		return {open: true}
@@ -102613,16 +102613,40 @@ var Attribute = React.createClass({displayName: "Attribute",
 		console.log(self.props.data);
 		return (
 			React.createElement("div", {className: "col-md-12"}, 
-			React.createElement(PanelGroup, null, 
 			React.createElement(Panel, {collapsible: true, defaultExpanded: true, header: self.props.data.name, style: {margin: 2}}, 
+				React.createElement(Table, {condensed: true, bordered: true}, 
+				    React.createElement("tbody", null, 
+				      React.createElement("tr", null, 
+				        React.createElement("td", null, "Type"), 
+				        React.createElement("td", null, React.createElement("div", {className: "attributeProperyVal"}, " ", self.props.data.type))
+				      ), 
+				      React.createElement("tr", null, 
+				        React.createElement("td", null, "Unique"), 
+				        React.createElement("td", null, React.createElement("div", {className: "attributeProperyVal"}, self.props.data.distinct))
+				      ), 
+					
 
-				React.createElement("div", {className: "attributeType", style: {display: "block", height: 30	}}, 
-					self.props.data.type
-				), 
-				React.createElement("div", {className: "attributeMean", style: {display: "block"}}, 
-					Math.round(self.props.data.mean*10)/10
-				)
-			)
+						self.props.data.type == "number" || self.props.data.type =="integer"
+						?
+						React.createElement("div", null, 
+				      React.createElement("tr", null, 
+				        React.createElement("td", null, "Mean"), 
+				        React.createElement("td", null, Math.round(self.props.data.mean*10)/10)
+				      ), 
+				      React.createElement("tr", null, 
+				        React.createElement("td", null, "Max"), 
+				        React.createElement("td", null, React.createElement("div", {className: "attributeProperyVal"}, Math.round(self.props.data.max*10)/10))
+				      )
+				      	)
+				      	:
+
+						React.createElement("div", null)
+					
+
+				    )
+				  )
+
+
 			)
 			)
 		);
@@ -102648,7 +102672,10 @@ var InteractiveFilters = React.createClass({displayName: "InteractiveFilters",
     		Attributes = this.state.attributes.map(function(attribute){
     		console.log(attribute)
     		return(
+    		React.createElement(PanelGroup, null, 
     			React.createElement(Attribute, {data: attribute}, " ")
+			)
+
     		);
     	})
 
@@ -102657,11 +102684,11 @@ var InteractiveFilters = React.createClass({displayName: "InteractiveFilters",
     	}
         return(
             React.createElement("div", null, 
-                React.createElement("div", {id: "interactiveFiltersAttributes", className: "col-md-4"}, 
+                React.createElement("div", {id: "interactiveFiltersAttributes", className: "col-md-5"}, 
                 Attributes
                 ), 
 
-                React.createElement("div", {className: "col-md-8"}, 
+                React.createElement("div", {className: "col-md-7"}, 
                 	"Filters"
                 )
 
@@ -103072,7 +103099,7 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
             files:[], 
             dataSources: [], 
             sourceName: "", 
-            sourceType: "csvFile", 
+            sourceType: "csvREST", 
             options: {}, 
             showDataSourceConfig:false,
             dataSourceConfig: {
@@ -103103,7 +103130,7 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
                 options = {
                     "path": "data/"+options
                 };
-
+                break;
             case "csvREST":
             case "jsonREST":
                 var hostName = this.state.hostName;
@@ -103116,6 +103143,7 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
                     path :path,
                     headers: headers
                 }
+                break;
 
         }
         dataSourceConfig["dataSources"].push({
@@ -103244,7 +103272,7 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
                         
                     ), 
 
-    			        React.createElement(Modal, {show: self.state.showModal, onHide: this.close}, 
+    			        React.createElement(Modal, {show: self.state.showModal, onHide: this.close, id: "modAddDataSource"}, 
     			          React.createElement(Modal.Header, {closeButton: true}, 
     			            React.createElement(Modal.Title, null, "Add Data Source")
     			          ), 
@@ -103277,7 +103305,7 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
                                         React.createElement("div", {id: "restStuff"}, 
                                             React.createElement(Input, {type: "text", onChange: this.handleHostName, id: "hostName", label: "hostName", labelClassName: "col-xs-2", wrapperClassName: "col-xs-6"}), 
                                             React.createElement(Input, {type: "text", onChange: this.handlePort, id: "port", label: "Port", labelClassName: "col-xs-2", wrapperClassName: "col-xs-6"}), 
-                                            React.createElement(Input, {type: "text", onChange: this.handlePath, id: "port", label: "Path", labelClassName: "col-xs-2", wrapperClassName: "col-xs-6"}), 
+                                            React.createElement(Input, {type: "text", onChange: this.handlePath, id: "path", label: "Path", labelClassName: "col-xs-2", wrapperClassName: "col-xs-6"}), 
                                             React.createElement(Input, {type: "textarea", label: "Headers", placeholder: "", labelClassName: "col-xs-2", wrapperClassName: "col-xs-6"})
 
                                         ), 
@@ -103306,16 +103334,7 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
 
                     this.state.attributes.length > 0 ?
                     React.createElement("div", null, 
-                        React.createElement("div", {className: "col-xs-4", id: "attributesPanel"}, 
-                          React.createElement("div", null, 
-
-
-                            React.createElement(Attributes, {attributes: this.state.attributes})
-                          )
-                        ), 
-                        React.createElement("div", {className: "col-xs-8", id: "visualizationPanel"}, 
-                            React.createElement("h4", null, "Visualizations")
-                        )
+                        "Data table"
                     )
                     : 
                     React.createElement("div", null)

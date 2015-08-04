@@ -82,4 +82,11 @@ ul#wizardNav li:hover{
 	height: 140px;
 
 }
-
+div.attributeProperty{
+	display: inline;
+	width: 80px;
+}
+div.attributePropertyVal{
+	display: inline;
+	width: 80px;
+}
