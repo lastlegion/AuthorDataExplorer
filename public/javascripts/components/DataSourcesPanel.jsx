@@ -210,7 +210,7 @@ var DataSourcesPanel = React.createClass({
                         <br />
                         {
                             this.state.dataSources.length > 1 ?
-                                <div className = "row"> 
+                                <div className = "row " style={{marginLeft: 10}}> 
                                    <Input type='text' onChange={this.handleJoinKey} id='joinKey' label='joinKey' labelClassName='col-xs-2' wrapperClassName='col-xs-4' />
                                 </div>
                             :
@@ -221,9 +221,13 @@ var DataSourcesPanel = React.createClass({
                         {
                         (this.state.dataSources.length ==1) || (this.state.dataSources.length > 1 && this.state.joinKey) ?
 
-                            <div className="row">
-                            <Button bsStyle='primary' onClick={this.loadData} id="btnLoadData">Load Data</Button>
-                            <Button bsStyle='default' onClick={this.showDataSourceConfig}>dataSource.json</Button>
+                            <div className="row" style={{marginLeft: 10}>
+                                <div className="row">
+                                   <Input type='text' onChange={this.handledataSourceAlias} id='alias' label='Alias' labelClassName='col-xs-2' wrapperClassName='col-xs-4' />
+
+                                </div>
+                                <Button bsStyle='primary' onClick={this.loadData} id="btnLoadData">Load Data</Button>
+                                <Button bsStyle='default' onClick={this.showDataSourceConfig}>dataSource.json</Button>
                             </div> 
                             :
                             <div></div> 

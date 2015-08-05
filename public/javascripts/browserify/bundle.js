@@ -104878,7 +104878,7 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
                         React.createElement("br", null), 
                         
                             this.state.dataSources.length > 1 ?
-                                React.createElement("div", {className: "row"}, 
+                                React.createElement("div", {className: "row "}, 
                                    React.createElement(Input, {type: "text", onChange: this.handleJoinKey, id: "joinKey", label: "joinKey", labelClassName: "col-xs-2", wrapperClassName: "col-xs-4"})
                                 )
                             :
@@ -104890,6 +104890,10 @@ var DataSourcesPanel = React.createClass({displayName: "DataSourcesPanel",
                         (this.state.dataSources.length ==1) || (this.state.dataSources.length > 1 && this.state.joinKey) ?
 
                             React.createElement("div", {className: "row"}, 
+                                React.createElement("div", {className: "row"}, 
+                                   React.createElement(Input, {type: "text", onChange: this.handledataSourceAlias, id: "alias", label: "Alias", labelClassName: "col-xs-2", wrapperClassName: "col-xs-4"})
+
+                                ), 
                             React.createElement(Button, {bsStyle: "primary", onClick: this.loadData, id: "btnLoadData"}, "Load Data"), 
                             React.createElement(Button, {bsStyle: "default", onClick: this.showDataSourceConfig}, "dataSource.json")
                             ) 
