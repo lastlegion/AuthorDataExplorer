@@ -10,7 +10,7 @@ var Router = router;
 var DefaultRoute = router.DefaultRoute;
 var Link = router.Link;
 var Route = router.Route;
-var RouteHandler = router.RouteHandler; 
+var RouteHandler = router.RouteHandler;
 
 
 var DataSources = require('./DataSources.jsx')
@@ -20,7 +20,7 @@ var InteractiveFilters = require('./InteractiveFilters.jsx');
 var Visualizations = require('./Visualizations.jsx');
 
 var routes = (
-  <Route handler={App} path="/">    
+  <Route handler={App} path="/">
     <Route name = "dataSources" handler={DataSources} path="/dataSources"/>
     <Route name = "interactiveFilters" handler={InteractiveFilters} path="/interactiveFilters"/>
     <Route name = "visualizations" handler={Visualizations} />

@@ -5,7 +5,11 @@ var Visualizations = React.createClass({
     render: function(){
         return(
             <div>
-                Visualizations
+                <h1>Visualizations</h1>
+                <div>
+
+                  
+                </div>
             </div>
         );
     }

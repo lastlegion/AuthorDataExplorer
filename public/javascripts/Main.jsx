@@ -18,24 +18,24 @@ var Main = React.createClass({
 
                 <Nav />
 
-            <div className="col-md-8 col-md-offset-2">
+              <div className="col-md-10 col-md-offset-1">
 
-            
-                <div className="row">
-                    <ul id="wizardNav"> 
-                        <li><Link to="dataSources">Data Sources</Link></li>
-                        <li><Link to="interactiveFilters">Interactive Filters</Link></li>
-                        <li><Link to="visualizations">Visualizations</Link></li>
-                    </ul>
-                </div>
-                <div className="row">
-                    <RouteHandler />
-                </div>
-            </div>
+
+                  <div className="row">
+                      <ul id="wizardNav">
+                          <li><Link to="dataSources">Data Sources</Link></li>
+                          <li><Link to="interactiveFilters">Interactive Filters</Link></li>
+                          <li><Link to="visualizations">Visualizations</Link></li>
+                      </ul>
+                  </div>
+                  <div className="row">
+                      <RouteHandler />
+                  </div>
+              </div>
             </div>
         );
     }
-});     
+});
 
 
 module.exports = Main;
