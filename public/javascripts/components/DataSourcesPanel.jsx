@@ -4,9 +4,6 @@ var request = require('superagent');
 
 var AppActions = require('../actions/AppActions.jsx')
 
-var mui = require('material-ui');
-
-
 
 /*Bootstrap stuff*/
 var bootstrap = require('bootstrap');
