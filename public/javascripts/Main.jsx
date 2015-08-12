@@ -10,6 +10,7 @@ var Link = router.Link;
 var Route = router.Route;
 var RouteHandler = router.RouteHandler;
 
+
 var Main = React.createClass({
     render: function(){
         console.log("rendering....")
@@ -18,7 +19,7 @@ var Main = React.createClass({
 
                 <Nav />
 
-              <div className="col-md-10 col-md-offset-1">
+              <div className="col-md-12">
 
 
                   <div className="row">

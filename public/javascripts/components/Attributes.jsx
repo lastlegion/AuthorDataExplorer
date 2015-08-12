@@ -3,7 +3,6 @@ var React = require("react");
 var AttributeBox = require('./AttributeBox.jsx');
 
 var Attributes = React.createClass({
-
     render: function(){
         var self = this;
         var Attribute = <div />
@@ -14,11 +13,9 @@ var Attributes = React.createClass({
                 return (
 
                     <AttributeBox name={attribute} />
-                );      
+                );
             });
-
         }
-        
         return(
             <div>
             {Attribute}

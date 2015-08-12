@@ -19,4 +19,6 @@ var AppStore = Reflux.createStore({
 
 });
 
-module.exports = AppStore;    
+
+
+module.exports = AppStore;

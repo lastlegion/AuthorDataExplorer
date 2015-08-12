@@ -30,13 +30,13 @@ var Attributes = require('./Attributes.jsx'),
 var DataSourcesPanel = React.createClass({
 
 	getInitialState(){
-		return { 
-            showModal: false, 
-            files:[], 
-            dataSources: [], 
-            sourceName: "", 
-            sourceType: "csvREST", 
-            options: {}, 
+		return {
+            showModal: false,
+            files:[],
+            dataSources: [],
+            sourceName: "",
+            sourceType: "csvFile", 
+            options: {},
             showDataSourceConfig:false,
             dataSourceConfig: {
                 "dataSourceAlias": "",
@@ -62,7 +62,7 @@ var DataSourcesPanel = React.createClass({
             case "csvFile":
             case "jsonFile":
                 options = this.state.files[0].name;
-                
+
                 options = {
                     "path": "data/"+options
                 };
@@ -113,7 +113,7 @@ var DataSourcesPanel = React.createClass({
     handleSourceName: function(event){
         this.setState({sourceName: event.target.value});
 
-    },  
+    },
     handledataSourceAlias: function(event){
         var dataSourceConfig  = this.state.dataSourceConfig;
         dataSourceConfig["dataSourceAlias"] = event.target.value;
@@ -134,7 +134,7 @@ var DataSourcesPanel = React.createClass({
 
         	console.log("...");
         }).on('progress', function(e) {
-    		console.log('Percentage done: ', e.percent);	
+    		console.log('Percentage done: ', e.percent);
  		});
         console.log('Received files: ', files);
 
@@ -182,7 +182,7 @@ var DataSourcesPanel = React.createClass({
                         Uploaded: {file.name}
                     </div>
                 );
-            })  
+            })
         }
         console.log(this.state.sourceType)
         return(
@@ -198,13 +198,13 @@ var DataSourcesPanel = React.createClass({
 
                         <br />
                         {
-                        this.state.dataSources.length ? 
+                        this.state.dataSources.length ?
                             <div>
                             <Button bsStyle='primary' onClick={this.loadData} id="btnLoadData">Load Data</Button>
                             <Button bsStyle='default' onClick={this.showDataSourceConfig}>dataSource.json</Button>
-                            </div> 
+                            </div>
                             :
-                            <div></div> 
+                            <div></div>
                         }
                     </Panel>
 
@@ -221,7 +221,7 @@ var DataSourcesPanel = React.createClass({
                                   <option value='csvREST'>CSV REST</option>
                                   <option value='jsonREST'>JSON REST</option>
                                   <option value='odbc'>ODBC</option>
-                                  
+
     						    </Input>
 
                                 {
@@ -248,7 +248,7 @@ var DataSourcesPanel = React.createClass({
                                 }
 
                                 <Button bsStyle='success' onClick={this.add} id="addSingleSourceButton">Add</Button>
-                                
+
 
 
     					  	</form>
@@ -272,7 +272,7 @@ var DataSourcesPanel = React.createClass({
                     <div>
                         Data table
                     </div>
-                    : 
+                    :
                     <div />
                 }
 

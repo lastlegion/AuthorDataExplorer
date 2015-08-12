@@ -2,7 +2,8 @@ var Reflux = require('reflux');
 
 
 var Actions = Reflux.createActions([
-    'dataSourceConfig'
+    'dataSourceConfig',
+    'dropFilteringAttribute'
 ]);
 
 module.exports =  Actions;
