@@ -191,16 +191,17 @@ var VisualizationsPanel = React.createClass({
                 <h1>Visualizations</h1>
                 <div>
                   <div>
-                    <Glyphicon glyph='glyphicon glyphicon-plus' style={{height:80}} onClick={this.addVisualization} />
+                    <AddVisualizations style={{"display": "inline-block"}}>
+                      <Glyphicon glyph='glyphicon glyphicon-plus' style={{height:80}} onClick={this.addVisualization} />
+                    </AddVisualizations>
+
                   </div>
 
                   <div className="col-md-3">
                     {Attributes}
                   </div>
                   <div className="col-md-9">
-                    <AddVisualizations></AddVisualizations>
-                    <Visualizations>
-                    </Visualizations>
+                    <Visualizations />
                   </div>
                 </div>
 
