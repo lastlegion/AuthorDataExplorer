@@ -48,6 +48,7 @@ var InteractiveFilters = React.createClass({
     	}
         return(
             <div>
+							<h1>Interactive Filters</h1>
                 <div id="interactiveFiltersAttributes" className="col-md-3" >
                 {Attributes}
 								</div>

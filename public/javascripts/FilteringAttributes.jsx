@@ -418,10 +418,11 @@ var FilteringAttributes = React.createClass({
 
 		var style = {
 			minHeight: 500,
-			background: "white"
+			background: "white",
+      border: "3px solid #fff"
 		};
 		if(canDrop){
-			style.background = "darkkhaki";
+			style.border = "3px dashed #ccc";
 		}
 		return connectDropTarget(
       <div className="col-md-8" style={{minHeight: 500}}>
