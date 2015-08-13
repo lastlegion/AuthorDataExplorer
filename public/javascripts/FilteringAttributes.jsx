@@ -142,6 +142,7 @@ var Chart = React.createClass({
                 });
                 break;
             case "barChart":
+                console.log(domain)
                 c = dc.barChart(divId);
                 c.width(220)
                     .height(190).dimension(dim)
@@ -192,7 +193,8 @@ var Chart = React.createClass({
 
       var divId = "#"+this.props.name;
       var dim = this.state.dim;
-      var group = this.state.group
+      var group = this.state.group;
+      var domain = [0,100];
       console.log(visType)
       switch(visType){
           case "pieChart":
