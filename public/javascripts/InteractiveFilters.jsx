@@ -36,9 +36,9 @@ var InteractiveFilters = React.createClass({
     		Attributes = this.state.attributes.map(function(attribute){
     		console.log(attribute)
     		return(
-    		<PanelGroup>
+    		<div>
     			<Attribute data={attribute}> </Attribute>
-			</PanelGroup>
+				</div>
 
     		);
     	})
@@ -50,7 +50,7 @@ var InteractiveFilters = React.createClass({
             <div>
                 <div id="interactiveFiltersAttributes" className="col-md-3">
                 {Attributes}
-                </div>
+								</div>
 
                 <FilteringAttributes />
 

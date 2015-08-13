@@ -36,7 +36,8 @@ app.use('/', routes);
 
 
 app.use('/upload', upload )
-app.use('/loadData', loadData)
+app.use('/dataTable/next', loadData.tableNext)
+app.use('/loadData', loadData.index)
 app.use('/users', users);
 app.use('/addFilteringAttribute', addFilteringAttribute)
 
