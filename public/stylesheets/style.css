@@ -13,7 +13,8 @@ a {
 }
 
 .dataSourceSnap{
-
+  border: 1px solid #ccc;
+  border-radius: 10px;
 }
 
 .btn{
@@ -72,7 +73,7 @@ ul#wizardNav li{
 
 ul#wizardNav li:hover{
 	border-bottom: 1px solid #000;
-	
+
 }
 .dataSourceSnap{
 	border: 1;
@@ -89,4 +90,9 @@ div.attributeProperty{
 div.attributePropertyVal{
 	display: inline;
 	width: 80px;
+}
+
+#interactiveFiltersAttributes{
+  overflow-y: scroll;
+  height: 100vh;
 }

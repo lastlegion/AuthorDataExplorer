@@ -35,7 +35,7 @@ var DataSourcesPanel = React.createClass({
             files:[],
             dataSources: [],
             sourceName: "",
-            sourceType: "csvFile", 
+            sourceType: "csvFile",
             options: {},
             showDataSourceConfig:false,
             dataSourceConfig: {
@@ -158,6 +158,13 @@ var DataSourcesPanel = React.createClass({
     showDataSourceConfig: function(){
         this.setState({showDataSourceConfig: true});
     },
+    onJoinKey: function(event){
+      var dataSourceConfig = this.state.dataSourceConfig;
+      dataSourceConfig["joinKey"] = event.target.value;
+      console.log(dataSourceConfig);
+      this.setState({joinKey: event.target.value, dataSourceConfig: dataSourceConfig });
+
+    },
     dontShowDataSourceConfig: function(){
 
         this.setState({showDataSourceConfig: false});
@@ -189,14 +196,20 @@ var DataSourcesPanel = React.createClass({
 
             <div>
                 <div className="col-md-12" style={{marginTop: "50"}}>
-                    <Panel id="dataSourcesPanel">
+                    <div id="dataSourcesPanel">
                         <h3>Data sources</h3>
                         <DataSources dataSources={self.state.dataSources}/>
 
                         <Button bsStyle='success' onClick={this.open} id="addDataSource"> <Glyphicon glyph='glyphicon glyphicon-plus' /> Add</Button>
                             <br />
-
+                              {
+                                this.state.dataSources.length > 1 ?
+                                  <Input labelClassName='col-xs-1' wrapperClassName='col-xs-4' type='text' id="joinKey" onChange={this.onJoinKey} label="Join key" />
+                                :
+                                  <div />
+                              }
                         <br />
+
                         {
                         this.state.dataSources.length ?
                             <div>
@@ -206,7 +219,7 @@ var DataSourcesPanel = React.createClass({
                             :
                             <div></div>
                         }
-                    </Panel>
+                    </div>
 
     			        <Modal show={self.state.showModal} onHide={this.close} id="modAddDataSource" >
     			          <Modal.Header closeButton>

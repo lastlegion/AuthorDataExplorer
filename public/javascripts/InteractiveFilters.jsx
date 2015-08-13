@@ -48,7 +48,7 @@ var InteractiveFilters = React.createClass({
     	}
         return(
             <div>
-                <div id="interactiveFiltersAttributes" className="col-md-3">
+                <div id="interactiveFiltersAttributes" className="col-md-3" >
                 {Attributes}
 								</div>
 
