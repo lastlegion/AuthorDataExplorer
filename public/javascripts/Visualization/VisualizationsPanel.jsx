@@ -1,0 +1,240 @@
+var React       = require('react');
+var Glyphicon   = require('react-bootstrap').Glyphicon;
+var jQuery      = require('jquery');
+var Panel       = require('react-bootstrap').Panel;
+var PanelGroup  = require('react-bootstrap').PanelGroup;
+var Button      = require('react-bootstrap').Button;
+var Table       = require('react-bootstrap').Table;
+var TabbedArea  = require('react-bootstrap').TabbedArea;
+var TabPane     = require('react-bootstrap').TabPane;
+var Input       = require('react-bootstrap').Input;
+
+
+var AppStore    = require('../stores/AppStore.jsx');
+
+
+//App components
+var Attribute       = require('./Attribute.jsx');
+var DataTable       = require('./Visualizations/DataTable.jsx');
+var DataTableConfig = require('./Configs/DataTableConfig.jsx');
+
+var AddVisualizations = React.createClass({
+
+  render: function(){
+    return(
+      <div>
+        <Button>Add</Button>
+      </div>
+    )
+  }
+})
+
+
+var VisualizationConfig = React.createClass({
+  render: function(){
+    var visualizationType = this.props.config.visualizationType;
+    switch (visualizationType) {
+      case "dataTable":
+        return(
+          <DataTableConfig attributes={this.props.attributes} handleVisualAttribute={this.props.handleVisualAttribute} />
+        )
+        break;
+      case "imageGrid":
+        return(
+          <ImageGridConfig attributes={this.props.attributes} handleVisualAttribute={this.props.handleVisualAttribute} />
+        )
+      default:
+        return(
+          <div >Nothing </div>
+        )
+
+    }
+  }
+});
+var Visualization = React.createClass({
+  render: function(){
+    console.log(this.props.config)
+    var visualizationType = this.props.config.visualizationType;
+    switch(visualizationType){
+      case "dataTable":
+        return(
+          <DataTable config={this.props.config} currData = {this.props.currData} />
+        );
+      case "imageGrid":
+        return(
+          <ImageGrid config={this.props.config} currData = {this.props.currData} />
+        )
+      default:
+        break;
+    }
+  }
+})
+
+var SelectVisualization = React.createClass({
+  getInitialState: function(){
+    console.log(this.props.show)
+    return{show: this.props.show}
+  },
+  addDataTable: function(){
+    console.log(this);
+    this.props.showHandler("dataTable", false);
+
+  },
+  componentWillReceiveProps: function(nextProps){
+    console.log(nextProps)
+    this.setState({show: nextProps.show})
+  },
+  addHeatMap: function(){
+
+
+    //parent.addVisualization("heatMap");
+    //this.setState({show: false, visualization:"heatMap"});
+  },
+  addImageGrid: function(){
+    this.props.showHandler("imageGrid", false)
+  },
+  render: function(){
+    console.log(this.props.parent)
+    console.log(this.state.show)
+    if(this.state.show ){
+      return(
+            <div id="selectVisualization">
+              <div id="dataTable" onClick={this.addDataTable}>DataTable</div>
+              <div id="heatMap" onClick={this.addHeatMap}>heatMap</div>
+              <div id="imageGrid" onClick={this.addImageGrid}>imageGrid</div>
+            </div>
+      )
+    } else {
+      return (
+        <div />
+      )
+    }
+
+  }
+})
+
+
+
+var VisualizationsPanel = React.createClass({
+    addVisualization: function(vis, showState){
+      var visualization = {
+        "visualizationType": vis
+      }
+      var config =this.state.config;
+
+      if(vis ==  "dataTable"){
+        visualization.attributes = [];
+        var attributes = this.state.attributes;
+        for(var i in attributes){
+          visualization.attributes.push({
+            "attributeName": attributes[i].name
+          });
+        }
+      }
+
+      config.push(visualization);
+      this.setState({config: config, showSelectVisualization: showState});
+    },
+    showHandler: function(state){
+      this.setState({showSelectVisualization: state});
+    },
+    onAddVisualization: function(){
+      console.log("addingVisualization")
+      var visualization = {
+        "visualizationType": "dataTable"
+      }
+      var config = this.state.config;
+      config.push(visualization);
+      this.setState({config: config});
+    },
+    getInitialState: function(){
+      return{
+        config:[],
+        showSelectVisualization: true
+      }
+    },
+    componentDidMount: function(){
+      var attributes = 	AppStore.getData();
+      //console.log(attributes)
+  		this.setState({attributes: attributes});
+    },
+    handleVisualAttribute: function(visualization, attribute ){
+      var config = this.state.config;
+      if(visualization == "dataTable"){
+        for(var i in config){
+          if(config[i].visualizationType == "dataTable"){
+            for(var j in config[i].attributes){
+              if(config[i]["attributes"][j].attributeName == attribute){
+                //Remove this element from attributes array
+                config[i]["attributes"].splice(j,1);
+              }
+            }
+          }
+        }
+      }
+      console.log(config)
+      this.setState({config: config})
+    },
+    render: function(){
+      var self =this;
+      if(this.state.attributes){
+        console.log(this.state.attributes)
+        var config = this.state.config;
+        var count=0;
+        var Visualizations = <div />
+        if(this.state.config.length){
+          Visualizations = this.state.config.map(function(visualization){
+            return(
+              <TabPane tab={visualization.visualizationType} eventKey={count} >
+                <div className="col-md-3">
+                  <VisualizationConfig attributes={self.state.attributes} config={visualization} handleVisualAttribute={self.handleVisualAttribute}/>
+                </div>
+                <div className="col-md-9">
+                  <Visualization config={visualization} />
+                </div>
+              </TabPane>
+             )
+          });
+
+        }
+
+    		Attributes = this.state.attributes.map(function(attribute){
+    		//console.log(attribute)
+    		return(
+    		<div>
+          <Attribute data={attribute}> </Attribute>
+				</div>
+
+    		);
+    	})
+
+    	} else {
+    		Attributes = <div />
+    	}
+
+        return(
+            <div>
+                <h1>Visualizations</h1>
+                <div>
+                  <div>
+                    <div onClick={self.showHandler}>
+                    <AddVisualizations style={{"display": "inline-block"}}  />
+                    </div>
+                    <SelectVisualization parent={self} show={self.state.showSelectVisualization} showHandler={self.addVisualization}/>
+                  </div>
+                  <div>
+                    <TabbedArea>
+                      {Visualizations}
+
+                    </TabbedArea>
+                  </div>
+
+                </div>
+
+            </div>
+        );
+    }
+});
+
+
+module.exports = VisualizationsPanel;
