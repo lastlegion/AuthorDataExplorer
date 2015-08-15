@@ -90,7 +90,7 @@ var Attribute = React.createClass({
     } else {
       return connectDragSource(
         <div className="col-md-12">
-        <Panel collapsible defaultExpanded  header={self.props.data.name} style={{margin: 2}}>
+        <Panel collapsible defaultCollapsed   header={self.props.data.name} style={{margin: 2}}>
           <Table condensed bordered>
               <tbody>
                 <tr>

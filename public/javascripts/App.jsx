@@ -17,7 +17,7 @@ var DataSources = require('./DataSources.jsx')
 var App = require('./Main.jsx');
 
 var InteractiveFilters = require('./InteractiveFilters.jsx');
-var VisualizationsPanel = require('./VisualizationsPanel.jsx');
+var VisualizationsPanel = require('./Visualization/VisualizationsPanel.jsx');
 
 
 
