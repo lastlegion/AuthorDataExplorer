@@ -199,6 +199,7 @@ var VisualizationsPanel = React.createClass({
         var Visualizations = <div />
         if(this.state.config.length){
           Visualizations = this.state.config.map(function(visualization){
+            count++;
             return(
               <TabPane tab={visualization.visualizationType} eventKey={count} >
                 <div className="col-md-3">
@@ -209,6 +210,7 @@ var VisualizationsPanel = React.createClass({
                 </div>
               </TabPane>
              )
+
           });
 
         }
