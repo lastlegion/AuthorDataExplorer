@@ -112,5 +112,40 @@ var _tableNext = function(req, res, next){
   res.end(JSON.stringify(results));
 };
 
+
+
+
+var _imageGridNext = function(req, res, next){
+  var state = req.param("state") ? JSON.parse(req.param("state")) : 1,
+    results = {},
+    //imageGridData = dimensions["imageGrid"].top(Infinity),
+    attribute = req.param('attribute')  ? JSON.parse(req.param("attribute")) : "";
+
+
+    var state = req.query.state;
+    var length = req.query.length || 100;
+    var start = state*length;
+    var attribute = req.param('attribute');
+    var imageGridData =DATA.slice(start, start+length)
+    console.log(imageGridData);
+
+    var finalState = Math.floor(imageGridData.length/length);
+
+  var paginate = true;
+  if(imageGridData.length < length){
+    paginate = false;
+  }
+  results["imageGrid"] = {
+    "values": imageGridData,
+    state: state,
+    finalState: finalState,
+    paginate: paginate
+  };
+
+  res.writeHead(200, {'content-type': 'application/json'});
+  res.end(JSON.stringify(results));
+}
+
 exports.index =  _loadData;
 exports.tableNext = _tableNext
+exports.imageGridNext = _imageGridNext;
