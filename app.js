@@ -34,12 +34,12 @@ app.use(busboy());
 
 app.use('/', routes);
 
-
-app.use('/upload', upload )
-app.use('/dataTable/next', loadData.tableNext)
-app.use('/loadData', loadData.index)
+app.use('/imageGrid/next', loadData.imageGridNext);
+app.use('/upload', upload );
+app.use('/dataTable/next', loadData.tableNext);
+app.use('/loadData', loadData.index);
 app.use('/users', users);
-app.use('/addFilteringAttribute', addFilteringAttribute)
+app.use('/addFilteringAttribute', addFilteringAttribute);
 
 
 // catch 404 and forward to error handler
