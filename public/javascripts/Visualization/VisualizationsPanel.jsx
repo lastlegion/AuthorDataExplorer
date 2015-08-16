@@ -17,6 +17,8 @@ var AppStore    = require('../stores/AppStore.jsx');
 var Attribute       = require('./Attribute.jsx');
 var DataTable       = require('./Visualizations/DataTable.jsx');
 var DataTableConfig = require('./Configs/DataTableConfig.jsx');
+var ImageGrid       = require('./Visualizations/ImageGrid.jsx');
+var ImageGridConfig = require('./Configs/ImageGridConfig.jsx');
 
 var AddVisualizations = React.createClass({
 
@@ -55,6 +57,7 @@ var Visualization = React.createClass({
   render: function(){
     console.log(this.props.config)
     var visualizationType = this.props.config.visualizationType;
+    console
     switch(visualizationType){
       case "dataTable":
         return(
@@ -121,7 +124,7 @@ var VisualizationsPanel = React.createClass({
         "visualizationType": vis
       }
       var config =this.state.config;
-
+      console.log(vis)
       if(vis ==  "dataTable"){
         visualization.attributes = [];
         var attributes = this.state.attributes;
@@ -130,9 +133,13 @@ var VisualizationsPanel = React.createClass({
             "attributeName": attributes[i].name
           });
         }
+      } else if (vis == "imageGrid") {
+
+          visualization.attributes = []
       }
 
       config.push(visualization);
+      console.log(config)
       this.setState({config: config, showSelectVisualization: showState});
     },
     showHandler: function(state){
@@ -155,7 +162,7 @@ var VisualizationsPanel = React.createClass({
     },
     componentDidMount: function(){
       var attributes = 	AppStore.getData();
-      //console.log(attributes)
+      console.log(attributes)
   		this.setState({attributes: attributes});
     },
     handleVisualAttribute: function(visualization, attribute ){
@@ -171,14 +178,22 @@ var VisualizationsPanel = React.createClass({
             }
           }
         }
+      } else if(visualization == "imageGrid"){
+        for(var i in config){
+          if(config[i].visualizationType == "imageGrid"){
+            config[i]["attributes"] = [];
+            config[i]["attributes"].push({
+              "attributeName": attribute,
+              "type": "image"
+            })
+          }
+        }
       }
-      console.log(config)
       this.setState({config: config})
     },
     render: function(){
       var self =this;
       if(this.state.attributes){
-        console.log(this.state.attributes)
         var config = this.state.config;
         var count=0;
         var Visualizations = <div />

@@ -7,10 +7,8 @@ var DataTableConfig = React.createClass({
     var attributes = this.props.attributes;
     var visualAttributes = {}
     for(var i in attributes){
-      console.log(attributes[i])
       visualAttributes[attributes[i]["name"]] = true
     }
-    console.log(visualAttributes)
     return(
       {
         visualAttributes: visualAttributes
@@ -19,9 +17,7 @@ var DataTableConfig = React.createClass({
   },
   handleAttribute: function(event){
     var attribute = event.target.value;
-    console.log(attribute);
     var isChecked = this.state.visualAttributes[attribute];
-    console.log(isChecked)
     var visualAttributes = this.state.visualAttributes;
     visualAttributes[attribute] = false;
 
