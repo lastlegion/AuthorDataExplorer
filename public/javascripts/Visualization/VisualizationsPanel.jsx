@@ -10,9 +10,9 @@ var TabPane     = require('react-bootstrap').TabPane;
 var Input       = require('react-bootstrap').Input;
 var Highlight   = require('react-highlight'); //Syntax highlighting
 var Modal       = require('react-bootstrap').Modal;
-
-var AppStore    = require('../stores/AppStore.jsx');
-
+var Router      = require('react-router');
+var AppStore      = require('../stores/AppStore.jsx');
+var ConfigActions = require('../actions/ConfigActions.jsx');
 
 //App components
 var Attribute       = require('./Attribute.jsx');
@@ -155,6 +155,12 @@ var SelectVisualization = React.createClass({
 
 
 var VisualizationsPanel = React.createClass({
+    mixins: [Router.Navigation],
+
+    handleFinish: function(){
+      ConfigActions.visualizations(this.state.config);;
+      this.transitionTo("finish")
+    },
     addVisualization: function(vis, showState){
       var visualization = {
         "visualizationType": vis
@@ -269,6 +275,8 @@ var VisualizationsPanel = React.createClass({
         return(
             <div>
                 <h1>Visualizations</h1>
+                <Button onClick={this.handleFinish}>Finish</Button>
+
                 <div>
                   <div>
                     <div onClick={self.showHandler}>
