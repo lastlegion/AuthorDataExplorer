@@ -18,7 +18,7 @@ var App = require('./Main.jsx');
 
 var InteractiveFilters = require('./InteractiveFilters.jsx');
 var VisualizationsPanel = require('./Visualization/VisualizationsPanel.jsx');
-var Final = require('./Final.jsx');
+var Final = require('./Finish.jsx');
 
 
 
@@ -27,7 +27,7 @@ var routes = (
     <Route name = "dataSources" handler={DataSources} path="/dataSources"/>
     <Route name = "interactiveFilters" handler={InteractiveFilters} path="/interactiveFilters"/>
     <Route name = "visualizations" handler={VisualizationsPanel} />
-    <Route name = "finish" handler={Final} />
+    <Route name = "finish" handler={Finish} />
 
     <DefaultRoute handler={DataSources} />
   </Route>

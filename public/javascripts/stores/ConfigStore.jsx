@@ -29,6 +29,9 @@ var AppStore = Reflux.createStore({
 	},
 	getInteractiveFiltersConfig: function(){
 		return _interactiveFilters;
+	},
+	getVisualizationsConfig: function(){
+		return _visualizations;
 	}
 
 });
