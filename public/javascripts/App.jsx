@@ -18,7 +18,7 @@ var App = require('./Main.jsx');
 
 var InteractiveFilters = require('./InteractiveFilters.jsx');
 var VisualizationsPanel = require('./Visualization/VisualizationsPanel.jsx');
-var Final = require('./Finish.jsx');
+var Finish = require('./Finish.jsx');
 
 
 

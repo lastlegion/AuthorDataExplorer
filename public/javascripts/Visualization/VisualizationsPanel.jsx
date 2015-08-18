@@ -158,8 +158,9 @@ var VisualizationsPanel = React.createClass({
     mixins: [Router.Navigation],
 
     handleFinish: function(){
-      ConfigActions.visualizations(this.state.config);;
-      this.transitionTo("finish")
+      ConfigActions.visualizations(this.state.config);
+      console.log("tranition...");
+      this.transitionTo("finish");
     },
     addVisualization: function(vis, showState){
       var visualization = {

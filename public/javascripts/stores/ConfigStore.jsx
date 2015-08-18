@@ -22,6 +22,7 @@ var AppStore = Reflux.createStore({
 		_interactiveFilters = config;
 	},
 	onVisualizations: function(config){
+		console.log(config)
 		_visualizations  = config;
 	},
 	getDataSourceConfig: function(){
@@ -31,6 +32,7 @@ var AppStore = Reflux.createStore({
 		return _interactiveFilters;
 	},
 	getVisualizationsConfig: function(){
+		console.log(_visualizations)
 		return _visualizations;
 	}
 
