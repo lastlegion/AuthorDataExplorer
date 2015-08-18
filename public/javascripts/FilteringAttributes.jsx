@@ -12,7 +12,7 @@ var PanelGroup = require('react-bootstrap').PanelGroup;
 var Button = require('react-bootstrap').Button;
 var Table = require('react-bootstrap').Table;
 
-
+var attributes = []
 
 var dropTarget = {
   drop: function (props, monitor) {
@@ -30,6 +30,7 @@ function collect(connect, monitor) {
 }
 
 var dropped = [];
+var config = []
 
 
 var dc = require('dc');
@@ -82,12 +83,12 @@ var Chart = React.createClass({
 
         var self = this;
         var attributeName = self.props.name;
-        console.log(self.props.data);
-        console.log(attributeName);
-        console.log(self.props.attributeName)
-        console.log(self.props.chartType)
+        //console.log(self.props.data);
+        //console.log(attributeName);
+        //console.log(self.props.attributeName)
+        //console.log(self.props.chartType)
         var chartData = self.props.data[attributeName];
-        console.log(chartData)
+        //console.log(chartData)
 
         var dim = this.state.dim;
         var group = this.state.group
@@ -104,7 +105,7 @@ var Chart = React.createClass({
         };
         var group = {
                 all: function() {
-                    console.log(chartData.values)
+                    //console.log(chartData.values)
                     return chartData.values;
                 },
                 order: function() {
@@ -280,22 +281,34 @@ var DivI = React.createClass({
   componentDidMount: function(){
     var self  =this;
     var name = self.props.data.allProps.data.name;
-    console.log(name);
+    //console.log(name);
     $.get("/addFilteringAttribute?attribute="+encodeURIComponent(name), function(data){
         //we should get information required for rendering charts here.
-        console.log(data);
+        //console.log(data);
         self.setState({isFilteringAttribute: true, chartData: data});
 
     })
   },
   selectChartType: function(e){
     console.log(e.target.value)
+    var properties = this.props.data.allProps.data;
+    for(var i in config){
+      var attr = config.attributeName;
+      console.log(properties.name)
+      console.log(config[i].attributeName)
+      if(properties.name == config[i].attributeName){
+        config[i].visualization.visType = e.target.value
+      }
+    }
+    console.log(config)
     this.setState({chartType: e.target.value})
   },
   componentWillMount: function(){
     var properties = this.props.data.allProps.data;
     var self = this;
     chartTypes = [];
+    console.log(properties.name)
+
     if(properties.type == "integer"){
       chartTypes.push("barChart");
       chartType = "barChart";
@@ -305,11 +318,20 @@ var DivI = React.createClass({
       chartType = "pieChart"
     }
     this.setState({chartTypes: chartTypes, chartType: chartType})
+    for(var i in config){
+      var attr = config.attributeName;
+      console.log(properties.name)
+      console.log(config[i].attributeName)
+      if(properties.name == config[i].attributeName){
+        config[i].visualization.visType = chartType
+      }
+    }
+    console.log(config)
   },
   render: function(){
     var properties = this.props.data.allProps.data;
     var self = this;
-    console.log(self.state.chartData);
+    //console.log(self.state.chartData);
 
     var chartTypes = this.state.chartTypes;
     var ChartTypeOptions = chartTypes.map(function(type){
@@ -396,13 +418,26 @@ var DroppedElements = React.createClass({
 });
 
 function dropFilteringAttribute(props){
+  var attributeName = props.allProps.data.name;
+  config.push({
+    "attributeName": attributeName,
+    "visualization": {
 
+    }
+  });
   dropped.push(props);
-
-
+  console.log(dropped)
+  console.log(attributes)
+  console.log(config)
   React.render(<DroppedElements />, document.getElementById("filteringAttributes"))
 }
 
+var ShowInteractiveFiltersConfig = React.createClass({
+  render: function(){
+    return
+
+  }
+})
 
 var FilteringAttributes = React.createClass({
   propTypes: {
@@ -411,7 +446,6 @@ var FilteringAttributes = React.createClass({
     isOver: PropTypes.bool.isRequired,
     canDrop: PropTypes.bool.isRequired
   },
-
 	render: function(){
     	var connectDropTarget = this.props.connectDropTarget;
     	var isOver = this.props.isOver;
@@ -429,7 +463,7 @@ var FilteringAttributes = React.createClass({
 		return connectDropTarget(
       <div className="col-md-8" style={{minHeight: 500}}>
         <h1>Filtering Attributes</h1>
-        <div style={style} id="filteringAttributes"> Filtering Attributes </div>
+        <div style={style} id="filteringAttributes"> Drop attributes here </div>
       </div>
 
 

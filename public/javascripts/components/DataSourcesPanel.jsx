@@ -1,6 +1,7 @@
 var jQuery = require('jquery');
 var React = require('react');
 var request = require('superagent');
+var Router = require('react-router');
 
 var AppActions = require('../actions/AppActions.jsx')
 
@@ -28,6 +29,7 @@ var Attributes = require('./Attributes.jsx'),
 
 
 var DataSourcesPanel = React.createClass({
+  mixins: [Router.Navigation],
 
 	getInitialState(){
 		return {
@@ -149,10 +151,11 @@ var DataSourcesPanel = React.createClass({
         var self = this;
         var dataSourceConfig = this.state.dataSourceConfig;
         $.get("/loadData?dataSourceConfig="+encodeURIComponent(JSON.stringify(dataSourceConfig)), function(data){
+            console.log(self.context.router);
             AppActions.dataSourceConfig(data);
             console.log(data);
             self.setState({attributes: data});
-
+            self.transitionTo('interactiveFilters')
         })
     },
     showDataSourceConfig: function(){
@@ -191,7 +194,6 @@ var DataSourcesPanel = React.createClass({
                 );
             })
         }
-        console.log(this.state.sourceType)
         return(
 
             <div>

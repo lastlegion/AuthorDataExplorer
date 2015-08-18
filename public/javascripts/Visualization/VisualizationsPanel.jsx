@@ -8,7 +8,8 @@ var Table       = require('react-bootstrap').Table;
 var TabbedArea  = require('react-bootstrap').TabbedArea;
 var TabPane     = require('react-bootstrap').TabPane;
 var Input       = require('react-bootstrap').Input;
-
+var Highlight   = require('react-highlight'); //Syntax highlighting
+var Modal       = require('react-bootstrap').Modal;
 
 var AppStore    = require('../stores/AppStore.jsx');
 
@@ -53,6 +54,40 @@ var VisualizationConfig = React.createClass({
     }
   }
 });
+
+var ShowVisualizationConfig = React.createClass({
+  getInitialState: function(){
+    return{
+      showDataSourceConfig: false
+    }
+  },
+  showDataSourceConfig: function(){
+    this.setState({showDataSourceConfig: true})
+  },
+  dontShowDataSourceConfig: function(){
+    this.setState({showDataSourceConfig :false})
+  },
+  render: function(){
+    var self = this;
+    return(
+      <div>
+      <Button onClick={this.showDataSourceConfig}>Show Visualization.json</Button>
+      <Modal show={self.state.showDataSourceConfig} onHide={this.dontShowDataSourceConfig}>
+        <Modal.Header closeButton>
+          <Modal.Title>dataSourceConfig.json</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Highlight className='javascript'>
+              {JSON.stringify(self.props.config, null, 2)}
+          </Highlight>
+
+        </Modal.Body>
+      </Modal>
+      </div>
+    )
+  }
+})
+
 var Visualization = React.createClass({
   render: function(){
     console.log(this.props.config)
@@ -99,10 +134,11 @@ var SelectVisualization = React.createClass({
   render: function(){
     console.log(this.props.parent)
     console.log(this.state.show)
+
     if(this.state.show ){
       return(
             <div id="selectVisualization">
-              <div id="dataTable" onClick={this.addDataTable}>DataTable</div>
+              <div id="dataTable" onClick={this.addDataTable} >DataTable</div>
               <div id="heatMap" onClick={this.addHeatMap}>heatMap</div>
               <div id="imageGrid" onClick={this.addImageGrid}>imageGrid</div>
             </div>
@@ -193,6 +229,7 @@ var VisualizationsPanel = React.createClass({
     },
     render: function(){
       var self =this;
+      console.log(this.state.config)
       if(this.state.attributes){
         var config = this.state.config;
         var count=0;
@@ -236,6 +273,7 @@ var VisualizationsPanel = React.createClass({
                   <div>
                     <div onClick={self.showHandler}>
                     <AddVisualizations style={{"display": "inline-block"}}  />
+                    <ShowVisualizationConfig config={self.state.config}/>
                     </div>
                     <SelectVisualization parent={self} show={self.state.showSelectVisualization} showHandler={self.addVisualization}/>
                   </div>
