@@ -3,7 +3,8 @@ var React = require('react');
 var request = require('superagent');
 var Router = require('react-router');
 
-var AppActions = require('../actions/AppActions.jsx')
+var AppActions = require('../actions/AppActions.jsx');
+var ConfigActions = require('../actions/ConfigActions.jsx');
 
 
 /*Bootstrap stuff*/
@@ -153,6 +154,7 @@ var DataSourcesPanel = React.createClass({
         $.get("/loadData?dataSourceConfig="+encodeURIComponent(JSON.stringify(dataSourceConfig)), function(data){
             console.log(self.context.router);
             AppActions.dataSourceConfig(data);
+            ConfigActions.dataSource(self.state.dataSourceConfig);
             console.log(data);
             self.setState({attributes: data});
             self.transitionTo('interactiveFilters')
