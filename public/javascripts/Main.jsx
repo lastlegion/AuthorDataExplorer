@@ -1,4 +1,4 @@
-var React = require('react');
+  var React = require('react');
 
 var router = require('react-router');
 
@@ -22,13 +22,6 @@ var Main = React.createClass({
               <div className="col-md-12">
 
 
-                  <div className="row">
-                      <ul id="wizardNav">
-                          <li><Link to="dataSources">Data Sources</Link></li>
-                          <li><Link to="interactiveFilters">Interactive Filters</Link></li>
-                          <li><Link to="visualizations">Visualizations</Link></li>
-                      </ul>
-                  </div>
                   <div className="row">
                       <RouteHandler />
                   </div>

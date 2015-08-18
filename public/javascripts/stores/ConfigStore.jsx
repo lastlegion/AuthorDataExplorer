@@ -9,8 +9,8 @@ var _dataSource = {},
 var AppStore = Reflux.createStore({
 	init: function(){
 		this.listenTo(ConfigActions.dataSource, this.onDataSource);
-    //this.listenTo(ConfigActions.interactiveFilters, this.onInteractiveFilters);
-    //this.listenTo(ConfigActions.visualizations, this.onVisualizations);
+    this.listenTo(ConfigActions.interactiveFilters, this.onInteractiveFilters);
+    this.listenTo(ConfigActions.visualizations, this.onVisualizations);
 	},
 	onDataSource: function(config){
 		var that = this;
@@ -18,6 +18,7 @@ var AppStore = Reflux.createStore({
 		//that.trigger(data);
 	},
 	onInteractiveFilters: function(config){
+		console.log(config)
 		_interactiveFilters = config;
 	},
 	onVisualizations: function(config){
@@ -25,6 +26,9 @@ var AppStore = Reflux.createStore({
 	},
 	getDataSourceConfig: function(){
 		return _dataSource;
+	},
+	getInteractiveFiltersConfig: function(){
+		return _interactiveFilters;
 	}
 
 });

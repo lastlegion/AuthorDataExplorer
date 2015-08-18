@@ -34,7 +34,7 @@ var InteractiveFilters = React.createClass({
     	if(this.state.attributes){
 
     		Attributes = this.state.attributes.map(function(attribute){
-    		console.log(attribute)
+
     		return(
     		<div>
     			<Attribute data={attribute}> </Attribute>

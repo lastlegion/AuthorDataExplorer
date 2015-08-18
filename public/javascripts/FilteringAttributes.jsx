@@ -1,6 +1,6 @@
 var React = require('react');
 
-
+var Router = require('react-router');
 var PropTypes = React.PropTypes;
 var ItemTypes = require('./Constants').ItemTypes;
 var DropTarget = require('react-dnd').DropTarget;
@@ -11,6 +11,8 @@ var Panel = require('react-bootstrap').Panel;
 var PanelGroup = require('react-bootstrap').PanelGroup;
 var Button = require('react-bootstrap').Button;
 var Table = require('react-bootstrap').Table;
+
+var ConfigActions = require('./actions/ConfigActions.jsx');
 
 var attributes = []
 
@@ -58,7 +60,7 @@ var Chart = React.createClass({
       };
       var group = {
               all: function() {
-                  console.log(chartData.values)
+                  //console.log(chartData.values)
                   return chartData.values;
               },
               order: function() {
@@ -196,7 +198,7 @@ var Chart = React.createClass({
       var dim = this.state.dim;
       var group = this.state.group;
       var domain = [0,100];
-      console.log(visType)
+      //console.log(visType)
       switch(visType){
           case "pieChart":
               c   = dc.pieChart(divId);
@@ -258,7 +260,7 @@ var Chart = React.createClass({
     },
     render: function(){
         var self = this;
-        console.log(self)
+        //console.log(self)
         if(self.props.chartVisible){
             return(
                 <div style={{height: 270,  clear: "both", display: "block"}} id={self.props.name} className="col-xs-12" >
@@ -291,10 +293,10 @@ var DivI = React.createClass({
   },
   selectChartType: function(e){
     console.log(e.target.value)
-    var properties = this.props.data.allProps.data;
+    var properties = this.props.dfata.allProps.data;
     for(var i in config){
       var attr = config.attributeName;
-      console.log(properties.name)
+      //console.log(properties.name)
       console.log(config[i].attributeName)
       if(properties.name == config[i].attributeName){
         config[i].visualization.visType = e.target.value
@@ -440,6 +442,13 @@ var ShowInteractiveFiltersConfig = React.createClass({
 })
 
 var FilteringAttributes = React.createClass({
+  mixins: [Router.Navigation],
+  handleVisualization: function(){
+    var self =this;
+    ConfigActions.interactiveFilters(config);
+    self.transitionTo('visualizations')
+
+  },
   propTypes: {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
@@ -463,6 +472,7 @@ var FilteringAttributes = React.createClass({
 		return connectDropTarget(
       <div className="col-md-8" style={{minHeight: 500}}>
         <h1>Filtering Attributes</h1>
+        <Button onClick={this.handleVisualization}>Visualizations</Button>
         <div style={style} id="filteringAttributes"> Drop attributes here </div>
       </div>
 
