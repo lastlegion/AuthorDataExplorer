@@ -111,10 +111,15 @@ var Visualization = React.createClass({
 var SelectVisualization = React.createClass({
   getInitialState: function(){
     console.log(this.props.show)
-    return{show: this.props.show}
+    return{show: this.props.show,
+      showDataTable: "inline-block",
+      showHeatMap: "inline-block",
+      showImageGrid: "inline-block"
+    }
   },
   addDataTable: function(){
     console.log(this);
+    this.setState({showDataTable: "none"})
     this.props.showHandler("dataTable", false);
 
   },
@@ -138,11 +143,11 @@ var SelectVisualization = React.createClass({
     if(this.state.show ){
       return(
             <div id="selectVisualization">
-              <div id="dataTable" onClick={this.addDataTable} >DataTable</div>
-              <div id="heatMap" onClick={this.addHeatMap}>heatMap</div>
-              <div id="imageGrid" onClick={this.addImageGrid}>imageGrid</div>
+              <div id="dataTable" onClick={this.addDataTable} style={{display: this.state.showDataTable}} >DataTable</div>
+              <div id="heatMap" onClick={this.addHeatMap} style={{display: this.state.showHeatMap}} >heatMap</div>
+              <div id="imageGrid" onClick={this.addImageGrid} style={{display: this.state.showImageGrid}} >imageGrid</div>
             </div>
-      )
+          )
     } else {
       return (
         <div />
@@ -280,14 +285,18 @@ var VisualizationsPanel = React.createClass({
 
         return(
             <div>
-                <h1>Visualizations</h1>
-                <Button onClick={this.handleFinish}>Finish</Button>
-
+              <div className="row">
+                <div className="col-md-8">
+                  <h1>Visualizations</h1>
+                </div>
+                <div className="col-md-4" style={{padding: 20}}>
+                  <Button onClick={this.handleFinish}>Finish</Button>
+                </div>
+              </div>
                 <div>
                   <div>
                     <div onClick={self.showHandler}>
                     <AddVisualizations style={{"display": "inline-block"}}  />
-                    <ShowVisualizationConfig config={self.state.config}/>
                     </div>
                     <SelectVisualization parent={self} show={self.state.showSelectVisualization} showHandler={self.addVisualization}/>
                   </div>

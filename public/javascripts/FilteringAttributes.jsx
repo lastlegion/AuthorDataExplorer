@@ -471,8 +471,14 @@ var FilteringAttributes = React.createClass({
 		}
 		return connectDropTarget(
       <div className="col-md-8" style={{minHeight: 500}}>
-        <h1>Filtering Attributes</h1>
-        <Button onClick={this.handleVisualization}>Visualizations</Button>
+        <div className='row'>
+          <div className='col-md-8'>
+            <h1>Filtering Attributes</h1>
+          </div>
+          <div className='col-md-4' style={{padding:10, float: "right"}}>
+            <Button onClick={this.handleVisualization}>Visualizations</Button>
+          </div>
+        </div>
         <div style={style} id="filteringAttributes"> Drop attributes here </div>
       </div>
 
