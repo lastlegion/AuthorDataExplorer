@@ -24,6 +24,7 @@ var AppStore = Reflux.createStore({
 	onVisualizations: function(config){
 		console.log(config)
 		_visualizations  = config;
+		this.trigger(config)
 	},
 	getDataSourceConfig: function(){
 		return _dataSource;

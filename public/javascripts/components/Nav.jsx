@@ -9,7 +9,7 @@ var Nav = React.createClass({
             <div className='navbar navbar-inverse navbar-fixed-top' id='header' role='navigation'>
                 <div className = 'container-fluid'>
                     <div className='navbar-header'>
-                        <a className='navbar-brand' href='#'> Demo </a>
+                        <a className='navbar-brand' href='#'> Author Data Explorer </a>
                     </div>
                 </div>
             </div>
