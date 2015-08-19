@@ -293,7 +293,7 @@ var DivI = React.createClass({
   },
   selectChartType: function(e){
     console.log(e.target.value)
-    var properties = this.props.dfata.allProps.data;
+    var properties = this.props.data.allProps.data;
     for(var i in config){
       var attr = config.attributeName;
       //console.log(properties.name)
