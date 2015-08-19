@@ -139,12 +139,12 @@ var SelectVisualization = React.createClass({
   render: function(){
     console.log(this.props.parent)
     console.log(this.state.show)
+    //<div id="heatMap" onClick={this.addHeatMap} style={{display: this.state.showHeatMap}} >heatMap</div>
 
     if(this.state.show ){
       return(
             <div id="selectVisualization">
               <div id="dataTable" onClick={this.addDataTable} style={{display: this.state.showDataTable}} >DataTable</div>
-              <div id="heatMap" onClick={this.addHeatMap} style={{display: this.state.showHeatMap}} >heatMap</div>
               <div id="imageGrid" onClick={this.addImageGrid} style={{display: this.state.showImageGrid}} >imageGrid</div>
             </div>
           )
