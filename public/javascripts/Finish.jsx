@@ -26,11 +26,22 @@ var Finish = React.createClass({
     }
   },
   generateDataDescription: function(interactiveFiltersConfig, visualizationConfig){
+    console.log(ConfigStore.getInteractiveFiltersConfig());
+    var interactiveFilters = ConfigStore.getInteractiveFiltersConfig();
     var attributes = [];
     for(var i in interactiveFiltersConfig){
+      var attribute = interactiveFiltersConfig[i];
+      var dataType;
+      if(attribute.visualization.visType == "barChart" || attribute.visualization.visType == "rowChart"){
+        dataType = "enum"
+      } else {
+        dataType = "integer"
+      }
       attributes.push({
         attributeName: interactiveFiltersConfig[i].attributeName,
-        attributeType: ["filtering"]
+        attributeType: ["filtering"],
+        dataProvider: "",
+        dataType: dataType
       })
     };
     for(var i in visualizationConfig){
@@ -38,6 +49,7 @@ var Finish = React.createClass({
       for(var j in vis.attributes){
         var attribute  = vis.attributes[j];
         var filtering = false;
+
 
         //check if this attribute is in attributes
         for(var k in attributes){
