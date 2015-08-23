@@ -154,6 +154,9 @@ var DataSourcesPanel = React.createClass({
         $.get("/loadData?dataSourceConfig="+encodeURIComponent(JSON.stringify(dataSourceConfig)), function(data){
             console.log(self.context.router);
             AppActions.dataSourceConfig(data);
+            for(var i in data){
+              console.log(data[i].name);
+            }
             ConfigActions.dataSource(self.state.dataSourceConfig);
             console.log(data);
             self.setState({attributes: data});

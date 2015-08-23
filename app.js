@@ -11,7 +11,8 @@ var busboy = require('connect-busboy'),
 var routes = require('./routes/index'),
     users = require('./routes/users'),
     upload = require('./routes/upload'),
-    addFilteringAttribute = require('./routes/addFilteringAttribute')
+    addFilteringAttribute = require('./routes/addFilteringAttribute'),
+    config = require('./routes/config'),
     loadData = require('./routes/loadData');
 
 var app = express();
@@ -31,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(busboy());
 
 
-
+app.use('/config', config)
 app.use('/', routes);
 
 app.use('/imageGrid/next', loadData.imageGridNext);

@@ -9,6 +9,14 @@ var Finish = React.createClass({
     var visualizationConfig = ConfigStore.getVisualizationsConfig();
     var dataDescriptionConfig = this.generateDataDescription(interactiveFiltersConfig, visualizationConfig)
 
+
+    $.post("/config/all", {
+      dataSourceConfig: JSON.stringify(dataSourceConfig),
+      dataDescriptionConfig: JSON.stringify(dataDescriptionConfig),
+      interactiveFiltersConfig: JSON.stringify(interactiveFiltersConfig),
+      visualizationConfig: JSON.stringify(visualizationConfig)
+    });
+
     this.setState({
       dataSourceConfig: dataSourceConfig,
       interactiveFiltersConfig: interactiveFiltersConfig,
@@ -76,21 +84,22 @@ var Finish = React.createClass({
       <div>
         <h1>Configuration Files</h1>
         <div className='col-md-5'>
-          <h5>dataSource.json</h5>
+          <h5><a href="/config/dataSource.json" target="_blank">dataSource.json</a></h5>
+          <a href="/config/dataSource"></a>
           <Highlight className='javascript'>
             {JSON.stringify(this.state.dataSourceConfig, null, 2)}
           </Highlight>
-          <h5>dataDescription.json</h5>
+          <h5><a href="/config/dataDescription.json" target="_blank">dataDescription.json</a></h5>
           <Highlight className='javascript'>
             {JSON.stringify(this.state.dataDescriptionConfig, null, 2)}
           </Highlight>
         </div>
         <div className='col-md-5'>
-          <h5>interactiveFilters.json</h5>
+          <h5><a href="/config/interactiveFilters.json" target="_blank">interactiveFilters.json</a></h5>
           <Highlight className='javascript'>
             {JSON.stringify(this.state.interactiveFiltersConfig, null, 2)}
           </Highlight>
-          <h5>visualization.json</h5>
+          <h5><a href="/config/visualization.json" target="_blank">visualization.json</a></h5>
           <Highlight className='javascript'>
             {JSON.stringify(this.state.visualizationConfig, null, 2)}
           </Highlight>
