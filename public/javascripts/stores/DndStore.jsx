@@ -14,6 +14,23 @@ var DndStore = Reflux.createStore({
 		dropped.push(props);
 		this.trigger(props);
 	},
+	onDeleteFilteringAttribute: function(props){
+		//delete this prop from dropped array
+		console.log(props)
+		console.log(dropped)
+		for(var i in dropped){
+			var elem = dropped[i]
+			console.log(elem.data.name);
+			console.log(props.data.name)
+			if(elem.data.name == props.data.name){
+				console.log("splicing...")
+				dropped.splice(i,1)
+			}
+		}
+		console.log(dropped)
+
+		this.trigger(props)
+	},
 	isDropped: function(prop){
 		//console.log(dropped)
 		//console.log(prop)

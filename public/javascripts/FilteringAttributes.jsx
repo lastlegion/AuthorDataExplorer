@@ -13,6 +13,8 @@ var Button = require('react-bootstrap').Button;
 var Table = require('react-bootstrap').Table;
 
 var ConfigActions = require('./actions/ConfigActions.jsx');
+var DndStore      = require('./stores/DndStore.jsx');
+
 
 var attributes = []
 
@@ -39,6 +41,28 @@ var dc = require('dc');
 
 var Input = require('react-bootstrap').Input,
     Well = require('react-bootstrap').Well;
+
+var DeleteButton = React.createClass({
+
+  deleteAttribute: function(){
+    var attr = (this.props.data.data.allProps.data.name);
+    this.props.hide()
+    DndStore.onDeleteFilteringAttribute(this.props.data.data.allProps);
+    for(var i in config){
+      var elem = config[i].attributeName;
+      if(elem == attr){
+        config.splice(i,1);
+      }
+    }
+    console.log(config)
+  },
+  render: function(){
+
+    return(
+      <div> <Button onClick={this.deleteAttribute}>Delete</Button> </div>
+    )
+  }
+})
 
 var Chart = React.createClass({
     getInitialState: function(){
@@ -145,7 +169,6 @@ var Chart = React.createClass({
                 });
                 break;
             case "barChart":
-                console.log(domain)
                 c = dc.barChart(divId);
                 c.width(220)
                     .height(190).dimension(dim)
@@ -278,7 +301,10 @@ var Chart = React.createClass({
 
 var DivI = React.createClass({
   getInitialState: function(){
-    return {chartData: {}, isFilteringAttribute: false}
+    return {chartData: {}, isFilteringAttribute: false, show: true}
+  },
+  hide: function(){
+    this.setState({show: false})
   },
   componentDidMount: function(){
     var self  =this;
@@ -292,24 +318,20 @@ var DivI = React.createClass({
     })
   },
   selectChartType: function(e){
-    console.log(e.target.value)
     var properties = this.props.data.allProps.data;
     for(var i in config){
       var attr = config.attributeName;
       //console.log(properties.name)
-      console.log(config[i].attributeName)
       if(properties.name == config[i].attributeName){
         config[i].visualization.visType = e.target.value
       }
     }
-    console.log(config)
     this.setState({chartType: e.target.value})
   },
   componentWillMount: function(){
     var properties = this.props.data.allProps.data;
     var self = this;
     chartTypes = [];
-    console.log(properties.name)
 
     if(properties.type == "integer"){
       chartTypes.push("barChart");
@@ -322,17 +344,15 @@ var DivI = React.createClass({
     this.setState({chartTypes: chartTypes, chartType: chartType})
     for(var i in config){
       var attr = config.attributeName;
-      console.log(properties.name)
-      console.log(config[i].attributeName)
       if(properties.name == config[i].attributeName){
         config[i].visualization.visType = chartType
       }
     }
-    console.log(config)
   },
   render: function(){
     var properties = this.props.data.allProps.data;
     var self = this;
+    var show = this.state.show;
     //console.log(self.state.chartData);
 
     var chartTypes = this.state.chartTypes;
@@ -341,6 +361,11 @@ var DivI = React.createClass({
         <option value={type}>{type}</option>
       );
     })
+    if(!show){
+      return (
+        <div></div>
+      )
+    }
 
     return(
       <div className="col-md-6">
@@ -349,6 +374,7 @@ var DivI = React.createClass({
         {
           self.state.isFilteringAttribute ?
           <div >
+            <DeleteButton data={self.props} hide={self.hide}/>
             <Chart data={self.state.chartData} name={properties.name} chartType={self.state.chartType}/>
             <Input type="select" label='ChartType' onChange={this.selectChartType} value={self.state.ChartType}>
               {ChartTypeOptions}
@@ -428,9 +454,6 @@ function dropFilteringAttribute(props){
     }
   });
   dropped.push(props);
-  console.log(dropped)
-  console.log(attributes)
-  console.log(config)
   React.render(<DroppedElements />, document.getElementById("filteringAttributes"))
 }
 

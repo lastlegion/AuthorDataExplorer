@@ -61,7 +61,12 @@ var Attribute = React.createClass({
   componentDidMount: function(){
     var self = this;
     self.unsubscribe = DndStore.listen(self.onDrop);
+    var isDropped = DndStore.isDropped(this.props);
+    if(isDropped){
 
+    } else {
+      this.setState({dropped: false});
+    }
   },
   onDrop: function(){
     var didDrop = this.props.didDrop;
@@ -70,6 +75,8 @@ var Attribute = React.createClass({
     if(isDropped){
       console.log("DROPPED")
       this.setState( {dropped: true});
+    } else {
+      this.setState({dropped: false})
     }
   },
 	render: function(){
