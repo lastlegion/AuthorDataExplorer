@@ -39,17 +39,17 @@ var Finish = React.createClass({
     var attributes = [];
     for(var i in interactiveFiltersConfig){
       var attribute = interactiveFiltersConfig[i];
-      var dataType;
-      if(attribute.visualization.visType == "barChart" || attribute.visualization.visType == "rowChart"){
-        dataType = "enum"
+      var datatype;
+      if(attribute.visualization.visType == "pieChart" || attribute.visualization.visType == "rowChart"){
+        datatype = "enum"
       } else {
-        dataType = "integer"
+        datatype = "integer"
       }
       attributes.push({
         attributeName: interactiveFiltersConfig[i].attributeName,
         attributeType: ["filtering"],
         dataProvider: "",
-        dataType: dataType
+        datatype: datatype
       })
     };
     for(var i in visualizationConfig){
