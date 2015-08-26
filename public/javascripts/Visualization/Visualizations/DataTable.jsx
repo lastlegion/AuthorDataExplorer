@@ -1,21 +1,35 @@
 var React       = require('react');
 
 var DataTable = React.createClass({
+    hideColumn: function(key){
+      var attributes = this.props.config.attributes;
+      var i=0;
+      attributes.map(function(attribute){
+        column = dataTable.column(i);
+        if(i == key)
+          column.visible(false)
+        i++;
+      })
+    },
     componentDidUpdate: function(){
 
-
-      var dataTable = this.state.dataTable;
+      this.hideColumn(2)
+      //var dataTable = this.state.dataTable;
       var attributes = this.props.config.attributes;
       var columns = [];
       //dataTable.columns().visible(false)
       var i=0;
+      /*
       attributes.map(function(attribute){
         column = dataTable.column(i);
+        console.log(column)
         column.visible(true)
         i++
       })
-
+      */
+      //dataTable.fnSetColumnVis(1, false)
       var columns = dataTable.columns();
+
       console.log(columns)
 
     },

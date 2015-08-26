@@ -30,7 +30,7 @@ var DataTableConfig = React.createClass({
     var attributes = this.props.attributes;
     //console.log(this)
     var DataTableAttributes = attributes.map(function(attribute){
-      //console.log(attribute)
+      console.log(attribute)
       //console.log(self.state.visualAttributes)
       //console.log(self.state.visualAttributes[attribute.name])
       return(

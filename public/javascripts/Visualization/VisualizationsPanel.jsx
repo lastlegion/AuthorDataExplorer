@@ -96,7 +96,7 @@ var Visualization = React.createClass({
     switch(visualizationType){
       case "dataTable":
         return(
-          <DataTable config={this.props.config} currData = {this.props.currData} />
+          <h4>Select DataTable Attributes</h4>
         );
       case "imageGrid":
         return(
@@ -116,6 +116,12 @@ var SelectVisualization = React.createClass({
       showHeatMap: "inline-block",
       showImageGrid: "inline-block"
     }
+  },
+  showDataTable: function(){
+    this.setState({showDataTable: "inline-block"});
+  },
+  showImageGrid: function(){
+    this.setState({showImageGrid: "inline-block"});
   },
   addDataTable: function(){
     console.log(this);
@@ -157,11 +163,30 @@ var SelectVisualization = React.createClass({
   }
 })
 
-
-
+var VisualizationTab = React.createClass({
+  deleteVisualization: function(){
+    var self = this;
+    var visualization  = self.props.config.visualizationType;
+    self.props.deleteVisualization(visualization)
+  },
+  render: function(){
+    var self = this
+    console.log(self.props)
+    return(
+    <div>
+      <Button onClick={self.deleteVisualization}>Delete</Button>
+      <div className="col-md-3">
+        <VisualizationConfig attributes={self.props.attributes} config={self.props.config} handleVisualAttribute={self.props.handleVisualAttribute}/>
+      </div>
+      <div className="col-md-9">
+        <Visualization config={self.props.config} />
+      </div>
+    </div>
+  )
+  }
+})
 var VisualizationsPanel = React.createClass({
     mixins: [Router.Navigation],
-
     handleFinish: function(){
       var self = this;
       ConfigActions.visualizations(this.state.config);
@@ -169,8 +194,6 @@ var VisualizationsPanel = React.createClass({
       setTimeout(function(){
             self.transitionTo("finish")
       }, 500);
-
-;
     },
     addVisualization: function(vis, showState){
       var visualization = {
@@ -244,9 +267,18 @@ var VisualizationsPanel = React.createClass({
       }
       this.setState({config: config})
     },
+    deleteVisualization: function(visualization){
+      var config = this.state.config;
+      for(var i in config){
+        var c = config[i];
+        if(c.visualizationType == visualization){
+          config.splice(i,1);
+        }
+      }
+      this.setState({config: config});
+    },
     render: function(){
       var self =this;
-      console.log(this.state.config)
       if(this.state.attributes){
         var config = this.state.config;
         var count=0;
@@ -255,14 +287,12 @@ var VisualizationsPanel = React.createClass({
           Visualizations = this.state.config.map(function(visualization){
             count++;
             return(
-              <TabPane tab={visualization.visualizationType} eventKey={count} >
-                <div className="col-md-3">
-                  <VisualizationConfig attributes={self.state.attributes} config={visualization} handleVisualAttribute={self.handleVisualAttribute}/>
-                </div>
-                <div className="col-md-9">
-                  <Visualization config={visualization} />
-                </div>
-              </TabPane>
+              <VisualizationTab
+                config={visualization}
+                attributes={self.state.attributes}
+                handleVisualAttribute={self.handleVisualAttribute}
+                deleteVisualization={self.deleteVisualization}
+              />
              )
 
           });
