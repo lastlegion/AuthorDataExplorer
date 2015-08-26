@@ -125,7 +125,7 @@ var SelectVisualization = React.createClass({
   },
   addDataTable: function(){
     console.log(this);
-    this.setState({showDataTable: "none"})
+    //this.setState({showDataTable: "none"})
     this.props.showHandler("dataTable", false);
 
   },
@@ -173,8 +173,9 @@ var VisualizationTab = React.createClass({
     var self = this
     console.log(self.props)
     return(
-    <div>
-      <Button onClick={self.deleteVisualization}>Delete</Button>
+    <div style={{"display": 'block'}} className="row visualizationTab">
+      <h3>{self.props.config.visualizationType}</h3>
+      <Button onClick={self.deleteVisualization} className="visualizationTabDelete"  bsStyle='danger'>Delete</Button>
       <div className="col-md-3">
         <VisualizationConfig attributes={self.props.attributes} config={self.props.config} handleVisualAttribute={self.props.handleVisualAttribute}/>
       </div>
