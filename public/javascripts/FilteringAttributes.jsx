@@ -59,7 +59,7 @@ var DeleteButton = React.createClass({
   render: function(){
 
     return(
-      <div> <Button onClick={this.deleteAttribute}>Delete</Button> </div>
+      <div> <Button onClick={this.deleteAttribute}  bsStyle='danger'> Delete</Button> </div>
     )
   }
 })
@@ -375,10 +375,14 @@ var DivI = React.createClass({
           self.state.isFilteringAttribute ?
           <div >
             <DeleteButton data={self.props} hide={self.hide}/>
+            <div className="row">
             <Chart data={self.state.chartData} name={properties.name} chartType={self.state.chartType}/>
+            </div>
+            <div className="row">
             <Input type="select" label='ChartType' onChange={this.selectChartType} value={self.state.ChartType}>
               {ChartTypeOptions}
             </Input>
+            </div>
           </div>
           :
           <div />
