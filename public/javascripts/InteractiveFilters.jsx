@@ -24,14 +24,19 @@ var InteractiveFilters = React.createClass({
 	},
 
 	componentDidMount: function(){
+		var self = this;
+		setTimeout(function(){
+			var attributes = 	AppStore.getData();
+			console.log(attributes)
+			self.setState({attributes: attributes});
 
-		var attributes = 	AppStore.getData();
-		this.setState({attributes: attributes});
+		}, 200)
 
 
 	},
     render: function(){
     	if(this.state.attributes){
+				console.log(this.state.attributes)
 
     		Attributes = this.state.attributes.map(function(attribute){
 
