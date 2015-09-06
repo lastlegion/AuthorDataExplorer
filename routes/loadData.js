@@ -9,13 +9,12 @@ var dataSource = require("../modules/dataSource"),
 
 var DATA;
 var _loadData =  function (req, res, next) {
-    console.log(req.param('dataSourceConfig'));
     var dataSourceConfig = JSON.parse(req.param("dataSourceConfig"));
-    console.log(dataSourceConfig)
-    console.log(dataSource.init(dataSourceConfig));
+    //console.log(dataSourceConfig)
+    dataSource.init(dataSourceConfig);
 
     dataSource.loadData(function(data){
-        console.log(data)
+        //console.log(data)
         DATA = data;
 
         var attributes = [];
@@ -67,17 +66,16 @@ var _tableNext = function(req, res, next){
     results = {};
     TABLE_DATA = DATA;
 
-    console.log(TABLE_DATA)
+
 
 
   var len = TABLE_DATA.length;
   //var reqParams = iDisplayLength, iDisplayStart
   var start = req.query.start || 0;
   var length = req.query.length || 100;
-  console.log(start )
-  console.log(start.length)
+
   var TABLE_DATA = TABLE_DATA.slice(start, start+length)
-  console.log(TABLE_DATA)
+
   var DATA_ARRAY = [];
   for(var i in TABLE_DATA){
     //var row = Object.keys(TABLE_DATA[i]).map(function(k) { return TABLE_DATA[i][k] });
@@ -89,11 +87,10 @@ var _tableNext = function(req, res, next){
     }
     */
     var row = []
-    console.log(TABLE_DATA[i])
+
 
     for(var j in TABLE_DATA[i]){
-      //console.log(j)
-      console.log(TABLE_DATA[i][j])
+
       row.push(TABLE_DATA[i][j])
     }
 
@@ -127,7 +124,7 @@ var _imageGridNext = function(req, res, next){
     var start = state*length;
     var attribute = req.param('attribute');
     var imageGridData =DATA.slice(start, start+length)
-    console.log(imageGridData);
+
 
     var finalState = Math.floor(imageGridData.length/length);
 

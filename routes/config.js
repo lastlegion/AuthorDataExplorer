@@ -14,7 +14,6 @@ router.post("/dataSource", function(req, res, next){
 
 
 router.post("/all", function(req, res, next){
-  console.log(req.body);
   dataSource = JSON.parse(req.body.dataSourceConfig);
   dataDescription = JSON.parse(req.body.dataDescriptionConfig);
   interactiveFilters = JSON.parse(req.body.interactiveFiltersConfig);

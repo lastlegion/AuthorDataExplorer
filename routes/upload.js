@@ -30,8 +30,8 @@ router.post('/', function (req, res, next) {
         //Path where image will be uploaded
         fstream = fs.createWriteStream(__dirname + '/../data/' + fieldname);
         file.pipe(fstream);
-        fstream.on('close', function () {    
-            console.log("Upload Finished of " + fieldname);              
+        fstream.on('close', function () {
+            console.log("Upload Finished of " + fieldname);
             res.redirect('back');           //where to go next
         });
     });
