@@ -2,6 +2,11 @@
 
 Tool for authoring Data Explorer dashboards.
 
+### Development ###
+
+* Use `nodemon` to restart server on every edit
+* Use `gulp` to convert JSX to Javascript. 
+
 
 
 ### Installation ###
